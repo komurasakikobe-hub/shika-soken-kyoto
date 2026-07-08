@@ -29,7 +29,7 @@
 - [ ] サイト生成（build_clinics → build_features → build_index → build_sitemap）
 - [ ] index.html の統計数字を実数に差し替え（site_config.json の stats と一致させる）
 - [ ] サムネイル画像（ChatGPT無課金ルートで京都用に発注）
-- [ ] client_config_kyoto.json 作成（AI評判設計システム側）
+- [x] client_config_kyoto.json 作成（AI評判設計システム側）
 - [ ] GitHub Privateリポジトリ作成・push（ユーザー操作）
 - [ ] Cloudflare Pages接続・ドメイン決定（ユーザー操作）
 - [ ] GA4新プロパティ・Search Console（ユーザー操作）
