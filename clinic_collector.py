@@ -338,6 +338,10 @@ def analyze_reputation_and_expertise(
 - 第三者口コミ（Google・EPARK・Caloo）は公式サイトより信頼度が高い
 - notable=trueは総合的に「京都歯科総研が強く推薦できる医院」と判断できる場合のみ
 
+【重要】以下のJSONの全キーを必ず含めて出力すること。情報がないキーも省略せず、
+数値は0、配列は[]、オブジェクトは全項目0で出力する（equipment_stars / patient_fit /
+specialty_tags は省略されがちなので特に注意）。
+
 JSONのみ出力（コメント・説明文不要）:
 {{
   "reputation_score": 0〜25,
@@ -421,7 +425,7 @@ JSONのみ出力（コメント・説明文不要）:
 
         body = json.dumps({
             "model": "gpt-4o-mini",
-            "max_tokens": 1500,
+            "max_tokens": 2500,
             "response_format": {"type": "json_object"},
             "messages": [{"role": "user", "content": prompt}],
         }).encode("utf-8")
@@ -433,8 +437,19 @@ JSONのみ出力（コメント・説明文不要）:
                 "Authorization": f"Bearer {OPENAI_KEY}",
             },
         )
-        with urllib.request.urlopen(req, timeout=60) as res:
-            data = json.loads(res.read().decode("utf-8"))
+        # 429/5xxはリトライ（複数都市の並行実行でレート制限に当たると、従来は
+        # 例外を握りつぶして空分析を保存してしまっていた。2026-07-09修正）
+        data = None
+        for attempt in range(4):
+            try:
+                with urllib.request.urlopen(req, timeout=60) as res:
+                    data = json.loads(res.read().decode("utf-8"))
+                break
+            except urllib.error.HTTPError as he:
+                if he.code in (429, 500, 502, 503) and attempt < 3:
+                    time.sleep(15 * (attempt + 1))
+                    continue
+                raise
         raw_r = data["choices"][0]["message"]["content"].strip()
         m = re.search(r'\{.*\}', raw_r, re.DOTALL)
         if m:

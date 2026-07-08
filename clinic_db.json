@@ -84167,7 +84167,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ2W-Y64wHAWARZmNsogUZ9Js": {
     "place_id": "ChIJ2W-Y64wHAWARZmNsogUZ9Js",
@@ -84298,7 +84300,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJDS5PW50HAWARkdd9J1O-pBI": {
     "place_id": "ChIJDS5PW50HAWARkdd9J1O-pBI",
@@ -84417,7 +84421,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJk_diyuwHAWAR0PyDYm3GRVQ": {
     "place_id": "ChIJk_diyuwHAWAR0PyDYm3GRVQ",
@@ -84591,7 +84597,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "fetch_fail"
   },
   "ChIJX-nb1O4HAWARzb4nhqfdVEI": {
     "place_id": "ChIJX-nb1O4HAWARzb4nhqfdVEI",
@@ -84721,7 +84729,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJfXULwvEHAWAR5BP367_Lh18": {
     "place_id": "ChIJfXULwvEHAWAR5BP367_Lh18",
@@ -84836,7 +84846,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJUTM0Uu8HAWARyMNGql0bAxU": {
     "place_id": "ChIJUTM0Uu8HAWARyMNGql0bAxU",
@@ -85043,7 +85055,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJb1c_fOgHAWAR1O3o5j12bNM": {
     "place_id": "ChIJb1c_fOgHAWAR1O3o5j12bNM",
@@ -85258,7 +85272,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJdUsoEnUIAWARlHZnFzEbAqk": {
     "place_id": "ChIJdUsoEnUIAWARlHZnFzEbAqk",
@@ -85578,7 +85594,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJS__W2uEHAWART--V4zoUpyE": {
     "place_id": "ChIJS__W2uEHAWART--V4zoUpyE",
@@ -85710,7 +85728,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJqbRxC18IAWARsN9__cWZwLw": {
     "place_id": "ChIJqbRxC18IAWARsN9__cWZwLw",
@@ -85832,7 +85852,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJRY3tvWcIAWARQTK-jtaoIZA": {
     "place_id": "ChIJRY3tvWcIAWARQTK-jtaoIZA",
@@ -85940,7 +85962,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "fetch_fail"
   },
   "ChIJo5v_YGgIAWARDlkdf9lRbac": {
     "place_id": "ChIJo5v_YGgIAWARDlkdf9lRbac",
@@ -86062,7 +86086,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ-f2afmgIAWARboK6ek8Suhk": {
     "place_id": "ChIJ-f2afmgIAWARboK6ek8Suhk",
@@ -86180,7 +86206,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJYdfSQ2gIAWARjwhv27KUFGo": {
     "place_id": "ChIJYdfSQ2gIAWARjwhv27KUFGo",
@@ -86312,7 +86340,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJVY9bKV0IAWAROPrzg2zrmBg": {
     "place_id": "ChIJVY9bKV0IAWAROPrzg2zrmBg",
@@ -86771,7 +86801,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJiSp0718JAWARe7yckBulh5Y": {
     "place_id": "ChIJiSp0718JAWARe7yckBulh5Y",
@@ -86900,7 +86932,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJu2qKzgEJAWARq58NV7cwbRc": {
     "place_id": "ChIJu2qKzgEJAWARq58NV7cwbRc",
@@ -87017,7 +87051,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "fetch_fail"
   },
   "ChIJC6D01xQJAWART2rTboysP8s": {
     "place_id": "ChIJC6D01xQJAWART2rTboysP8s",
@@ -87227,7 +87263,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ65s1YKsJAWARX80lZkFLyxc": {
     "place_id": "ChIJ65s1YKsJAWARX80lZkFLyxc",
@@ -87350,7 +87388,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJRwjXUSULAWAROEtu-blvmX4": {
     "place_id": "ChIJRwjXUSULAWAROEtu-blvmX4",
@@ -87479,7 +87519,9 @@
     "q_in_osaka": false,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": true
+    "q_excluded": true,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJAf05YCYLAWARghXaNOha8rE": {
     "place_id": "ChIJAf05YCYLAWARghXaNOha8rE",
@@ -87601,7 +87643,9 @@
     "q_in_osaka": false,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": true
+    "q_excluded": true,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJr6WuegALAWARyhmJ5gI7Q5U": {
     "place_id": "ChIJr6WuegALAWARyhmJ5gI7Q5U",
@@ -87721,7 +87765,9 @@
     "q_in_osaka": false,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": true
+    "q_excluded": true,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJDZZTZgALAWARZfATJ_b_ogg": {
     "place_id": "ChIJDZZTZgALAWARZfATJ_b_ogg",
@@ -87831,7 +87877,9 @@
     "q_in_osaka": false,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": true
+    "q_excluded": true,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ8Ta7FYoHAWARHQq9-fKHHn4": {
     "place_id": "ChIJ8Ta7FYoHAWARHQq9-fKHHn4",
@@ -87923,7 +87971,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJTXct8YoHAWARRt3_FeDQLMQ": {
     "place_id": "ChIJTXct8YoHAWARRt3_FeDQLMQ",
@@ -88095,7 +88145,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJhf_kUPAHAWARV3YwLcjkOFI": {
     "place_id": "ChIJhf_kUPAHAWARV3YwLcjkOFI",
@@ -88537,7 +88589,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJvdjTLQwIAWARf_CdcHEmLiU": {
     "place_id": "ChIJvdjTLQwIAWARf_CdcHEmLiU",
@@ -88630,7 +88684,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJu2gvZQUIAWARM1mGb6Tmo5w": {
     "place_id": "ChIJu2gvZQUIAWARM1mGb6Tmo5w",
@@ -88723,7 +88779,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ9V54bAAJAWARsZI0Z64nOME": {
     "place_id": "ChIJ9V54bAAJAWARsZI0Z64nOME",
@@ -88814,7 +88872,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJg58log0IAWAR0WDfI-vsd1s": {
     "place_id": "ChIJg58log0IAWAR0WDfI-vsd1s",
@@ -88992,7 +89052,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ2ZVseWoIAWARkp-snoe8SEw": {
     "place_id": "ChIJ2ZVseWoIAWARkp-snoe8SEw",
@@ -89174,7 +89236,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJTSe9gjgIAWARGh4-zeZiQAQ": {
     "place_id": "ChIJTSe9gjgIAWARGh4-zeZiQAQ",
@@ -89266,7 +89330,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJmz0LCk4IAWARuQj7hh8-po8": {
     "place_id": "ChIJmz0LCk4IAWARuQj7hh8-po8",
@@ -89359,7 +89425,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJyy5hGUkIAWARroGmS6yx3_8": {
     "place_id": "ChIJyy5hGUkIAWARroGmS6yx3_8",
@@ -89452,7 +89520,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ5_j86UgIAWARfbOMfdklEQU": {
     "place_id": "ChIJ5_j86UgIAWARfbOMfdklEQU",
@@ -89726,7 +89796,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJR1DBNUkIAWARvEnaj4ngpQg": {
     "place_id": "ChIJR1DBNUkIAWARvEnaj4ngpQg",
@@ -89817,7 +89889,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "fetch_fail"
   },
   "ChIJRZk1jLIJAWAR8GwLHGq7hEY": {
     "place_id": "ChIJRZk1jLIJAWAR8GwLHGq7hEY",
@@ -89902,7 +89976,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ3ZSxaJoLAWARLGk5_fP2_OA": {
     "place_id": "ChIJ3ZSxaJoLAWARLGk5_fP2_OA",
@@ -90083,7 +90159,9 @@
     "q_in_osaka": false,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": true
+    "q_excluded": true,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJw1_w4J4LAWARNZbXYWoW5x0": {
     "place_id": "ChIJw1_w4J4LAWARNZbXYWoW5x0",
@@ -90175,7 +90253,9 @@
     "q_in_osaka": false,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": true
+    "q_excluded": true,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJXW_iWTGoAWARFCvOKnePRkI": {
     "place_id": "ChIJXW_iWTGoAWARFCvOKnePRkI",
@@ -90428,7 +90508,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJYxsghP-nAWARUWcx96KNfpI": {
     "place_id": "ChIJYxsghP-nAWARUWcx96KNfpI",
@@ -90592,7 +90674,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "fetch_fail"
   },
   "ChIJtZF5zQYIAWAReCMz2JWSwlE": {
     "place_id": "ChIJtZF5zQYIAWAReCMz2JWSwlE",
@@ -90684,7 +90768,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ860kbwCoAWARxoqgAmzT0iM": {
     "place_id": "ChIJ860kbwCoAWARxoqgAmzT0iM",
@@ -90769,7 +90855,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "fetch_fail"
   },
   "ChIJ_ebtCM0JAWARIs-uluDcjY0": {
     "place_id": "ChIJ_ebtCM0JAWARIs-uluDcjY0",
@@ -90858,7 +90946,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJCaPQ5ACoAWARNhW8fGJmms4": {
     "place_id": "ChIJCaPQ5ACoAWARNhW8fGJmms4",
@@ -91028,7 +91118,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJu1GvDAUIAWARHBJQHdqtEd8": {
     "place_id": "ChIJu1GvDAUIAWARHBJQHdqtEd8",
@@ -91206,7 +91298,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJWfQeHhIJAWARthl7IxaFQYI": {
     "place_id": "ChIJWfQeHhIJAWARthl7IxaFQYI",
@@ -91299,7 +91393,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJSTWG0h4IAWARwNNWGrRkFhY": {
     "place_id": "ChIJSTWG0h4IAWARwNNWGrRkFhY",
@@ -91485,7 +91581,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJuSYmPiEJAWARecOf25x6ghg": {
     "place_id": "ChIJuSYmPiEJAWARecOf25x6ghg",
@@ -91577,7 +91675,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJx5OBIbMJAWARykCLDOtxR4o": {
     "place_id": "ChIJx5OBIbMJAWARykCLDOtxR4o",
@@ -91669,7 +91769,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJsyIJ_08JAWARh8sduAkOeRU": {
     "place_id": "ChIJsyIJ_08JAWARh8sduAkOeRU",
@@ -91762,7 +91864,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJIU2HSmoJAWARy-WF0_Bpa2A": {
     "place_id": "ChIJIU2HSmoJAWARy-WF0_Bpa2A",
@@ -91849,7 +91953,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJCxz24z0IAWAR3mOmt5hWuE4": {
     "place_id": "ChIJCxz24z0IAWAR3mOmt5hWuE4",
@@ -91938,7 +92044,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJeZyB8DsIAWARAXWGncVnFf4": {
     "place_id": "ChIJeZyB8DsIAWARAXWGncVnFf4",
@@ -92029,7 +92137,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJF_jA4zgIAWARZw3g1TNCD_M": {
     "place_id": "ChIJF_jA4zgIAWARZw3g1TNCD_M",
@@ -92121,7 +92231,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJXXRfmTsIAWARkeKUt1CFv_I": {
     "place_id": "ChIJXXRfmTsIAWARkeKUt1CFv_I",
@@ -92214,7 +92326,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJeTjFvkkIAWARFShe-xkLaHc": {
     "place_id": "ChIJeTjFvkkIAWARFShe-xkLaHc",
@@ -92392,7 +92506,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJWRywnDUIAWAROmm_hEKrFq4": {
     "place_id": "ChIJWRywnDUIAWAROmm_hEKrFq4",
@@ -92481,7 +92597,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJQVxxprQJAWAR2N37T2Qf42w": {
     "place_id": "ChIJQVxxprQJAWAR2N37T2Qf42w",
@@ -92661,7 +92779,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJR6qYGaALAWARGWyAxdgktro": {
     "place_id": "ChIJR6qYGaALAWARGWyAxdgktro",
@@ -92833,7 +92953,9 @@
     "q_in_osaka": false,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": true
+    "q_excluded": true,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJeaiW6aALAWARhfcq1fB-OKk": {
     "place_id": "ChIJeaiW6aALAWARhfcq1fB-OKk",
@@ -92926,7 +93048,9 @@
     "q_in_osaka": false,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": true
+    "q_excluded": true,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJNZpP7JELAWARqUiYzYN8OM0": {
     "place_id": "ChIJNZpP7JELAWARqUiYzYN8OM0",
@@ -93019,7 +93143,9 @@
     "q_in_osaka": false,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": true
+    "q_excluded": true,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJOYkJjw-oAWARQ4DeIGkmJM0": {
     "place_id": "ChIJOYkJjw-oAWARQ4DeIGkmJM0",
@@ -93101,7 +93227,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJpxe_6AioAWARmu4l0GTmHP8": {
     "place_id": "ChIJpxe_6AioAWARmu4l0GTmHP8",
@@ -93190,7 +93318,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJUwjbwlWpAWAR5c9qVKW64ak": {
     "place_id": "ChIJUwjbwlWpAWAR5c9qVKW64ak",
@@ -93282,7 +93412,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJLwP6aQ6oAWARlMAyG-xUp_A": {
     "place_id": "ChIJLwP6aQ6oAWARlMAyG-xUp_A",
@@ -93375,7 +93507,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJx5BLvPynAWAR0y_uwz1IDRQ": {
     "place_id": "ChIJx5BLvPynAWAR0y_uwz1IDRQ",
@@ -93551,7 +93685,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJv-byNgioAWARVxRjIo7xDpM": {
     "place_id": "ChIJv-byNgioAWARVxRjIo7xDpM",
@@ -93644,7 +93780,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJPS5rIx0IAWARhZ6S7w9zlGM": {
     "place_id": "ChIJPS5rIx0IAWARhZ6S7w9zlGM",
@@ -93737,7 +93875,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ85APR1mnAWARa9tKRtpMaZw": {
     "place_id": "ChIJ85APR1mnAWARa9tKRtpMaZw",
@@ -93829,7 +93969,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJOSQRIx0IAWARjgQ3MaVA_6w": {
     "place_id": "ChIJOSQRIx0IAWARjgQ3MaVA_6w",
@@ -93908,7 +94050,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJM5VZOxwIAWARrajSNMlMedU": {
     "place_id": "ChIJM5VZOxwIAWARrajSNMlMedU",
@@ -93999,7 +94143,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJsUs8pxgIAWAR0UqWG3viQX8": {
     "place_id": "ChIJsUs8pxgIAWAR0UqWG3viQX8",
@@ -94092,7 +94238,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJT90MyhgIAWARSYXJZCORp_A": {
     "place_id": "ChIJT90MyhgIAWARSYXJZCORp_A",
@@ -94343,7 +94491,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJKxyobyMIAWARaVLCWlpYMlI": {
     "place_id": "ChIJKxyobyMIAWARaVLCWlpYMlI",
@@ -94436,7 +94586,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJbydiFTAIAWARaHE5rs_peUc": {
     "place_id": "ChIJbydiFTAIAWARaHE5rs_peUc",
@@ -94529,7 +94681,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJnc6Pz6gJAWARTlTSYdWbcjw": {
     "place_id": "ChIJnc6Pz6gJAWARTlTSYdWbcjw",
@@ -94621,7 +94775,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJXRbzTssJAWARazp5jAcB3Eo": {
     "place_id": "ChIJXRbzTssJAWARazp5jAcB3Eo",
@@ -94712,7 +94868,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJmWWKCagLAWARVFod0TV5ayo": {
     "place_id": "ChIJmWWKCagLAWARVFod0TV5ayo",
@@ -94962,7 +95120,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJU-vef46nAWARoIGfIVu5zjc": {
     "place_id": "ChIJU-vef46nAWARoIGfIVu5zjc",
@@ -95226,7 +95386,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJeQxNyyoIAWARgjOx5Xcse_g": {
     "place_id": "ChIJeQxNyyoIAWARgjOx5Xcse_g",
@@ -95319,7 +95481,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ-dYe6sIJAWAR_6HE68S_-XM": {
     "place_id": "ChIJ-dYe6sIJAWAR_6HE68S_-XM",
@@ -95485,7 +95649,9 @@
     "q_in_osaka": false,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": true
+    "q_excluded": true,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJR5j5-I-nAWARMEtRsqiALLs": {
     "place_id": "ChIJR5j5-I-nAWARMEtRsqiALLs",
@@ -95578,7 +95744,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJSUalmIWnAWARluvj4Slvt-0": {
     "place_id": "ChIJSUalmIWnAWARluvj4Slvt-0",
@@ -95670,7 +95838,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJpdUWgfsKAWARrRPY-C_3HQ4": {
     "place_id": "ChIJpdUWgfsKAWARrRPY-C_3HQ4",
@@ -95936,7 +96106,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJc9ibG52nAWAR9n4R6NDGRFY": {
     "place_id": "ChIJc9ibG52nAWAR9n4R6NDGRFY",
@@ -96028,7 +96200,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ-Sj3qJ2nAWARuWDb5wEvSlI": {
     "place_id": "ChIJ-Sj3qJ2nAWARuWDb5wEvSlI",
@@ -96287,7 +96461,9 @@
     "q_in_osaka": false,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": true
+    "q_excluded": true,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJuSE1rXgIAWARJUTjRhGgU1k": {
     "place_id": "ChIJuSE1rXgIAWARJUTjRhGgU1k",
@@ -96380,7 +96556,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJSSSrKqQHAWAR_ZqQ5qXoD-c": {
     "place_id": "ChIJSSSrKqQHAWAR_ZqQ5qXoD-c",
@@ -96472,7 +96650,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJmdK8BB4JAWARm-JN5fvdBjU": {
     "place_id": "ChIJmdK8BB4JAWARm-JN5fvdBjU",
@@ -96565,7 +96745,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJvaUNNmAIAWARYDjnXyxeTrM": {
     "place_id": "ChIJvaUNNmAIAWARYDjnXyxeTrM",
@@ -96658,7 +96840,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJIQusiYMIAWARBWDHsOg4cdM": {
     "place_id": "ChIJIQusiYMIAWARBWDHsOg4cdM",
@@ -96751,7 +96935,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ66Enk5MIAWARv7orVgCvNrI": {
     "place_id": "ChIJ66Enk5MIAWARv7orVgCvNrI",
@@ -96843,7 +97029,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJAbWmFJcIAWAReXVMKy2MgXE": {
     "place_id": "ChIJAbWmFJcIAWAReXVMKy2MgXE",
@@ -96936,7 +97124,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJiXsniiIOAWAR1Oj-97lB9nQ": {
     "place_id": "ChIJiXsniiIOAWAR1Oj-97lB9nQ",
@@ -97029,7 +97219,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJ334Aa34GAWARp2VyuUZH2wQ": {
     "place_id": "ChIJ334Aa34GAWARp2VyuUZH2wQ",
@@ -97121,7 +97313,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJrVjhrqgIAWAReECwuBoFSVw": {
     "place_id": "ChIJrVjhrqgIAWAReECwuBoFSVw",
@@ -97200,7 +97394,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJsXql-x8QAWARNSc08r4r1zo": {
     "place_id": "ChIJsXql-x8QAWARNSc08r4r1zo",
@@ -97293,7 +97489,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJRW3q-S8HAWARKcFDfiK4TYQ": {
     "place_id": "ChIJRW3q-S8HAWARKcFDfiK4TYQ",
@@ -97386,7 +97584,9 @@
     "q_in_osaka": true,
     "q_is_salon": false,
     "q_is_dup": false,
-    "q_excluded": false
+    "q_excluded": false,
+    "deep_fetched": true,
+    "deep_status": "no_extract"
   },
   "ChIJSeJDED8IAWARXiMJEhIgMWY": {
     "place_id": "ChIJSeJDED8IAWARXiMJEhIgMWY",
