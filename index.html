@@ -829,11 +829,11 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
   <div class="section-inner">
     <p class="eyebrow">Criteria</p>
     <h2 class="section-title">選定基準</h2>
-    <p class="section-lead"><span style="white-space:nowrap">AIは評価項目のひとつです。</span><span style="white-space:nowrap">口コミ、診療体制、誠実さ、通いやすさなど、</span><span style="white-space:nowrap">多角的な視点を組み合わせ、</span><span style="white-space:nowrap">100点満点で総合評価しています。</span></p>
+    <p class="section-lead"><span style="white-space:nowrap">口コミの評判、院長の経歴、設備、</span><span style="white-space:nowrap">情報公開の姿勢、学会・症例などの活動——</span><span style="white-space:nowrap">公開情報から確認できた事実のみを、</span><span style="white-space:nowrap">100点満点で総合評価しています。</span></p>
 
     <p class="criteria-note">
       <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
-      評価配点を公開しています
+      評価配点を公開しています（実際の算出式と同じ配点です）
     </p>
 
     <div class="criteria-grid">
@@ -845,7 +845,18 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
         </div>
         <div class="criteria-body">
           <h3>口コミ・評判の分析</h3>
-          <p>件数・評価点・投稿時期・口コミ内容をAIが総合分析。最新の投稿を重視し、古い評価だけの医院との差別化を図ります。</p>
+          <p>Googleなど公開されている口コミの内容をAIが統合分析。件数や星の数だけでなく、実際に書かれている評価の中身を重視します。</p>
+        </div>
+      </div>
+
+      <div class="criteria-card">
+        <div class="criteria-score-badge">
+          <span class="pts">25</span>
+          <span class="label">点</span>
+        </div>
+        <div class="criteria-body">
+          <h3>院長の経歴・専門性</h3>
+          <p>公式サイト等で公開されている院長の経歴・資格・所属学会・患者への向き合い方を分析。確認できた事実のみを評価します。</p>
         </div>
       </div>
 
@@ -855,19 +866,8 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
           <span class="label">点</span>
         </div>
         <div class="criteria-body">
-          <h3>AI総合評価</h3>
-          <p>ChatGPT・Gemini・Claudeなど複数の生成AIが公開情報をもとに評価した際の推薦傾向と、その根拠の一貫性を分析します。</p>
-        </div>
-      </div>
-
-      <div class="criteria-card">
-        <div class="criteria-score-badge">
-          <span class="pts">20</span>
-          <span class="label">点</span>
-        </div>
-        <div class="criteria-body">
-          <h3>診療体制・専門性</h3>
-          <p>一般歯科・矯正・インプラント・小児歯科・予防歯科など、幅広い診療に対応できる体制と、各医院が強みとする専門分野を評価します。</p>
+          <h3>設備・診療体制</h3>
+          <p>歯科用CT・マイクロスコープ・個室・バリアフリーなど、公開情報で根拠が確認できた設備・体制を評価します。</p>
         </div>
       </div>
 
@@ -877,35 +877,38 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
           <span class="label">点</span>
         </div>
         <div class="criteria-body">
-          <h3>患者対応・コミュニケーション</h3>
-          <p>口コミへの返信内容・対応姿勢から、患者様への誠実さを評価。厳しいご意見への向き合い方も重要な判断材料です。</p>
-        </div>
-      </div>
-
-      <div class="criteria-card warm">
-        <div class="criteria-score-badge">
-          <span class="pts">10</span>
-          <span class="label">点</span>
-        </div>
-        <div class="criteria-body">
-          <h3>通いやすさ</h3>
-          <p>駅からの距離・駐車場の有無・診療時間・土日対応など、継続して通いやすい環境を評価します。</p>
-        </div>
-      </div>
-
-      <div class="criteria-card warm">
-        <div class="criteria-score-badge">
-          <span class="pts">10</span>
-          <span class="label">点</span>
-        </div>
-        <div class="criteria-body">
           <h3>情報公開・透明性</h3>
-          <p>治療内容・料金・医師紹介など、患者様が安心して判断できる情報の充実度。ホームページの最新性も評価対象です。</p>
+          <p>料金・治療内容の説明・医師紹介など、患者様が受診前に判断できる情報をどれだけ公開しているかを評価します。</p>
+        </div>
+      </div>
+
+      <div class="criteria-card">
+        <div class="criteria-score-badge">
+          <span class="pts">15</span>
+          <span class="label">点</span>
+        </div>
+        <div class="criteria-body">
+          <h3>学会・症例・発信</h3>
+          <p>学会活動・症例の公開・ブログ等での情報発信の継続性を評価。学び続けている医院かどうかの手がかりです。</p>
+        </div>
+      </div>
+
+      <div class="criteria-card warm">
+        <div class="criteria-score-badge">
+          <span class="pts">+8</span>
+          <span class="label">点</span>
+        </div>
+        <div class="criteria-body">
+          <h3>Google評価ボーナス</h3>
+          <p>高い評価と十分な口コミ件数を両立している医院に最大8点を加点します（総合スコアは100点が上限）。</p>
         </div>
       </div>
 
     </div>
 
+    <p class="criteria-note" style="margin-top:20px;">
+      ※ ランキングページの表示順は、上記スコアに加えて「選択された条件（地域・症状・希望条件）との一致度」で変動します。順位は条件適合度であり、医院の技術や治療結果の優劣を示すものではありません。
+    </p>
 
   </div>
 </section>
