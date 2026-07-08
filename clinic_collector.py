@@ -570,7 +570,7 @@ def get_place_details(place_id: str) -> dict:
         return {}
     pid    = urllib.parse.quote(place_id)
     fields = (
-        "website,formatted_phone_number,national_phone_number,"
+        "website,formatted_phone_number,"
         "opening_hours,reviews,rating,user_ratings_total,business_status"
     )
     url = (
@@ -582,10 +582,7 @@ def get_place_details(place_id: str) -> dict:
             result = json.loads(r.read().decode("utf-8")).get("result", {})
         hours_obj = result.get("opening_hours", {})
         result["weekday_text"] = hours_obj.get("weekday_text", [])
-        result["phone"] = (
-            result.get("formatted_phone_number") or
-            result.get("national_phone_number") or ""
-        )
+        result["phone"] = result.get("formatted_phone_number") or ""
         return result
     except Exception:
         return {}
