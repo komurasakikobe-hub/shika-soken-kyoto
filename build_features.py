@@ -14,6 +14,9 @@ import os, re, json, html, sys
 
 ROOT = os.path.dirname(__file__)
 DB = os.path.join(ROOT, "clinic_db.json")
+SITE_CFG = json.load(open(os.path.join(ROOT, "site_config.json"), encoding="utf-8"))
+CITY_SHORT = SITE_CFG.get("city_short", SITE_CFG.get("city", ""))
+N_PUBLISHED = SITE_CFG.get("stats", {}).get("clinics_published", 0)
 OUT = os.path.join(ROOT, "articles", "features")
 CAP = 24          # 1カテゴリの表示上限（Netflix行）
 VERIFY = "--verify" in sys.argv
@@ -146,7 +149,8 @@ def main():
     html_out = (TEMPLATE.replace("{sections}", sections)
                 .replace("{n_clinics}", f"{n_clinics:,}")
                 .replace("{n_reviews}", f"{n_reviews:,}")
-                .replace("{updated}", updated))
+                .replace("{updated}", updated)
+                .replace("{CITY_SHORT}", CITY_SHORT).replace("{N_PUBLISHED:,}", f"{N_PUBLISHED:,}"))
     open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(html_out)
     total = sum(len(xs) for _, _, _, xs in data)
     print(f"✅ 特徴別カテゴリページ生成: {sum(1 for _,_,_,xs in data if xs)}カテゴリ / のべ{total}院 → {OUT}/index.html")
@@ -252,7 +256,7 @@ h1,h2,h3,p,li{line-break:strict;text-wrap:pretty;}
   </div>
   <div class="odr-cta" style="margin-top:26px;">
     <p class="t">条件から、あなたに合う歯科医院へ</p>
-    <p class="s">ご希望の条件をもとに、京都市内 約2,050院からAIが無料でご案内します。</p>
+    <p class="s">ご希望の条件をもとに、{CITY_SHORT}市内 約{N_PUBLISHED:,}院からAIが無料でご案内します。</p>
     <div class="odr-cta-btns">
       <a class="odr-btn" href="../shindan/index.html">AI診断を受ける（無料）</a>
       <a class="odr-btn ghost" href="../../index.html">トップへ戻る</a>

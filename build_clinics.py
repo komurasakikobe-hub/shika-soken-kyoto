@@ -12,6 +12,9 @@ from urllib.parse import quote
 
 ROOT = os.path.dirname(__file__)
 DB = os.path.join(ROOT, "clinic_db.json")
+SITE_CFG = json.load(open(os.path.join(ROOT, "site_config.json"), encoding="utf-8"))
+CITY_SHORT = SITE_CFG.get("city_short", SITE_CFG.get("city", ""))
+N_PUBLISHED = SITE_CFG.get("stats", {}).get("clinics_published", 0)
 OUT = os.path.join(ROOT, "articles", "clinics")
 SLUG_MAP_PATH = os.path.join(ROOT, "clinic_slugs.json")
 with open(SLUG_MAP_PATH, encoding="utf-8") as _f:
@@ -128,7 +131,7 @@ def build_jsonld(c, slug):
         "@context": "https://schema.org",
         "@type": "Dentist",
         "name": c.get("name", ""),
-        "url": f"https://shikasoken.com/articles/clinics/{slug}.html",
+        "url": f"https://{SITE_CFG.get('domain','shikasoken.com')}/articles/clinics/{slug}.html",
     }
     if c.get("address"):
         data["address"] = {"@type": "PostalAddress", "streetAddress": c["address"], "addressRegion": "京都府"}
@@ -324,8 +327,9 @@ def build_page(c, slug=""):
             .replace("{fact}", fact_html)
             .replace("{links}", links).replace("{body}", body)
             .replace("{jsonld}", build_jsonld(c, slug))
-            .replace("{ogurl}", f"https://shikasoken.com/articles/clinics/{quote(slug)}.html")
-            .replace("{desc}", esc((ai or name)[:110])))
+            .replace("{ogurl}", f"https://{SITE_CFG.get('domain','shikasoken.com')}/articles/clinics/{quote(slug)}.html")
+            .replace("{desc}", esc((ai or name)[:110]))
+            .replace("{CITY_SHORT}", CITY_SHORT).replace("{N_PUBLISHED:,}", f"{N_PUBLISHED:,}"))
 
 TEMPLATE = '''<!DOCTYPE html>
 <html lang="ja">
@@ -473,7 +477,7 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 {body}
   <section class="rr-cta">
     <p class="rr-cta-t">あなたに合う歯科医院は？</p>
-    <p class="rr-cta-s">症状・エリア・ご希望から、AIが京都市内 約2,050院を無料でマッチングします。</p>
+    <p class="rr-cta-s">症状・エリア・ご希望から、AIが{CITY_SHORT}市内 約{N_PUBLISHED:,}院を無料でマッチングします。</p>
     <div class="rr-cta-btns">
       <a class="rr-cta-btn" href="../shindan/index.html">AI診断を受ける（無料）</a>
       <a class="rr-cta-btn ghost" href="../features/index.html">特徴から探す</a>
