@@ -1,0 +1,6 @@
+.env
+.DS_Store
+_backups/
+__pycache__/
+_reports/
+_daily_post_logs/

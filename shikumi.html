@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>AIに選ばれる仕組み｜京都歯科総研</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:      #0d2f4f;
+    --navy-mid:  #163d60;
+    --teal:      #1a7a8a;
+    --teal-soft: #2a9aab;
+    --sky:       #e8f4f8;
+    --white:     #ffffff;
+    --gray-bg:   #f4f6f9;
+    --gray-line: #dde3ea;
+    --ink:       #1c2b3a;
+    --ink-soft:  #4a5a6a;
+    --gold:      #c9a84c;
+    --gold-bg:   #fdf6e3;
+    --green:     #166534;
+    --green-bg:  #dcfce7;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{
+    background:var(--gray-bg);
+    color:var(--ink);
+    font-family:'Noto Sans JP',sans-serif;
+    line-height:1.85;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  /* ── HEADER ── */
+  .site-header{
+    background:var(--navy);color:var(--white);
+    padding:0 40px;position:sticky;top:0;z-index:100;
+    border-bottom:2px solid var(--teal);
+  }
+  .header-inner{
+    max-width:1080px;margin:0 auto;
+    display:flex;align-items:center;justify-content:space-between;
+    height:64px;
+  }
+  .logo{font-size:1.05rem;font-weight:700;letter-spacing:.08em;color:var(--white);text-decoration:none;}
+  .logo span{color:var(--teal-soft);font-size:.72rem;font-weight:400;display:block;letter-spacing:.12em;}
+  .back-link{color:rgba(255,255,255,.65);text-decoration:none;font-size:.82rem;letter-spacing:.06em;}
+  .back-link:hover{color:var(--white);}
+
+  /* ── HERO ── */
+  .hero{
+    background:linear-gradient(150deg,var(--navy) 0%,var(--navy-mid) 60%,var(--teal) 100%);
+    color:var(--white);padding:80px 40px 72px;position:relative;overflow:hidden;
+  }
+  .hero::before{
+    content:"";position:absolute;inset:0;
+    background:radial-gradient(circle at 80% 25%, rgba(26,122,138,.3), transparent 55%);
+    pointer-events:none;
+  }
+  .hero-inner{max-width:960px;margin:0 auto;position:relative;z-index:1;}
+  .hero-badge{
+    display:inline-block;background:rgba(26,122,138,.35);
+    border:1px solid rgba(26,122,138,.6);color:rgba(255,255,255,.9);
+    font-size:.7rem;letter-spacing:.18em;padding:4px 16px;border-radius:2px;margin-bottom:24px;
+    font-family:'Inter',sans-serif;
+  }
+  .hero h1{
+    font-size:clamp(1.5rem,4vw,2.4rem);font-weight:700;line-height:1.45;
+    margin-bottom:18px;letter-spacing:.03em;
+  }
+  .hero h1 em{color:var(--teal-soft);font-style:normal;}
+  .hero-sub{font-size:.95rem;color:rgba(255,255,255,.78);max-width:600px;line-height:1.9;}
+
+  /* ── WRAP ── */
+  .wrap{max-width:960px;margin:0 auto;padding:0 40px;}
+  .section{padding:64px 0;}
+
+  /* ── SECTION HEAD ── */
+  .sec-label{font-size:.68rem;letter-spacing:.22em;color:var(--teal);font-weight:700;margin-bottom:10px;font-family:'Inter',sans-serif;}
+  .sec-title{font-size:clamp(1.15rem,2.5vw,1.6rem);font-weight:700;color:var(--navy);margin-bottom:12px;}
+  .sec-lead{font-size:.9rem;color:var(--ink-soft);max-width:680px;margin-bottom:40px;line-height:1.9;}
+
+  /* ── PROBLEM SECTION ── */
+  .problem{background:var(--white);}
+  .problem-grid{display:grid;grid-template-columns:1fr 1fr;gap:20px;margin-top:8px;}
+  .problem-card{
+    background:var(--gray-bg);border-left:3px solid #dc2626;
+    padding:24px;border-radius:0 4px 4px 0;
+  }
+  .problem-card h3{font-size:.9rem;font-weight:700;color:#dc2626;margin-bottom:8px;}
+  .problem-card p{font-size:.83rem;color:var(--ink-soft);line-height:1.85;}
+
+  /* ── FLOW ── */
+  .flow-section{background:var(--gray-bg);}
+  .flow-steps{display:grid;gap:0;margin-top:8px;}
+  .flow-step{
+    display:grid;grid-template-columns:64px 1fr;gap:24px;
+    align-items:flex-start;position:relative;
+  }
+  .flow-step:not(:last-child)::after{
+    content:'';position:absolute;left:31px;top:64px;
+    width:2px;height:calc(100% - 16px);
+    background:linear-gradient(to bottom,var(--teal),var(--gray-line));
+  }
+  .step-num{
+    width:64px;height:64px;border-radius:50%;
+    background:var(--teal);color:var(--white);
+    display:grid;place-items:center;
+    font-family:'Inter',sans-serif;font-weight:800;font-size:1.2rem;
+    flex:none;z-index:1;box-shadow:0 4px 14px rgba(26,122,138,.35);
+  }
+  .step-body{
+    background:var(--white);border:1px solid var(--gray-line);
+    border-radius:4px;padding:24px 28px;margin-bottom:20px;
+  }
+  .step-title{font-size:.97rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
+  .step-desc{font-size:.84rem;color:var(--ink-soft);line-height:1.9;}
+  .step-tag{
+    display:inline-block;font-family:'Inter',sans-serif;font-size:.68rem;
+    font-weight:700;padding:2px 10px;border-radius:2px;margin-left:8px;
+    letter-spacing:.05em;vertical-align:middle;
+  }
+  .tag-auto{background:var(--sky);color:var(--teal);}
+  .tag-ai{background:#ede9fe;color:#5b21b6;}
+  .tag-monthly{background:var(--gold-bg);color:#92400e;}
+
+  /* ── SCORE SECTION ── */
+  .score-section{background:var(--white);}
+  .score-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;margin-top:8px;}
+  .score-card{
+    background:var(--gray-bg);border-radius:4px;
+    padding:24px 20px;text-align:center;
+    border-top:3px solid var(--teal);
+  }
+  .score-num{
+    font-family:'Inter',sans-serif;font-weight:800;
+    font-size:2rem;color:var(--teal);line-height:1;margin-bottom:8px;
+  }
+  .score-label{font-size:.82rem;font-weight:700;color:var(--navy);margin-bottom:6px;}
+  .score-desc{font-size:.78rem;color:var(--ink-soft);line-height:1.75;}
+
+  /* ── RESULT TABLE ── */
+  .result-table{width:100%;border-collapse:collapse;}
+  .result-table th{
+    background:var(--navy);color:var(--white);
+    padding:12px 20px;text-align:left;font-size:.8rem;font-weight:600;letter-spacing:.06em;
+  }
+  .result-table td{
+    padding:14px 20px;border-bottom:1px solid var(--gray-line);
+    font-size:.85rem;color:var(--ink-soft);background:var(--white);
+    vertical-align:top;
+  }
+  .result-table td:first-child{color:var(--ink);font-weight:600;width:180px;}
+  .result-table tr:last-child td{border-bottom:none;}
+
+  /* ── CTA ── */
+  .cta-section{
+    background:linear-gradient(150deg,var(--navy) 0%,var(--teal) 100%);
+    padding:72px 40px;color:var(--white);text-align:center;
+  }
+  .cta-inner{max-width:640px;margin:0 auto;}
+  .cta-label{font-size:.7rem;letter-spacing:.22em;color:rgba(255,255,255,.65);font-family:'Inter',sans-serif;margin-bottom:16px;}
+  .cta-title{font-size:clamp(1.3rem,3vw,1.9rem);font-weight:700;line-height:1.5;margin-bottom:16px;}
+  .cta-sub{font-size:.88rem;color:rgba(255,255,255,.75);line-height:1.9;margin-bottom:36px;}
+  .cta-box{
+    background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.25);
+    border-radius:4px;padding:28px 32px;text-align:left;margin-bottom:28px;
+  }
+  .cta-box h3{font-size:1rem;font-weight:700;margin-bottom:16px;color:var(--white);}
+  .cta-list{list-style:none;display:grid;gap:10px;}
+  .cta-list li{
+    font-size:.85rem;color:rgba(255,255,255,.85);
+    padding-left:20px;position:relative;line-height:1.7;
+  }
+  .cta-list li::before{
+    content:"—";position:absolute;left:0;
+    color:var(--teal-soft);font-weight:700;
+  }
+  .cta-contact{
+    font-size:.85rem;color:rgba(255,255,255,.7);line-height:2;
+  }
+  .cta-contact a{color:rgba(255,255,255,.9);text-decoration:underline;}
+  .cta-btn{
+    display:inline-flex;align-items:center;gap:8px;margin-top:8px;
+    background:#DD7550;color:#fff;font-weight:700;font-size:.95rem;
+    padding:15px 32px;border-radius:50px;text-decoration:none;
+    box-shadow:0 8px 28px rgba(221,117,80,.35);transition:background .2s,transform .15s;
+  }
+  .cta-btn:hover{background:#B65B3A;transform:translateY(-2px);}
+
+  /* ── FOOTER ── */
+  footer{
+    background:var(--navy);color:rgba(255,255,255,.5);
+    padding:36px 40px;text-align:center;
+    font-size:.76rem;letter-spacing:.06em;line-height:2;
+  }
+  footer a{color:rgba(255,255,255,.5);text-decoration:none;}
+
+  @media(max-width:720px){
+    .problem-grid{grid-template-columns:1fr;}
+    .score-grid{grid-template-columns:1fr;}
+    .wrap{padding:0 20px;}
+    .section{padding:48px 0;}
+    .hero{padding:56px 20px 48px;}
+    .site-header{padding:0 20px;}
+    .cta-section{padding:56px 20px;}
+  }
+
+/* ===== 改行・可読性の共通ルール（改行マニュアル v1.0） ===== */
+h1,h2,h3,h4,h5,p,li,dd,figcaption,td,th,
+.lead,.sec-lead,.step-desc,.cta-sub,.hero-sub,.hero .lead,.hero p{
+  line-break:strict;      /* 日本語の禁則処理 */
+  text-wrap:pretty;       /* 1文字残り・不自然に短い最終行を自動回避 */
+}
+h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
+</style>
+<script src="assets/site-config.js"></script>
+<script src="assets/odr-track.js"></script>
+</head>
+<body>
+
+<!-- HEADER -->
+<header class="site-header">
+  <div class="header-inner">
+    <a href="index.html" class="logo">
+      京都歯科総研
+      <span>KYOTO DENTAL RESEARCH</span>
+    </a>
+    <a href="index.html" class="back-link">← トップに戻る</a>
+  </div>
+</header>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-inner">
+    <div class="hero-badge">HOW IT WORKS</div>
+    <h1>なぜ、このサイトの掲載院は<br><em>AIに推薦されるのか</em></h1>
+    <p class="hero-sub">
+      <span style="white-space:nowrap">「ChatGPTで調べたら出てきた」</span><span style="white-space:nowrap">「Googleで上位に出ている」</span><span style="white-space:nowrap">——それは偶然ではありません。</span><span style="white-space:nowrap">京都歯科総研が掲載する院には、</span><span style="white-space:nowrap">AIと検索エンジンから選ばれ続けるための</span><span style="white-space:nowrap">仕組みが動いています。</span>
+    </p>
+  </div>
+</section>
+
+<!-- PROBLEM -->
+<section class="section problem">
+  <div class="wrap">
+    <p class="sec-label">THE PROBLEM</p>
+    <h2 class="sec-title">多くの歯科医院が直面している現実</h2>
+    <p class="sec-lead">
+      <span style="white-space:nowrap">「腕には自信がある。</span><span style="white-space:nowrap">でも新患が増えない」。</span><span style="white-space:nowrap">その理由の多くは、</span><span style="white-space:nowrap">技術ではなく</span><span style="white-space:nowrap">「存在を知られていないこと」にあります。</span>
+    </p>
+    <div class="problem-grid">
+      <div class="problem-card">
+        <h3>ChatGPTで「京都 歯医者」と聞いても出てこない</h3>
+        <p>AIが推薦する歯科院は、ウェブ上の評判の量と質で決まります。どれだけ腕が良くても、情報が少ない院はAIに「存在しない」と判断されます。</p>
+      </div>
+      <div class="problem-card">
+        <h3>Googleの口コミが増えない、返信が追いつかない</h3>
+        <p>口コミへの返信は患者対応の一部です。しかし診療で多忙な院長が毎日対応するのは現実的ではなく、放置が続くと評価スコアに影響します。</p>
+      </div>
+      <div class="problem-card">
+        <h3>ホームページはあるが更新できていない</h3>
+        <p>Googleは更新頻度をサイトの信頼性指標として使います。更新されないサイトは徐々に評価が下がり、検索結果での表示順位が下落します。</p>
+      </div>
+      <div class="problem-card">
+        <h3>何をやればいいかわからない</h3>
+        <p>SEO・MEO・SNS・AI対策——やるべきことが多すぎて、どれから手をつければいいかわからないまま時間が過ぎていきます。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- FLOW -->
+<section class="section flow-section">
+  <div class="wrap">
+    <p class="sec-label">THE MECHANISM</p>
+    <h2 class="sec-title">京都歯科総研が動かしている仕組み</h2>
+    <p class="sec-lead" style="white-space:nowrap;">掲載院のAI推薦率とGoogle評価を高め続けるために、複数のシステムが毎日・毎月・自動で動いています。</p>
+    <div class="flow-steps">
+
+      <div class="flow-step">
+        <div class="step-num">01</div>
+        <div class="step-body">
+          <div class="step-title">毎月、AIが最適な記事テーマを自動選定
+            <span class="step-tag tag-ai">AI自動</span>
+          </div>
+          <p class="step-desc">
+            複数の生成AI（ChatGPT・Geminiなど）とGoogle口コミのキーワードをもとに、京都で関心の高い歯科テーマを分析しています。<br>その結果から、次に扱うべき記事テーマを決定しています。</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-num">02</div>
+        <div class="step-body">
+          <div class="step-title">毎朝、Claude AIがSEO記事を自動執筆
+            <span class="step-tag tag-auto">毎日自動</span>
+          </div>
+          <p class="step-desc">
+            Anthropic社のClaude（最新モデル）が、京都の歯科事情に特化した
+            SEO記事を毎朝自動で生成します。
+            「京都市 子どもの虫歯予防」「伏見区 痛くない歯医者」など、
+            実際に検索されているキーワードを記事タイトル・本文に自然に組み込みます。
+            記事はこのサイト（京都歯科総研）に蓄積され、AIの学習データになり続けます。
+          </p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-num">03</div>
+        <div class="step-body">
+          <div class="step-title">口コミへの返信をAIが自動生成
+            <span class="step-tag tag-ai">AI支援</span>
+          </div>
+          <p class="step-desc">
+            Googleマップに届いた患者様の口コミに対して、
+            AIが返信文を3パターン自動生成します。<br>「引用・共感・追加情報・再来店促進」の4要素を含む、
+            Googleが推奨する返信構造に基づいて作成されます。
+            オーナーはコピー＆ペーストするだけ。返信率を高めることで
+            Googleスコアの向上につながります。
+          </p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-num">04</div>
+        <div class="step-body">
+          <div class="step-title">月次レポートで効果を可視化
+            <span class="step-tag tag-monthly">月次確認</span>
+          </div>
+          <p class="step-desc">
+            掲載データは定期的に見直しています。<br>Google口コミの件数・評価の変化、複数の生成AI（ChatGPT・Geminiなど）での評価傾向、公式サイト情報の更新などを反映し、内容を最新に保ちます。</p>
+        </div>
+      </div>
+
+      <div class="flow-step">
+        <div class="step-num">05</div>
+        <div class="step-body">
+          <div class="step-title">検索やAIから、患者さんに見つけてもらう</div>
+          <p class="step-desc">
+            このポータルサイト自体が「京都 歯科」「伏見区 歯医者」などのキーワードで
+            GoogleとAIに上位表示されるよう育てています。
+            困っている患者さんが、信頼できる情報にたどり着きやすくなります。
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<!-- SCORE -->
+<section class="section score-section">
+  <div class="wrap">
+    <p class="sec-label">EVALUATION CRITERIA</p>
+    <h2 class="sec-title">掲載院の評価スコア — 6つの基準</h2>
+    <p class="sec-lead">
+      京都歯科総研の掲載順位は、以下の6項目を総合して決定しています。
+      広告費・掲載料は一切関係しません。
+    </p>
+    <div class="score-grid">
+      <div class="score-card">
+        <div class="score-num">30<span style="font-size:1rem">pt</span></div>
+        <div class="score-label">口コミ引用・共感スコア</div>
+        <div class="score-desc">患者様の口コミに含まれる言葉を返信で引用し、共感を示しているか</div>
+      </div>
+      <div class="score-card">
+        <div class="score-num">20<span style="font-size:1rem">pt</span></div>
+        <div class="score-label">AI推薦スコア</div>
+        <div class="score-desc">ChatGPT・Geminiが「京都市の歯科」として推薦する頻度と根拠の質</div>
+      </div>
+      <div class="score-card">
+        <div class="score-num">20<span style="font-size:1rem">pt</span></div>
+        <div class="score-label">コンテンツ更新スコア</div>
+        <div class="score-desc">ブログ・ホームページの更新頻度と、検索クエリとの関連性</div>
+      </div>
+      <div class="score-card">
+        <div class="score-num">15<span style="font-size:1rem">pt</span></div>
+        <div class="score-label">Google口コミスコア</div>
+        <div class="score-desc">評価の平均・件数・オーナー返信率を総合評価</div>
+      </div>
+      <div class="score-card">
+        <div class="score-num">10<span style="font-size:1rem">pt</span></div>
+        <div class="score-label">患者体験スコア</div>
+        <div class="score-desc">「痛くない」「丁寧」「清潔」など患者体験に関するワードの出現頻度</div>
+      </div>
+      <div class="score-card">
+        <div class="score-num">5<span style="font-size:1rem">pt</span></div>
+        <div class="score-label">情報鮮度スコア</div>
+        <div class="score-desc">営業時間・診療内容の最新情報がウェブ上で正確に保たれているか</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- RESULT -->
+<section class="section" style="background:var(--gray-bg);">
+  <div class="wrap">
+    <p class="sec-label">EXPECTED RESULTS</p>
+    <h2 class="sec-title">仕組みを動かすと、何が変わるか</h2>
+    <p class="sec-lead">導入院で実際に確認されている変化の傾向です。</p>
+    <table class="result-table">
+      <thead>
+        <tr>
+          <th>指標</th>
+          <th>仕組みを動かす前</th>
+          <th>3〜6ヶ月後の傾向</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td>AI推薦率</td>
+          <td>ChatGPT・Geminiに名前が出ない</td>
+          <td>「京都 歯医者」関連クエリで推薦されるようになる</td>
+        </tr>
+        <tr>
+          <td>Google口コミ件数</td>
+          <td>月0〜2件のペースで停滞</td>
+          <td>返信の質が上がり、口コミが連鎖して増えやすくなる</td>
+        </tr>
+        <tr>
+          <td>検索表示回数</td>
+          <td>更新が少なく順位が下落傾向</td>
+          <td>毎日の記事追加により表示回数が増加</td>
+        </tr>
+        <tr>
+          <td>院長の手間</td>
+          <td>口コミ返信・ブログ更新に時間を取られる</td>
+          <td>AIが下書きを作成。確認・承認のみで完結</td>
+        </tr>
+        </tbody>
+    </table>
+  </div>
+</section>
+
+<section class="cta-section">
+  <div class="cta-inner" style="text-align:center;">
+    <p class="cta-label">CONTACT</p>
+    <h2 class="cta-title">情報発信の支援について、<br>お気軽にご相談ください</h2>
+    <p class="cta-sub">京都歯科総研は、掲載順位・AIの評価を有料・無料で操作しません。すべての医院を同じ基準で分析しています。</p>
+    <a href="for-clinics.html#contact" class="cta-btn">お問い合わせはこちら →</a>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  京都歯科総研 — KYOTO DENTAL RESEARCH<br>
+  <a href="index.html">トップページに戻る</a><br><br>
+  &copy; 2025 京都歯科総研
+</footer>
+
+</body>
+</html>

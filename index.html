@@ -1,0 +1,1028 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="google-site-verification" content="GwMP4jo_kRK344CBoJlCYRJJ4t9fevYoQz33SxP7yBQ" />
+<title>京都歯科総研｜AIと口コミで選ぶ、京都の歯科医院</title>
+<meta name="description" content="京都市内2,000院超の歯科医院をAIと口コミデータで横断分析。地域・症状・希望条件から、あなたに合う歯科医院を探せる研究型ポータルです。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="京都歯科総研">
+<meta property="og:title" content="京都歯科総研｜AIと口コミで選ぶ、京都の歯科医院">
+<meta property="og:description" content="京都市内2,000院超の歯科医院をAIと口コミデータで横断分析。地域・症状・希望条件から、あなたに合う歯科医院を探せます。">
+<meta property="og:url" content="https://shikasoken.com/">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@500;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Inter:wght@500;600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/odr-ds.css">
+<script src="assets/site-config.js"></script>
+<script src="assets/odr-track.js"></script>
+<style>
+:root {
+  --ink:        #17323E;
+  --ink-soft:   #47596A;
+  --ink-faint:  #7C8C97;
+  --bg:         #F6F4EE;
+  --surface:    #FFFFFF;
+  --line:       #E2DDCE;
+  --line-soft:  #EDE9DC;
+
+  --brand:      #2B6C61;
+  --brand-deep: #163F38;
+  --brand-soft: #E4EEE9;
+  --brand-ring: #9FC3B8;
+
+  --warm:       #DD7550;
+  --warm-deep:  #B65B3A;
+  --warm-soft:  #FBE9E0;
+
+  --gold:       #B08A2E;
+  --gold-soft:  #F3ECD8;
+
+  --radius-sm: 3px;
+  --radius-md: 8px;
+  --radius-lg: 14px;
+  --shadow-card: 0 1px 2px rgba(23,50,62,.04), 0 10px 28px rgba(23,50,62,.07);
+  --shadow-pop:  0 18px 44px rgba(22,63,56,.22);
+  --container: 1100px;
+}
+
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+html{font-size:112.5%;-webkit-text-size-adjust:100%;scroll-behavior:smooth}
+body{
+  font-family:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;
+  background:var(--bg);color:var(--ink-soft);
+  line-height:2;-webkit-font-smoothing:antialiased;
+}
+img{max-width:100%;display:block}
+a{color:inherit;text-decoration:none}
+ul{list-style:none}
+h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);letter-spacing:.02em}
+
+/* ── SKIP LINK ── */
+.skip-link{position:absolute;left:-9999px;top:0;background:var(--brand-deep);color:#fff;padding:12px 20px;border-radius:0 0 8px 0;font-weight:700;font-size:.85rem;z-index:999}
+.skip-link:focus{left:0}
+
+/* ── HEADER ── */
+.site-header{
+  background:var(--brand-deep);
+  border-bottom:3px solid var(--warm);
+  padding:0 clamp(16px,4vw,40px);
+  display:flex;align-items:center;justify-content:space-between;
+  height:72px;position:sticky;top:0;z-index:100;gap:16px;
+}
+.logo{
+  color:#fff;font-family:'Shippori Mincho',serif;
+  font-size:1.15rem;font-weight:700;letter-spacing:.06em;
+  display:flex;flex-direction:column;line-height:1.3;
+}
+.logo small{
+  font-family:'Inter',sans-serif;color:rgba(255,255,255,.5);
+  font-size:.6rem;font-weight:600;letter-spacing:.18em;
+}
+.site-nav{display:flex;align-items:center;gap:24px}
+.site-nav a{
+  color:rgba(255,255,255,.75);font-size:.82rem;
+  letter-spacing:.06em;transition:color .2s;
+  font-family:'Zen Kaku Gothic New',sans-serif;
+}
+.site-nav a:hover{color:#fff}
+.nav-shindan{
+  display:flex;align-items:center;gap:6px;
+  background:var(--warm);color:#fff !important;
+  padding:7px 16px;border-radius:20px;
+  font-weight:700;font-size:.8rem;
+  transition:background .2s, opacity .2s;
+}
+.nav-shindan:hover{background:var(--warm-deep) !important;color:#fff !important}
+
+/* ── HERO ── */
+.hero{
+  background:
+    radial-gradient(600px 400px at 90% -5%, rgba(221,117,80,.22), transparent 65%),
+    linear-gradient(150deg,#0F2E28 0%,#163F38 55%,#2B6C61 100%);
+  color:#fff;padding:88px clamp(16px,4vw,40px) 76px;
+  position:relative;overflow:hidden;
+}
+.hero::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(255,255,255,.12) 1.5px,transparent 1.5px);
+  background-size:28px 28px;
+  mask-image:linear-gradient(130deg,rgba(0,0,0,.55),transparent 55%);
+  opacity:.45;
+}
+.hero-inner{max-width:var(--container);margin:0 auto;position:relative;z-index:1}
+.hero-eyebrow{
+  font-size:.72rem;letter-spacing:.22em;color:var(--warm);
+  font-family:'Inter',sans-serif;font-weight:700;
+  text-transform:uppercase;margin-bottom:20px;
+}
+.hero h1{
+  font-size:clamp(1.5rem,3.4vw,2.4rem);font-weight:700;
+  line-height:1.6;margin-bottom:22px;color:#fff;
+  white-space:nowrap;
+}
+.hero h1 em{color:#F2C49A;font-style:normal}
+.hero-sub{
+  font-size:.95rem;color:rgba(255,255,255,.78);
+  max-width:560px;line-height:2;margin-bottom:40px;
+}
+.hero-btns{display:flex;align-items:center;gap:20px;flex-wrap:wrap;margin-bottom:32px}
+.btn-hero-primary{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--warm);color:#fff;
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-weight:700;font-size:1rem;letter-spacing:.04em;
+  padding:16px 32px;border-radius:50px;
+  box-shadow:0 8px 28px rgba(221,117,80,.45);
+  transition:background .2s, transform .15s, box-shadow .2s;
+  white-space:nowrap;
+}
+.btn-hero-primary:hover{
+  background:var(--warm-deep);
+  transform:translateY(-2px);
+  box-shadow:0 12px 36px rgba(221,117,80,.55);
+}
+.hero-hint{
+  font-size:.78rem;color:rgba(255,255,255,.55);
+  letter-spacing:.04em;
+}
+.hero-chips{display:flex;gap:12px;flex-wrap:wrap}
+.chip{
+  background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);
+  color:rgba(255,255,255,.88);font-size:.78rem;
+  padding:8px 16px;border-radius:20px;
+  display:flex;align-items:center;gap:8px;
+}
+.chip svg{width:15px;height:15px;flex-shrink:0}
+
+/* ── AI診断CTA ── */
+.shindan-cta{
+  background:
+    radial-gradient(ellipse 48% 72% at 88% 78%, rgba(53,113,98,.44), transparent 72%),
+    radial-gradient(ellipse 42% 58% at 67% 46%, rgba(37,84,74,.30), transparent 76%),
+    radial-gradient(ellipse 34% 58% at 12% 52%, rgba(8,31,28,.26), transparent 78%),
+    linear-gradient(108deg,#132e29 0%,#14322d 28%,#183a33 48%,#1f473f 68%,#28574c 86%,#235449 100%);
+  padding:72px clamp(16px,4vw,40px);
+  position:relative;overflow:hidden;
+}
+.shindan-cta::before{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:
+    radial-gradient(circle at 18% 24%, rgba(255,255,255,.055) 1px, transparent 1.4px),
+    radial-gradient(circle at 78% 28%, rgba(255,255,255,.04) 1px, transparent 1.4px),
+    linear-gradient(180deg,rgba(255,255,255,.018),rgba(0,0,0,.025));
+  background-size:28px 28px,32px 32px,100% 100%;
+  opacity:.30;
+}
+.shindan-cta::after{
+  content:"";position:absolute;inset:0;pointer-events:none;
+  background:radial-gradient(ellipse 70% 82% at 50% 50%, transparent 0 64%, rgba(5,24,21,.10) 100%);
+  z-index:0;
+}
+.shindan-cta .taiyo-tower-visual{
+  position:absolute;
+  right:0%;
+  top:0%;
+  width:min(50vw,760px);
+  height:100%;
+  background:url("assets/taiyo-tower-city-stars.png") right center / contain no-repeat;
+  mix-blend-mode:screen;
+  opacity:.74;
+  pointer-events:none;
+  z-index:1;
+  filter:saturate(.94) brightness(1.02);
+  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.28) 10%,#000 28%,#000 100%),linear-gradient(180deg,#000 0%,#000 88%,transparent 100%);
+  -webkit-mask-composite:source-in;
+  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.28) 10%,#000 28%,#000 100%),linear-gradient(180deg,#000 0%,#000 88%,transparent 100%);
+  mask-composite:intersect;
+}
+.shindan-cta-inner{
+  max-width:var(--container);margin:0 auto;
+  display:grid;grid-template-columns:1fr 1fr;gap:60px;
+  align-items:center;position:relative;z-index:3;
+}
+.shindan-cta-eyebrow{
+  font-size:.68rem;letter-spacing:.28em;color:var(--warm);
+  font-family:'Inter',sans-serif;font-weight:700;
+  text-transform:uppercase;margin-bottom:16px;
+}
+.shindan-cta-title{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.2rem,2.4vw,1.65rem);
+  font-weight:700;color:#fff;
+  line-height:1.7;margin-bottom:16px;
+}
+.shindan-cta-lead{
+  font-size:.9rem;color:rgba(255,255,255,.72);
+  line-height:2;margin-bottom:32px;
+}
+.btn-shindan-cta{
+  display:inline-flex;align-items:center;gap:10px;
+  background:var(--warm);color:#fff;
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-weight:700;font-size:1rem;letter-spacing:.04em;
+  padding:16px 28px;border-radius:50px;
+  box-shadow:0 8px 28px rgba(221,117,80,.4);
+  transition:background .2s,transform .15s,box-shadow .2s;
+  margin-bottom:12px;
+}
+.btn-shindan-cta:hover{
+  background:var(--warm-deep);transform:translateY(-2px);
+  box-shadow:0 12px 36px rgba(221,117,80,.55);
+}
+.shindan-cta-note{
+  font-size:.78rem;color:rgba(255,255,255,.45);letter-spacing:.04em;
+}
+.shindan-steps{
+  display:flex;flex-direction:column;gap:0;
+  background:rgba(255,255,255,.055);
+  border:1px solid rgba(255,255,255,.15);
+  backdrop-filter:blur(1.5px);
+  -webkit-backdrop-filter:blur(1.5px);
+  border-radius:var(--radius-lg);overflow:hidden;
+}
+.shindan-step{
+  display:flex;align-items:flex-start;gap:20px;
+  padding:24px 28px;border-bottom:1px solid rgba(255,255,255,.08);
+}
+.shindan-step:last-child{border-bottom:none}
+.step-num{
+  font-family:'Inter',sans-serif;font-size:.7rem;font-weight:700;
+  color:var(--warm);letter-spacing:.1em;
+  flex-shrink:0;line-height:26px;
+}
+.shindan-step strong{
+  display:block;font-size:.92rem;color:#fff;line-height:26px;
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-weight:700;margin-bottom:4px;
+}
+.shindan-step p{font-size:.82rem;color:rgba(255,255,255,.55);line-height:1.7}
+@media(max-width:760px){
+  .shindan-cta-inner{grid-template-columns:1fr}
+  .shindan-cta-right{display:none}
+  .shindan-cta .taiyo-tower-visual{display:none}
+}
+
+/* ── SECTION COMMON ── */
+.section{padding:72px clamp(16px,4vw,40px)}
+.section-inner{max-width:var(--container);margin:0 auto}
+.eyebrow{
+  font-size:.72rem;letter-spacing:.22em;color:var(--warm);
+  font-family:'Inter',sans-serif;font-weight:700;
+  text-transform:uppercase;margin-bottom:14px;
+}
+.section-title{
+  font-size:clamp(1.25rem,2.6vw,1.7rem);font-weight:700;
+  margin-bottom:14px;
+}
+.section-lead{
+  font-size:.9rem;color:var(--ink-soft);max-width:600px;
+  margin-bottom:48px;line-height:2;
+}
+.section-lead em{color:var(--brand-deep);font-style:normal;font-weight:700}
+
+/* ── ABOUT ── */
+.about{background:var(--surface)}
+.about-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:44px}
+.about-card{
+  background:var(--bg);border-left:4px solid var(--brand);
+  padding:28px 24px;border-radius:0 var(--radius-md) var(--radius-md) 0;
+}
+.about-card .num{
+  font-family:'Shippori Mincho',serif;font-size:1.3rem;
+  color:var(--warm);font-weight:700;display:block;margin-bottom:10px;
+}
+.about-card h3{font-size:.95rem;margin-bottom:8px}
+.about-card p{font-size:.84rem;color:var(--ink-soft);line-height:1.85}
+
+/* ── CRITERIA ── */
+.criteria{background:var(--bg)}
+.criteria-note{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--warm-soft);border:1px solid rgba(221,117,80,.2);
+  color:var(--warm-deep);font-size:.8rem;font-weight:600;
+  padding:10px 18px;border-radius:20px;margin-bottom:36px;
+  font-family:'Zen Kaku Gothic New',sans-serif;
+}
+.criteria-grid{
+  display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:44px;
+}
+.criteria-card{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:22px 24px;
+  box-shadow:var(--shadow-card);
+  display:flex;gap:18px;align-items:flex-start;
+  position:relative;overflow:hidden;
+}
+.criteria-card::after{
+  content:"";position:absolute;top:0;left:0;
+  width:4px;height:100%;background:var(--brand);
+}
+.criteria-card.warm::after{background:var(--warm)}
+.criteria-score-badge{
+  flex-shrink:0;width:52px;height:52px;
+  background:var(--brand-soft);border-radius:var(--radius-sm);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  font-family:'Inter',sans-serif;
+}
+.criteria-card.warm .criteria-score-badge{background:var(--warm-soft)}
+.criteria-score-badge .pts{
+  font-size:1.1rem;font-weight:700;color:var(--brand);line-height:1;
+}
+.criteria-card.warm .criteria-score-badge .pts{color:var(--warm-deep)}
+.criteria-score-badge .label{
+  font-size:.58rem;font-weight:600;color:var(--ink-faint);letter-spacing:.06em;margin-top:2px;
+}
+.criteria-body h3{
+  font-family:'Shippori Mincho',serif;font-size:.95rem;
+  font-weight:700;color:var(--ink);margin-bottom:6px;
+}
+.criteria-body p{font-size:.82rem;color:var(--ink-soft);line-height:1.85}
+
+/* スコアバー */
+.score-breakdown{
+  background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--radius-lg);padding:28px 32px;
+  box-shadow:var(--shadow-card);
+}
+.score-breakdown h3{
+  font-family:'Shippori Mincho',serif;font-size:1rem;
+  color:var(--ink);margin-bottom:22px;
+}
+.score-bar-row{display:flex;align-items:center;gap:14px;margin-bottom:14px}
+.score-bar-label{
+  font-size:.8rem;font-weight:600;color:var(--ink-soft);
+  width:160px;flex-shrink:0;
+}
+.score-bar-track{
+  flex:1;height:8px;background:var(--line);border-radius:4px;overflow:hidden;
+}
+.score-bar-fill{height:100%;border-radius:4px;background:var(--brand);transition:width .6s ease}
+.score-bar-fill.warm{background:var(--warm)}
+.score-bar-pts{
+  font-family:'Inter',sans-serif;font-size:.78rem;
+  font-weight:700;color:var(--ink-faint);width:40px;text-align:right;flex-shrink:0;
+}
+@media(max-width:760px){.criteria-grid{grid-template-columns:1fr}}
+
+/* ── RESEARCH ── */
+.research{background:var(--surface)}
+.research-intro{
+  background:var(--bg);border:1px solid var(--line);
+  border-radius:var(--radius-lg);padding:30px 34px;
+  margin-bottom:48px;
+}
+.research-intro p{font-size:.9rem;color:var(--ink-soft);line-height:2}
+.research-intro strong{color:var(--ink);font-weight:700}
+
+.research-block{margin-bottom:52px}
+.research-block:last-child{margin-bottom:0}
+.research-label{
+  display:inline-flex;align-items:center;gap:8px;
+  font-family:'Inter',sans-serif;font-size:.68rem;font-weight:700;
+  letter-spacing:.22em;color:var(--warm);text-transform:uppercase;
+  margin-bottom:12px;
+}
+.research-label::before{
+  content:"";width:20px;height:1.5px;background:var(--warm);display:block;
+}
+.research-block h3{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1rem,2vw,1.2rem);font-weight:700;
+  color:var(--ink);line-height:1.6;margin-bottom:10px;
+}
+.research-block .lead{
+  font-size:.88rem;color:var(--ink-soft);line-height:2;
+  margin-bottom:26px;max-width:680px;
+}
+.research-points{
+  display:flex;flex-direction:column;gap:0;
+  border:1px solid var(--line);border-radius:var(--radius-md);overflow:hidden;
+}
+.research-point{
+  padding:22px 26px;border-bottom:1px solid var(--line-soft);
+  background:var(--surface);
+}
+.research-point:last-child{border-bottom:none}
+.research-point-head{
+  display:flex;align-items:baseline;gap:14px;margin-bottom:10px;
+}
+.research-point-num{
+  font-family:'Inter',sans-serif;font-size:.72rem;font-weight:700;
+  color:var(--brand);letter-spacing:.1em;flex-shrink:0;
+}
+.research-point h4{
+  font-family:'Shippori Mincho',serif;
+  font-size:.95rem;font-weight:700;color:var(--ink);
+}
+.research-point p{font-size:.84rem;color:var(--ink-soft);line-height:1.95}
+.research-point .point-note{
+  margin-top:10px;padding:10px 16px;
+  background:var(--brand-soft);border-radius:var(--radius-sm);
+  font-size:.8rem;color:var(--brand-deep);line-height:1.8;
+}
+
+.ai-insights{
+  display:grid;grid-template-columns:1fr 1fr 1fr;gap:20px;
+}
+.ai-insight-card{
+  background:var(--bg);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:22px;
+}
+.ai-insight-card h4{
+  font-family:'Shippori Mincho',serif;
+  font-size:.9rem;font-weight:700;color:var(--ink);
+  margin-bottom:10px;line-height:1.6;
+}
+.ai-insight-card p{font-size:.82rem;color:var(--ink-soft);line-height:1.9}
+.ai-insight-card .insight-tag{
+  display:inline-block;font-size:.68rem;font-weight:700;
+  color:var(--brand);letter-spacing:.1em;margin-bottom:10px;
+  font-family:'Inter',sans-serif;
+}
+
+.area-cols{display:grid;grid-template-columns:1fr 1fr;gap:20px}
+.area-card{
+  background:var(--bg);border:1px solid var(--line);
+  border-radius:var(--radius-md);padding:22px 24px;
+}
+.area-card h4{
+  font-family:'Shippori Mincho',serif;
+  font-size:.9rem;font-weight:700;color:var(--ink);
+  margin-bottom:10px;
+}
+.area-card p{font-size:.82rem;color:var(--ink-soft);line-height:1.9}
+.area-card ul{margin-top:10px}
+.area-card ul li{
+  font-size:.82rem;color:var(--ink-soft);padding:5px 0 5px 16px;
+  position:relative;border-bottom:1px solid var(--line-soft);
+}
+.area-card ul li:last-child{border-bottom:none}
+.area-card ul li::before{
+  content:"";position:absolute;left:0;top:13px;
+  width:6px;height:6px;border-radius:50%;background:var(--warm);
+}
+
+/* ── ARTICLES CTA ── */
+.articles-more{
+  text-align:center;margin-top:48px;
+}
+.articles-more a{
+  display:inline-flex;align-items:center;gap:8px;
+  background:var(--brand-deep);color:#fff;
+  font-weight:700;font-size:.9rem;
+  padding:14px 32px;border-radius:var(--radius-md);
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  box-shadow:var(--shadow-pop);letter-spacing:.04em;
+  transition:background .2s;
+}
+.articles-more a:hover{background:var(--brand)}
+
+@media(max-width:760px){
+  .ai-insights{grid-template-columns:1fr}
+  .area-cols{grid-template-columns:1fr}
+}
+
+/* ── FOOTER ── */
+footer{
+  background:var(--brand-deep);color:rgba(255,255,255,.65);
+  padding:48px clamp(16px,4vw,40px) 36px;
+}
+.footer-inner{max-width:var(--container);margin:0 auto}
+.footer-logo{
+  font-family:'Shippori Mincho',serif;color:#fff;
+  font-size:1.1rem;font-weight:700;display:block;margin-bottom:12px;
+}
+.footer-note{
+  font-size:.82rem;line-height:1.9;color:rgba(255,255,255,.5);
+  max-width:640px;margin-bottom:20px;
+}
+.footer-copy{
+  font-size:.75rem;color:rgba(255,255,255,.35);
+  font-family:'Inter',sans-serif;
+  border-top:1px solid rgba(255,255,255,.12);padding-top:18px;
+}
+footer a{color:rgba(255,255,255,.6)}
+footer a:hover{color:#fff}
+
+@media(max-width:760px){
+  .site-nav{display:none}
+  .about-grid{grid-template-columns:1fr}
+}
+@media(max-width:720px){
+  .hero{padding:60px 20px 52px}
+  .section{padding:52px 20px}
+}
+
+/* ═══════════════════════════════
+   INTRO ANIMATION
+═══════════════════════════════ */
+#intro{
+  position:fixed;inset:0;z-index:1000;
+  background:#08211f;
+  display:flex;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+
+/* Desktop: use the approved hero artwork exactly as supplied. */
+#intro::before{
+  content:"";position:absolute;inset:0;z-index:1;pointer-events:none;
+  background-image:url('assets/new_hero_bg_candidate.png');
+  background-size:cover;
+  background-position:center center;
+  background-repeat:no-repeat;
+}
+#intro::after{
+  content:"";position:absolute;inset:0;z-index:2;pointer-events:none;
+  background:linear-gradient(180deg,rgba(0,0,0,.02),rgba(0,0,0,.05));
+}
+
+#intro.exit{
+  pointer-events:none;
+  animation:introExit 3.0s cubic-bezier(.4,0,.2,1) forwards;
+  pointer-events:none;
+}
+@keyframes introExit{
+  0%  {opacity:1;transform:translateY(0)}
+  100%{opacity:0;transform:translateY(-12px)}
+}
+.intro-glow{display:none;}
+
+/* ─── イントロテキスト ─── */
+.intro-content{
+  position:relative;z-index:3;
+  text-align:center;padding:0 28px;
+  transform:translateY(-8px);
+  /* Desktop uses a text-free artwork; live HTML copy animates above it. */
+  opacity:1;
+  pointer-events:none;
+}
+.intro-brand{
+  font-family:'Inter',sans-serif;
+  font-size:.68rem;letter-spacing:.32em;
+  color:rgba(226,238,231,.42);
+  margin-bottom:44px;text-transform:uppercase;
+  opacity:0;transform:translateY(12px);animation:fadeUpIn 1.35s cubic-bezier(.22,.61,.36,1) forwards .35s;
+}
+.intro-catch{
+  font-family:'Shippori Mincho',serif;
+  font-size:clamp(1.45rem,3.0vw,2.15rem);
+  font-weight:700;color:rgba(255,255,255,.96);
+  line-height:1.95;letter-spacing:.09em;
+  text-shadow:0 2px 0 rgba(0,0,0,.12),0 0 20px rgba(255,255,255,.09);
+  opacity:0;transform:translateY(16px);animation:fadeUpIn 1.65s cubic-bezier(.22,.61,.36,1) forwards 1.25s;
+}
+.intro-sub{
+  font-family:'Zen Kaku Gothic New',sans-serif;
+  font-size:clamp(.78rem,1.2vw,.9rem);
+  color:rgba(226,238,231,.50);
+  line-height:2.1;margin-top:30px;letter-spacing:.05em;
+  opacity:0;transform:translateY(12px);animation:fadeUpIn 1.45s cubic-bezier(.22,.61,.36,1) forwards 2.85s;
+}
+@keyframes fadeUpIn{
+  from{opacity:0;transform:translateY(10px)}
+  to  {opacity:1;transform:translateY(0)}
+}
+
+.intro-skip{
+  position:absolute;right:clamp(54px,4.2vw,72px);bottom:clamp(34px,5.1vh,54px);z-index:5;
+  width:clamp(112px,9.7vw,156px);height:clamp(42px,5.4vh,58px);
+  background:transparent;border:0;color:transparent;border-radius:999px;
+  font-size:0;cursor:pointer;opacity:1;animation:none;
+}
+.intro-skip:hover{background:rgba(255,255,255,.025);}
+.intro-skip:focus-visible{outline:2px solid rgba(255,255,255,.9);outline-offset:4px;}
+
+/* Mobile fallback: keep live HTML text readable and use the text-free city overlay. */
+@media(max-width:760px){
+  #intro{
+    background:
+      radial-gradient(ellipse 56% 44% at 52% 42%, rgba(33,86,74,.48), transparent 72%),
+      radial-gradient(ellipse 38% 42% at 18% 70%, rgba(32,78,67,.32), transparent 70%),
+      linear-gradient(150deg,#071d1b 0%,#0a2522 45%,#12352e 100%);
+  }
+  #intro::before{
+    background-image:url('assets/intro-city-overlay.png');
+    background-size:auto 100%;
+    background-position:center bottom;
+    opacity:.74;
+  }
+  #intro::after{
+    background:rgba(4,20,18,.28);
+  }
+  .intro-content{opacity:1;pointer-events:auto;transform:none;}
+  .intro-brand{margin-bottom:28px;}
+  .intro-catch{font-size:clamp(1.35rem,7vw,1.8rem);line-height:1.8;}
+  .intro-sub{font-size:.78rem;line-height:1.95;margin-top:22px;}
+  .intro-skip{
+    right:20px;bottom:20px;width:auto;height:auto;
+    background:rgba(255,255,255,.075);border:1px solid rgba(255,255,255,.28);
+    color:rgba(255,255,255,.78);font-family:'Inter',sans-serif;font-size:.8rem;
+    letter-spacing:.08em;padding:9px 20px;
+  }
+}
+
+/* ===== 改行・可読性の共通ルール（改行マニュアル v1.0） ===== */
+h1,h2,h3,h4,h5,p,li,dd,figcaption,td,th,
+.lead,.sec-lead,.step-desc,.cta-sub,.hero-sub,.hero .lead,.hero p{
+  line-break:strict;      /* 日本語の禁則処理 */
+  text-wrap:pretty;       /* 1文字残り・不自然に短い最終行を自動回避 */
+}
+h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
+</style>
+</head>
+<body>
+
+<!-- ═══ INTRO ANIMATION ═══ -->
+<div id="intro">
+  <div class="intro-glow"></div>
+
+  <!-- テキスト -->
+  <div class="intro-content">
+    <p class="intro-brand">Osaka Dental Research</p>
+    <p class="intro-catch">いつの日も、誰にとっても、<br>納得できる歯科選びを。</p>
+    <p class="intro-sub">
+      <span style="white-space:nowrap">京都歯科総研は、Google口コミや診療実績などの多角的なデータをAIが分析し、</span><br>
+      一人ひとりに合った信頼できる歯科医院選びをサポートします。
+    </p>
+  </div>
+  <button class="intro-skip" id="introSkip" type="button">スキップ ›</button>
+</div>
+<!-- ═══ /INTRO ═══ -->
+
+<a class="skip-link" href="#main">本文へスキップ</a>
+
+<!-- HEADER -->
+<header class="odr-brandbar">
+  <a class="odr-sig" href="#top">
+    <span class="odr-sig-mark">ODR</span>
+    <span class="odr-sig-name">京都歯科総研<small>Osaka Dental Research Institute</small></span>
+  </a>
+  <nav>
+    <a href="articles/shindan/index.html">AI診断</a>
+    <a href="articles/features/index.html">特徴から探す</a>
+    <a href="articles/index.html">コラム</a>
+    <a href="shikumi.html">医院・開業医の方へ</a>
+  </nav>
+</header>
+
+<!-- ═══ LOBBY（研究所のロビー） ═══ -->
+<style>
+/* トップ体験専用スコープ（odr-ds.css のトークンを利用） */
+.lobby{background:var(--odr-pine);color:#fff;position:relative;overflow:hidden;
+  padding:clamp(56px,9vw,116px) var(--sp-page) clamp(48px,7vw,88px);}
+.lobby::before{content:"";position:absolute;inset:0;pointer-events:none;
+  background-image:radial-gradient(circle,rgba(255,255,255,.06) 1px,transparent 1px);
+  background-size:24px 24px;opacity:.5;}
+.lobby-inner{max-width:var(--container);margin:0 auto;position:relative;z-index:1;
+  display:grid;grid-template-columns:1.15fr .85fr;gap:60px;align-items:center;}
+.lobby-left .odr-kicker{margin-bottom:20px;}
+.lobby-left h1{font-family:var(--odr-sans);font-weight:700;font-size:var(--fs-display);line-height:1.32;
+  margin:0 0 20px;letter-spacing:.01em;}
+.lobby-lead{font-size:.95rem;color:rgba(255,255,255,.72);line-height:1.9;margin:0 0 28px;max-width:480px;}
+.lobby-links{display:flex;flex-wrap:wrap;gap:22px;margin-top:16px;}
+.lobby-links a{color:rgba(255,255,255,.75);font-size:.85rem;text-decoration:underline;
+  text-underline-offset:3px;transition:color .15s;}
+.lobby-links a:hover{color:#fff;}
+@media(max-width:760px){.lobby-inner{grid-template-columns:1fr}.lobby-right{display:none}}
+/* LATEST ANALYSIS 帯 */
+.latest{background:var(--odr-navy);color:#fff;padding:clamp(14px,2vw,20px) clamp(12px,2.4vw,24px);}
+.latest-in{max-width:1400px;margin:0 auto;display:flex;flex-wrap:nowrap;align-items:center;justify-content:space-between;
+  gap:14px 20px;overflow-x:auto;}
+.latest .lb{display:inline-flex;align-items:center;gap:9px;font-family:var(--odr-mono);font-size:.66rem;
+  letter-spacing:.22em;color:var(--odr-terra);text-transform:uppercase;flex-shrink:0;white-space:nowrap;}
+.latest .lb::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--odr-terra);
+  box-shadow:0 0 0 0 rgba(217,139,95,.6);animation:odrpulse 2.4s infinite;}
+@keyframes odrpulse{0%{box-shadow:0 0 0 0 rgba(217,139,95,.55);}70%{box-shadow:0 0 0 10px rgba(217,139,95,0);}100%{box-shadow:0 0 0 0 rgba(217,139,95,0);}}
+.latest dl{margin:0;display:flex;flex-direction:column;gap:2px;flex-shrink:0;white-space:nowrap;}
+.latest dt{font-family:var(--odr-mono);font-size:.6rem;letter-spacing:.16em;color:#8fa6b3;text-transform:uppercase;white-space:nowrap;}
+.latest dd{margin:0;font-family:var(--odr-mono);font-weight:600;font-size:1.6rem;color:#fff;white-space:nowrap;}
+.latest dd small{font-size:.75rem;color:#8fa6b3;font-weight:400;margin-left:4px;white-space:nowrap;}
+.latest-date{}
+.latest-date dt{color:#8fa6b3;}
+.latest-date dd{font-size:.9rem;font-weight:500;color:#a9c6bb;}
+.latest-source-note{max-width:var(--wrap);margin:14px auto 0;font-size:.72rem;line-height:1.8;color:#7c93a1;}
+/* ── よく選ばれる特徴（フィルターチップ） ── */
+.feat-tags-label{font-family:var(--odr-mono);font-size:.68rem;letter-spacing:.16em;color:#5c6d66;
+  text-transform:uppercase;margin:32px 0 14px;}
+.feat-chip-row{display:flex;flex-wrap:nowrap;gap:10px;margin:0 0 28px;
+  width:calc(100% + 160px);margin-left:-80px;margin-right:-80px;justify-content:center;}
+.feat-chip-row .feat-chip{flex-shrink:0;}
+@media(max-width:1000px){.feat-chip-row{width:100%;margin-left:0;margin-right:0;flex-wrap:wrap;justify-content:flex-start;}}
+.feat-chip{display:inline-flex;align-items:center;gap:8px;padding:11px 18px;
+  background:#fff;border:1px solid #d9d9d9;border-radius:999px;
+  color:#1f4b3f;font-weight:600;font-size:.88rem;text-decoration:none;
+  transition:background .15s,border-color .15s,transform .15s;}
+.feat-chip .dot{width:5px;height:5px;border-radius:50%;background:#1f4b3f;flex-shrink:0;}
+.feat-chip .arrow{opacity:.5;transition:opacity .15s,transform .15s;}
+.feat-chip:hover{background:#eef3f0;border-color:#1f4b3f;transform:translateY(-1px);}
+.feat-chip:hover .arrow{opacity:1;transform:translateX(2px);}
+.feat-explore-all{display:inline-flex;align-items:center;gap:6px;color:#1f4b3f;font-weight:600;
+  font-size:.9rem;text-decoration:underline;text-underline-offset:3px;}
+.feat-explore-all:hover{color:#163a30;}
+</style>
+<section class="shindan-cta" id="top">
+  <div class="taiyo-tower-visual" aria-hidden="true"></div>
+  <div class="shindan-cta-inner">
+    <div class="shindan-cta-left">
+      <p class="shindan-cta-eyebrow">AI Matching</p>
+      <h1 class="shindan-cta-title">条件を選ぶたび、<br>あなたに合う順番へ。</h1>
+      <p class="shindan-cta-lead">京都市内の歯科医院を、地域・症状・希望条件から並び替え。<br>公開情報とAI分析をもとに、医院の表示順がリアルタイムで変わります。</p>
+      <a href="articles/shindan/index.html" class="btn-shindan-cta">
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><circle cx="12" cy="12" r="10"/></svg>
+        医院データランキングを見る
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+      <p class="shindan-cta-note">回答不要・即表示 · 完全無料 · 京都市24区対応</p>
+    </div>
+    <div class="shindan-cta-right">
+      <div class="shindan-steps">
+        <div class="shindan-step">
+          <span class="step-num">01</span>
+          <div><strong>ページを開くとすぐランキング表示</strong><p>京都市全体・総合データ順で50院を表示</p></div>
+        </div>
+        <div class="shindan-step">
+          <span class="step-num">02</span>
+          <div><strong>地域・症状・条件を選ぶ</strong><p>京都市24区・夜間診療・駐車場など複数選択可</p></div>
+        </div>
+        <div class="shindan-step">
+          <span class="step-num">03</span>
+          <div><strong>順位がリアルタイムで変化</strong><p>条件との一致度に応じてカードが入れ替わる</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ═══ LATEST ANALYSIS（生きている研究所） ═══ -->
+<section class="latest">
+  <div class="latest-in">
+    <span class="lb">Latest Analysis</span>
+    <dl><dt>分析対象医院</dt><dd>2,703<small>院</small></dd></dl>
+    <dl><dt>解析した口コミ</dt><dd>96,079<small>件</small></dd></dl>
+    <dl><dt>公式サイト解析</dt><dd>1,911<small>院</small></dd></dl>
+    <dl><dt>AI分析済み医院</dt><dd>1,520<small>院</small></dd></dl>
+    <dl><dt>解析ソース</dt><dd>5<small>種類</small></dd></dl>
+    <dl class="latest-date"><dt>最終更新</dt><dd>2026.07.08</dd></dl>
+  </div>
+</section>
+
+<main id="main">
+
+<!-- ═══ 特徴から探す ═══ -->
+<section class="section feat-explore" id="features" style="background:#f6f8f7;">
+  <div class="section-inner">
+    <p class="eyebrow" style="color:#d98b5f;">Browse by Feature</p>
+    <h2 class="section-title">目的・特徴から歯科医院を探す</h2>
+    <p class="section-lead">
+      「まずは条件に合う歯科医院を見比べたい」——<br>
+      そんな方へ。京都市内の歯科医院を、痛みへの配慮、子ども連れへの対応、通いやすさ、専門的な治療への対応など、患者さまが気になる特徴ごとに整理しました。
+    </p>
+    <p class="feat-tags-label">よく選ばれる特徴</p>
+    <div class="feat-chip-row">
+      <a href="articles/features/index.html#ct" class="feat-chip"><span class="dot"></span>精密な検査に対応<span class="arrow">→</span></a>
+      <a href="articles/features/index.html#micro" class="feat-chip"><span class="dot"></span>細かな治療に配慮<span class="arrow">→</span></a>
+      <a href="articles/features/index.html#kids_fit" class="feat-chip"><span class="dot"></span>子どもと通いやすい<span class="arrow">→</span></a>
+      <a href="articles/features/index.html#parking" class="feat-chip"><span class="dot"></span>車で通いやすい<span class="arrow">→</span></a>
+      <a href="articles/features/index.html#private" class="feat-chip"><span class="dot"></span>個室で相談しやすい<span class="arrow">→</span></a>
+      <a href="articles/features/index.html#barrier" class="feat-chip"><span class="dot"></span>段差が少なく通いやすい<span class="arrow">→</span></a>
+    </div>
+    <a href="articles/features/index.html" class="feat-explore-all">
+      すべての特徴を見る
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+    </a>
+  </div>
+</section>
+
+<!-- ABOUT -->
+<section class="section about" id="about">
+  <div class="section-inner">
+    <p class="eyebrow">About</p>
+    <h2 class="section-title">京都歯科総研について</h2>
+    <p class="section-lead">
+      「どの歯科医院を選べばいいかわからない」——<br>
+      広告に左右されず、口コミの文脈・診療実績・地域性などの客観的なデータをAIが丁寧に分析し、京都で<em>本当に信頼できる歯科医院</em>と出会えるための、誠実な道標を届けます。
+    </p>
+    <div class="about-grid">
+      <div class="about-card">
+        <span class="num">01</span>
+        <h3>AIによる多角的なデータ分析</h3>
+        <p>Google口コミや診療内容、地域情報などの公開データをAIが総合的に分析。単一の評価に依存せず、各歯科医院の特徴と強みを客観的に整理します。</p>
+      </div>
+      <div class="about-card">
+        <span class="num">02</span>
+        <h3 style="white-space:nowrap">口コミを「読む」のではなく「分析する」</h3>
+        <p>星の数だけでは見えない、口コミ件数や投稿内容、オーナーの返信姿勢までを分析対象としています。患者様のリアルな声を多角的に捉え、信頼性の高い情報を提供します。</p>
+      </div>
+      <div class="about-card">
+        <span class="num">03</span>
+        <h3>京都に特化した地域分析</h3>
+        <p>京都市内の各エリアごとに、歯科医院の特徴や口コミ傾向、診療体制を分析。地域性も考慮しながら、一人ひとりに合った歯科医院選びをサポートします。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CRITERIA -->
+<section class="section criteria" id="criteria">
+  <div class="section-inner">
+    <p class="eyebrow">Criteria</p>
+    <h2 class="section-title">選定基準</h2>
+    <p class="section-lead"><span style="white-space:nowrap">AIは評価項目のひとつです。</span><span style="white-space:nowrap">口コミ、診療体制、誠実さ、通いやすさなど、</span><span style="white-space:nowrap">多角的な視点を組み合わせ、</span><span style="white-space:nowrap">100点満点で総合評価しています。</span></p>
+
+    <p class="criteria-note">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+      評価配点を公開しています
+    </p>
+
+    <div class="criteria-grid">
+
+      <div class="criteria-card">
+        <div class="criteria-score-badge">
+          <span class="pts">25</span>
+          <span class="label">点</span>
+        </div>
+        <div class="criteria-body">
+          <h3>口コミ・評判の分析</h3>
+          <p>件数・評価点・投稿時期・口コミ内容をAIが総合分析。最新の投稿を重視し、古い評価だけの医院との差別化を図ります。</p>
+        </div>
+      </div>
+
+      <div class="criteria-card">
+        <div class="criteria-score-badge">
+          <span class="pts">20</span>
+          <span class="label">点</span>
+        </div>
+        <div class="criteria-body">
+          <h3>AI総合評価</h3>
+          <p>ChatGPT・Gemini・Claudeなど複数の生成AIが公開情報をもとに評価した際の推薦傾向と、その根拠の一貫性を分析します。</p>
+        </div>
+      </div>
+
+      <div class="criteria-card">
+        <div class="criteria-score-badge">
+          <span class="pts">20</span>
+          <span class="label">点</span>
+        </div>
+        <div class="criteria-body">
+          <h3>診療体制・専門性</h3>
+          <p>一般歯科・矯正・インプラント・小児歯科・予防歯科など、幅広い診療に対応できる体制と、各医院が強みとする専門分野を評価します。</p>
+        </div>
+      </div>
+
+      <div class="criteria-card">
+        <div class="criteria-score-badge">
+          <span class="pts">15</span>
+          <span class="label">点</span>
+        </div>
+        <div class="criteria-body">
+          <h3>患者対応・コミュニケーション</h3>
+          <p>口コミへの返信内容・対応姿勢から、患者様への誠実さを評価。厳しいご意見への向き合い方も重要な判断材料です。</p>
+        </div>
+      </div>
+
+      <div class="criteria-card warm">
+        <div class="criteria-score-badge">
+          <span class="pts">10</span>
+          <span class="label">点</span>
+        </div>
+        <div class="criteria-body">
+          <h3>通いやすさ</h3>
+          <p>駅からの距離・駐車場の有無・診療時間・土日対応など、継続して通いやすい環境を評価します。</p>
+        </div>
+      </div>
+
+      <div class="criteria-card warm">
+        <div class="criteria-score-badge">
+          <span class="pts">10</span>
+          <span class="label">点</span>
+        </div>
+        <div class="criteria-body">
+          <h3>情報公開・透明性</h3>
+          <p>治療内容・料金・医師紹介など、患者様が安心して判断できる情報の充実度。ホームページの最新性も評価対象です。</p>
+        </div>
+      </div>
+
+    </div>
+
+
+  </div>
+</section>
+
+<!-- RESEARCH -->
+<section class="section research" id="articles">
+  <div class="section-inner">
+    <p class="eyebrow">Research</p>
+    <h2 class="section-title">歯科医院選びの新しい基準</h2>
+
+    <div class="research-intro">
+      <p>AIと口コミデータを活用し、京都の歯科医院をさまざまな視点から分析・比較しています。<br>
+      京都歯科総研では、<strong>患者様が納得して歯科医院を選べるよう</strong>、口コミだけでは見えない情報もわかりやすくお届けします。</p>
+    </div>
+
+    <!-- Selection Guide -->
+    <div class="research-block">
+      <p class="research-label">Selection Guide</p>
+      <h3>後悔しない歯科医院選びの3つのポイント</h3>
+      <p class="lead">「口コミが多いから安心」「評価が高いから良い医院」とは限りません。<br>京都歯科総研のデータ分析から見えてきた、本当に信頼できる歯科医院を見極めるための視点をご紹介します。</p>
+      <div class="research-points">
+        <div class="research-point">
+          <div class="research-point-head">
+            <span class="research-point-num">POINT 01</span>
+            <h4>口コミの「総件数」と「オーナー返信の有無」を見る</h4>
+          </div>
+          <p>口コミが3件で星4.5の院と、50件で星4.3の院では、データの信頼性が異なります。一人ひとりの声に丁寧に返信する院は、患者対応が誠実であることが多いと考えられます。</p>
+          <p class="point-note">京都歯科総研では、件数・評価だけでなく、返信の有無や内容もAIが読み取り、誠実さの度合いをスコア化しています。</p>
+        </div>
+        <div class="research-point">
+          <div class="research-point-head">
+            <span class="research-point-num">POINT 02</span>
+            <h4>自分の症状に合った「専門性と網羅性」を確認する</h4>
+          </div>
+          <p>虫歯治療は一般歯科で十分ですが、矯正・インプラント・根管治療には専門的な技術が必要です。特定分野に強みを持つ院ほど、患者様の満足度が高い傾向にあります。</p>
+          <p class="point-note">京都歯科総研では、診療科目と口コミ内容を組み合わせて、どの分野に強みがあるかをAIが分析しています。</p>
+        </div>
+        <div class="research-point">
+          <div class="research-point-head">
+            <span class="research-point-num">POINT 03</span>
+            <h4>通い続けられる「利便性」を妥協しない</h4>
+          </div>
+          <p>歯科治療は「通いきること」がゴールです。途中で中断してしまうケースは少なくありません。駅からの距離だけでなく、夜間診療・土日対応・予約のしやすさなど、自分のライフスタイルに合う環境を事前に確認することが大切です。</p>
+          <p class="point-note">京都歯科総研では、アクセス・診療時間・予約体制も含め「通いやすさ」を評価項目の一つとして数値化しています。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- AI Insight -->
+    <div class="research-block">
+      <p class="research-label">AI Insight</p>
+      <h3>AIは歯科医院をどのような視点で評価しているのか</h3>
+      <p class="lead">生成AIは、ホームページ・Google口コミ・診療内容・地域情報など、公開されているさまざまなデータをもとに回答を生成します。単純な星評価だけでは判断されません。</p>
+      <div class="ai-insights">
+        <div class="ai-insight-card">
+          <span class="insight-tag">DATA VOLUME</span>
+          <h4>「ウェブ上の評判の総量」を読んでいる</h4>
+          <p>ChatGPTやGeminiが医院を推薦するとき、その根拠はホームページ・口コミ・ブログ・SNSなど、ウェブ上に存在する情報の総量と質です。広告費は一切関係ありません。</p>
+        </div>
+        <div class="ai-insight-card">
+          <span class="insight-tag">CONTEXT</span>
+          <h4>「言及される文脈」が評価を左右する</h4>
+          <p>口コミが多くても否定的な文脈が多い院は推薦されにくくなります。「痛みが少ない」「説明が丁寧」「清潔」といった具体的なポジティブワードが多い院ほど、AIから高く評価されます。</p>
+        </div>
+        <div class="ai-insight-card">
+          <span class="insight-tag">SINCERITY</span>
+          <h4>オーナー返信の「誠実さ」まで感知する</h4>
+          <p>口コミへのオーナー返信テキストもAIの学習データです。定型文の使い回しではなく、患者の声に真摯に向き合っている文章かどうかを、AIはトーンから読み取ります。</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="articles-more">
+      <a href="articles/index.html">
+        分析コラムをすべて見る
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+      </a>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-inner">
+    <span class="footer-logo">京都歯科総研</span>
+    <nav class="footer-nav" style="display:flex;flex-wrap:wrap;gap:18px;justify-content:center;margin:12px 0 4px;">
+      <a href="articles/shindan/index.html" style="color:inherit;">AI歯科診断</a>
+      <a href="articles/features/index.html" style="color:inherit;">特徴から探す</a>
+      <a href="articles/index.html" style="color:inherit;">コラム一覧</a>
+      <a href="shikumi.html" style="color:inherit;">医院・開業医の方へ</a>
+    </nav>
+    <p class="footer-note">
+      当サイトは歯科医院選びの参考情報を提供する独立メディアです。掲載情報・お問い合わせ：<a href="mailto:komurasaki.kobe@gmail.com">komurasaki.kobe@gmail.com</a>
+    </p>
+    <p class="footer-copy">© 2026 京都歯科総研 KYOTO DENTAL RESEARCH</p>
+  </div>
+</footer>
+
+<script>
+(function(){
+  var intro = document.getElementById('intro');
+  if (!intro) return;
+  var done=false, t1, t2;
+  function dismiss(instant){
+    if(done)return; done=true;
+    clearTimeout(t1); clearTimeout(t2);
+    if(instant){ intro.style.display='none'; document.body.style.overflow=''; return; }
+    intro.classList.add('exit');
+    t2=setTimeout(function(){ intro.style.display='none'; document.body.style.overflow=''; }, 3000);
+  }
+  t1=setTimeout(function(){ dismiss(false); }, 6500);
+  var skip=document.getElementById('introSkip');
+  if(skip) skip.addEventListener('click', function(){ dismiss(true); });
+  document.body.style.overflow = 'hidden';
+})();
+</script>
+</body>
+</html>

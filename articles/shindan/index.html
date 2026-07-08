@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>京都市 歯科医院データランキング | 京都歯科総研</title>
+<meta name="description" content="地域・症状・希望条件を選ぶと、公開情報とAI分析にもとづき京都市内の歯科医院の表示順がリアルタイムで変わります。">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="京都歯科総研">
+<meta property="og:title" content="京都市 歯科医院データランキング | 京都歯科総研">
+<meta property="og:description" content="条件を選ぶたび、あなたに合う順番へ。京都市内の歯科医院を地域・症状・希望条件から並び替えられるデータランキングです。">
+<meta property="og:url" content="https://shikasoken.com/articles/shindan/">
+<meta name="twitter:card" content="summary">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="shindan.css">
+<script src="../../assets/site-config.js"></script>
+<script src="../../assets/odr-track.js"></script>
+</head>
+<body>
+
+<!-- ════════════════════════════════════════════════════════
+     共通ヘッダー（サイト全体で統一）
+════════════════════════════════════════════════════════ -->
+<header class="site-header">
+  <a class="logo" href="../../index.html">
+    京都歯科総研
+    <small>OSAKA DENTAL RESEARCH</small>
+  </a>
+  <nav class="shindan-header-nav">
+    <a href="../../index.html">トップ</a>
+    <a href="../index.html">コラム</a>
+    <a href="../features/index.html">特徴から探す</a>
+    <a href="../../shikumi.html">医院・開業医の方へ</a>
+  </nav>
+</header>
+
+<!-- ════════════════════════════════════════════════════════
+     パンくず
+════════════════════════════════════════════════════════ -->
+<nav class="rk-breadcrumb">
+  <a href="../../index.html">Research Database</a>
+  <span>/</span>
+  <span class="on">Clinic Ranking</span>
+</nav>
+
+<!-- ════════════════════════════════════════════════════════
+     ページヘッダー（メインコピー）
+════════════════════════════════════════════════════════ -->
+<section class="rk-hero">
+  <p class="rk-hero-eyebrow">DATA RANKING · REAL-TIME</p>
+  <h1 class="rk-hero-title">条件を選ぶたび、<br class="rk-hero-br">あなたに合う順番へ。</h1>
+  <p class="rk-hero-lead">京都市内の歯科医院を、地域・症状・希望条件から並び替えます。地域や症状、通いやすさなどの条件を選ぶと、公開情報とAI分析をもとに、医院の表示順がリアルタイムで変わります。</p>
+  <div class="rk-disclaimer">
+    <ul>
+      <li>順位は公開情報と独自の分析基準にもとづく参考表示です</li>
+      <li>治療結果や医療技術の優劣を保証するものではありません</li>
+      <li>選択した条件によって順位は変動します</li>
+      <li>広告掲載や有料契約の有無は順位に影響しません</li>
+    </ul>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     フィルタータブ
+════════════════════════════════════════════════════════ -->
+<section class="rk-filters" aria-label="絞り込み条件">
+  <div class="rk-filter-group">
+    <p class="rk-filter-label">地域</p>
+    <div class="rk-filter-row" id="filterWard"></div>
+  </div>
+  <div class="rk-filter-group">
+    <p class="rk-filter-label">悩み・治療</p>
+    <div class="rk-filter-row" id="filterTreatment"></div>
+  </div>
+  <div class="rk-filter-group">
+    <p class="rk-filter-label">希望条件（複数選択可）</p>
+    <div class="rk-filter-row" id="filterCondition"></div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     順位の見方
+════════════════════════════════════════════════════════ -->
+<section class="rk-methodology">
+  <details>
+    <summary>順位の見方</summary>
+    <div class="rk-methodology-body">
+      <p>順位は以下の公開情報をもとに算出しています。</p>
+      <ul>
+        <li>Google口コミの評価と件数</li>
+        <li>口コミ内容の傾向</li>
+        <li>公式サイトの情報量</li>
+        <li>診療内容</li>
+        <li>通いやすさ</li>
+        <li>設備情報</li>
+        <li>患者対応に関する公開情報</li>
+        <li>選択した条件との一致度</li>
+      </ul>
+      <p>医院の技術や治療結果を断定するものではありません。</p>
+      <a class="rk-methodology-link" href="../../shikumi.html">分析方法を見る →</a>
+    </div>
+  </details>
+</section>
+
+<!-- ════════════════════════════════════════════════════════
+     メインレイアウト（ランキング＋サイドパネル）
+════════════════════════════════════════════════════════ -->
+<main class="rk-layout">
+
+  <div class="rk-main">
+    <div class="rk-result-head">
+      <p class="rk-result-count" id="resultCount">読み込み中…</p>
+    </div>
+    <div class="rk-list" id="rankList" aria-live="polite">
+      <div class="rk-loading">医院データを読み込み中…</div>
+    </div>
+  </div>
+
+  <aside class="rk-side">
+    <div class="rk-panel">
+      <p class="rk-panel-label">CURRENT FILTER</p>
+      <div class="rk-panel-body" id="currentFilterPanel">
+        <p class="rk-panel-empty">京都市全体・総合データ順</p>
+      </div>
+    </div>
+    <div class="rk-panel">
+      <p class="rk-panel-label">MATCHING MODEL</p>
+      <div class="rk-panel-body">
+        <dl class="rk-model-stats">
+          <div><dt>分析対象院</dt><dd>2,039院</dd></div>
+          <div><dt>解析口コミ</dt><dd>74,094件</dd></div>
+          <div><dt>該当院</dt><dd id="matchedCount">—</dd></div>
+        </dl>
+        <p class="rk-model-note">ランキングは条件選択のたびに更新されます。</p>
+      </div>
+    </div>
+  </aside>
+
+</main>
+
+<!-- 比較トレイ（比較に追加した医院がここに並ぶ） -->
+<div class="rk-compare-tray" id="compareTray" hidden>
+  <div class="rk-compare-tray-in">
+    <span class="rk-compare-label">比較リスト</span>
+    <div class="rk-compare-chips" id="compareChips"></div>
+    <button type="button" class="rk-compare-btn" id="compareShowBtn">比較する</button>
+  </div>
+</div>
+
+<!-- 比較表オーバーレイ -->
+<div class="rk-compare-overlay" id="compareOverlay" hidden>
+  <div class="rk-compare-modal">
+    <div class="rk-compare-modal-head">
+      <p class="rk-panel-label">CLINIC COMPARISON</p>
+      <button type="button" class="rk-compare-close" id="compareCloseBtn" aria-label="閉じる">×</button>
+    </div>
+    <div class="rk-compare-table-wrap" id="compareTableWrap"></div>
+    <p class="rk-compare-note">公開情報にもとづく比較です。医院の技術や治療結果を保証するものではありません。</p>
+  </div>
+</div>
+
+<!-- スマホ用固定ボタン -->
+<button type="button" class="rk-mobile-cta" id="mobileFilterBtn">条件を変更</button>
+
+<footer class="rk-footer">
+  <p>当サイトの情報は歯医者選びの一般的な参考情報です。診断や治療方針の決定を目的としたものではありません。</p>
+  <p>掲載情報の修正をご希望の医院様は<a href="../../teisei.html">こちら（医院情報の修正について）</a>からご連絡ください。</p>
+  <p>© 京都歯科総研 OSAKA DENTAL RESEARCH</p>
+</footer>
+
+<script src="shindan.js"></script>
+</body>
+</html>

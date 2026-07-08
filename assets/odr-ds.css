@@ -1,0 +1,158 @@
+/* =====================================================================
+   大阪歯科総研 Design System  (ODR-DS v1)
+   ---------------------------------------------------------------------
+   全ページ共通の単一の真実（Single Source of Truth）。
+   ページ個別CSSより先に読み込み、トークン・共通コンポーネントを供給する。
+   正規タイポ: Zen Kaku Gothic New（本文）/ Roboto Mono（ラベル・数字）
+   ブランドカラー: 5色のみ（Deep Green / Off White / Silver / Dark Blue / Terracotta）
+   フォント読込（各ページ<head>に必須）:
+   <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+   ===================================================================== */
+
+:root{
+  /* ── Brand colors（この5色以外を増やさない）── */
+  --odr-pine:#1f4b3f;      /* Deep Green : 主役・ヘッダー・見出し */
+  --odr-paper:#f6f8f7;     /* Off White  : 背景 */
+  --odr-silver:#d9d9d9;    /* Silver     : 罫線・区切り */
+  --odr-navy:#263645;      /* Dark Blue  : 本文の濃い文字・研究トーン */
+  --odr-terra:#d98b5f;     /* Terracotta : アクセント（少量） */
+  /* 派生（上記5色から生成、色相は増やさない） */
+  --odr-ink:#1c2b25;       /* 本文（pine寄りの黒） */
+  --odr-ink2:#5c6d66;      /* 補助テキスト */
+  --odr-line:#e4ebe7;      /* 淡い罫線（paper系） */
+  --odr-pine-2:#2e6a58;    /* グラデ用の明るいグリーン */
+
+  /* ── Typography families ── */
+  --odr-sans:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN','Noto Sans JP',sans-serif;
+  --odr-mono:'Roboto Mono',ui-monospace,SFMono-Regular,Menlo,monospace;
+
+  /* ── Type scale（Display48 / Heading36 / Section28 / Card22 / Body18 / Caption14 / Mono13）── */
+  --fs-display:clamp(2.2rem,5vw,3rem);
+  --fs-heading:clamp(1.75rem,3.6vw,2.25rem);
+  --fs-section:clamp(1.4rem,2.6vw,1.75rem);
+  --fs-card:1.375rem;
+  --fs-body:1.125rem;
+  --fs-caption:0.875rem;
+  --fs-mono:0.8125rem;
+
+  /* ── Spacing rhythm（Appleのように"何もない余白"を設計する）── */
+  --sp-page:clamp(20px,4vw,40px);       /* 左右パディング */
+  --sp-sec:clamp(56px,8vw,104px);       /* セクション縦間隔（広め） */
+  --sp-block:clamp(20px,3vw,32px);
+  --wrap:1040px;                        /* コンテンツ最大幅 */
+  --wrap-read:720px;                    /* 本文の読み幅 */
+
+  /* ── Radius / shadow / motion ── */
+  --r-card:24px;
+  --r-sm:12px;
+  --shadow-card:0 4px 24px rgba(31,75,63,.06);
+  --shadow-lift:0 14px 40px rgba(31,75,63,.12);
+  --ease:cubic-bezier(.22,.61,.36,1);
+}
+
+/* ===================== Base ===================== */
+*{box-sizing:border-box;}
+.odr-scope,.odr-scope *{font-family:var(--odr-sans);}
+body.odr{margin:0;font-family:var(--odr-sans);color:var(--odr-ink);background:var(--odr-paper);
+  -webkit-font-smoothing:antialiased;line-height:1.85;font-size:var(--fs-body);}
+.odr a{color:inherit;}
+
+/* ===================== ブランド署名（全ページ共通ヘッダー） =====================
+   AppleのリンゴのようにODRを一目で認識させる固定署名。 */
+.odr-brandbar{background:var(--odr-pine);color:#fff;height:64px;display:flex;align-items:center;
+  justify-content:space-between;padding:0 var(--sp-page);}
+.odr-sig{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;}
+.odr-sig-mark{font-family:var(--odr-mono);font-weight:600;font-size:.92rem;letter-spacing:.14em;
+  border:1.5px solid rgba(255,255,255,.85);border-radius:7px;padding:5px 9px;line-height:1;}
+.odr-sig-name{font-weight:700;font-size:.98rem;letter-spacing:.02em;line-height:1.2;}
+.odr-sig-name small{display:block;font-family:var(--odr-mono);font-size:.56rem;font-weight:400;
+  letter-spacing:.22em;color:#9cbbae;text-transform:uppercase;margin-top:2px;}
+.odr-brandbar nav{display:flex;gap:22px;align-items:center;}
+.odr-brandbar nav a{color:#cfe0d8;text-decoration:none;font-size:.84rem;}
+.odr-brandbar nav a:hover{color:#fff;}
+@media(max-width:640px){.odr-brandbar nav{display:none;}}
+
+/* ===================== Mono カテゴリ・キッカー =====================
+   ページごとに RESEARCH DATABASE / AI RESEARCH REPORT / FEATURE REPORT /
+   AREA ANALYSIS / CLINICAL GUIDE / DIAGNOSTIC REPORT を掲げる。 */
+.odr-kicker{display:inline-flex;align-items:center;gap:9px;font-family:var(--odr-mono);
+  font-size:var(--fs-mono);font-weight:500;letter-spacing:.24em;text-transform:uppercase;
+  color:var(--odr-terra);}
+.odr-kicker::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--odr-terra);}
+.odr-kicker.on-dark{color:var(--odr-terra);}
+.odr-kicker.pill{border:1px solid rgba(217,139,95,.5);border-radius:999px;padding:6px 15px;}
+
+/* ===================== レポート・メタ帯 =====================
+   Analysis Date / AI Model / Sources / Confidence / Data Updated 等で研究感を出す。 */
+.odr-meta{display:flex;flex-wrap:wrap;gap:14px 30px;padding:18px 0;
+  border-top:1px solid var(--odr-line);border-bottom:1px solid var(--odr-line);}
+.odr-meta.on-dark{border-color:rgba(255,255,255,.14);}
+.odr-meta dl{margin:0;display:flex;flex-direction:column;gap:3px;}
+.odr-meta dt{font-family:var(--odr-mono);font-size:.62rem;letter-spacing:.18em;text-transform:uppercase;
+  color:var(--odr-ink2);}
+.odr-meta.on-dark dt{color:#8fb0a4;}
+.odr-meta dd{margin:0;font-family:var(--odr-mono);font-weight:500;font-size:.9rem;color:var(--odr-pine);}
+.odr-meta.on-dark dd{color:#fff;}
+
+/* ===================== セクション見出し（連番＋英日2段・全ページ共通ルール） ===================== */
+.odr-sechead{display:flex;align-items:flex-start;gap:16px;margin:0 0 24px;}
+.odr-sechead .n{font-family:var(--odr-mono);font-size:.95rem;font-weight:500;color:var(--odr-terra);
+  padding-top:3px;min-width:26px;}
+.odr-sechead .en{display:block;font-family:var(--odr-mono);font-size:.64rem;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--odr-ink2);}
+.odr-sechead h2{font-size:var(--fs-section);font-weight:700;color:var(--odr-pine);margin:2px 0 0;line-height:1.4;}
+
+/* ===================== カード（Apple寄り：薄いガラス・角丸24・ホバーで少し浮く） ===================== */
+.odr-card{background:rgba(255,255,255,.72);backdrop-filter:blur(6px);
+  border:1px solid var(--odr-line);border-radius:var(--r-card);padding:26px 28px;
+  box-shadow:var(--shadow-card);transition:transform .3s var(--ease),box-shadow .3s var(--ease);}
+.odr-card:hover{transform:translateY(-4px);box-shadow:var(--shadow-lift);}
+.odr-card-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:16px;}
+
+/* ===================== AI Summary カード（Apple Intelligence 風） ===================== */
+.odr-ai{position:relative;background:#fff;border-radius:var(--r-card);padding:28px 30px;
+  border:1px solid var(--odr-line);box-shadow:var(--shadow-card);overflow:hidden;}
+.odr-ai::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;
+  background:linear-gradient(180deg,var(--odr-terra),var(--odr-pine));}
+.odr-ai .lb{display:inline-flex;align-items:center;gap:8px;font-family:var(--odr-mono);font-size:.62rem;
+  letter-spacing:.22em;color:var(--odr-terra);text-transform:uppercase;margin-bottom:10px;}
+.odr-ai .lb::before{content:"";width:5px;height:5px;border-radius:50%;background:var(--odr-terra);}
+.odr-ai p{margin:0;font-size:var(--fs-body);line-height:1.95;}
+/* 「この記事で分かること」チェックリスト */
+.odr-checklist{margin:16px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:10px;}
+.odr-checklist li{position:relative;padding-left:30px;font-weight:500;}
+.odr-checklist li::before{content:"✓";position:absolute;left:0;top:0;color:#2e8c6a;font-weight:700;
+  font-family:var(--odr-mono);}
+
+/* ===================== バー（100点/5点スケール共通） ===================== */
+.odr-bars{display:flex;flex-direction:column;gap:14px;background:#fff;border:1px solid var(--odr-line);
+  border-radius:var(--r-card);padding:26px 28px;}
+.odr-bar{display:grid;grid-template-columns:120px 1fr 50px;align-items:center;gap:14px;font-size:.94rem;}
+.odr-bar .k{color:var(--odr-ink2);}
+.odr-bar .track{height:9px;background:#eef3f1;border-radius:6px;overflow:hidden;}
+.odr-bar .fill{display:block;height:100%;background:linear-gradient(90deg,var(--odr-pine),var(--odr-pine-2));
+  border-radius:6px;transition:width .6s var(--ease);}
+.odr-bar .v{font-weight:700;color:var(--odr-pine);text-align:right;font-family:var(--odr-mono);font-size:.82rem;}
+@media(max-width:560px){.odr-bar{grid-template-columns:92px 1fr 44px;gap:10px;}}
+
+/* ===================== チップ ===================== */
+.odr-chips{display:flex;flex-wrap:wrap;gap:9px;}
+.odr-chip{background:#eaf1ee;color:var(--odr-pine);border:1px solid var(--odr-line);border-radius:999px;
+  padding:6px 16px;font-size:.86rem;font-weight:500;}
+
+/* ===================== CTA（AI診断・特徴への導線を全ページ統一） ===================== */
+.odr-cta{background:var(--odr-pine);border-radius:28px;padding:clamp(32px,5vw,48px) 30px;text-align:center;}
+.odr-cta .t{color:#fff;font-size:var(--fs-card);font-weight:700;margin:0 0 8px;}
+.odr-cta .s{color:#cfe0d8;font-size:.95rem;margin:0 0 24px;}
+.odr-cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
+.odr-btn{display:inline-block;background:var(--odr-terra);color:#fff;font-weight:700;padding:14px 32px;
+  border-radius:12px;text-decoration:none;font-size:.95rem;transition:opacity .2s;}
+.odr-btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.5);}
+.odr-btn:hover{opacity:.92;}
+
+/* ===================== フッター署名 ===================== */
+.odr-foot{border-top:1px solid var(--odr-line);padding:36px var(--sp-page);color:var(--odr-ink2);
+  font-size:.8rem;line-height:1.95;}
+.odr-foot .in{max-width:var(--wrap);margin:0 auto;}
+.odr-foot .sig{font-family:var(--odr-mono);letter-spacing:.14em;color:var(--odr-pine);
+  text-transform:uppercase;font-size:.72rem;margin:0 0 8px;}
