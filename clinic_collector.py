@@ -456,7 +456,7 @@ def calc_total_score(analysis: dict, rating: float, total_rv: int) -> dict:
     学会・症例・発信 15点
     合計           100点
 
-    + Google評価ボーナス（最大10点補正）
+    + Google評価ボーナス（最大8点。総合は100点上限）
     """
     import math
 
