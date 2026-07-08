@@ -374,6 +374,14 @@ JSONのみ出力（コメント・説明文不要）:
 
   "equipment_score": 0〜20,
   "equipment_evidence": ["根拠1（40文字以内）", "根拠2"],
+  "equipment_stars": {{
+    "CT": 0〜5,
+    "マイクロスコープ": 0〜5,
+    "口腔内スキャナー": 0〜5,
+    "個室": 0〜5,
+    "駐車場": 0〜5,
+    "バリアフリー": 0〜5
+  }},
 
   "transparency_score": 0〜15,
   "transparency_evidence": ["根拠1（40文字以内）"],
@@ -390,6 +398,14 @@ JSONのみ出力（コメント・説明文不要）:
   "workplace_quality": "求人から読み取れる職場環境（40文字以内・情報なければ空）",
 
   "fit_for": ["子ども", "女性", "高齢者", "インプラント", "忙しい人", "歯科恐怖症" などから該当するもの],
+  "patient_fit": {{
+    "子ども連れ": 0〜5,
+    "歯科が怖い人": 0〜5,
+    "短時間で済ませたい": 0〜5,
+    "自由診療も検討": 0〜5,
+    "保険中心": 0〜5
+  }},
+  "specialty_tags": ["インプラント", "矯正歯科", "小児歯科", "予防歯科", "審美歯科", "個室", "駐車場", "バリアフリー", "キッズルーム" など根拠のあるもののみ（完全一致の単語で。推測での追加は禁止）],
   "not_fit_for": ["夜しか通えない人", "駐車場必須", "急患希望" などの具体的に不向きな患者像],
   "best_patient_profile": "この医院で120%満足する患者像（50文字以内・具体的に）",
   "not_recommended_profile": "この医院をおすすめしない患者像（50文字以内・具体的に）",
@@ -634,8 +650,8 @@ def process_place(p: dict, db: dict, today: str, default_genre: str = "一般歯
     existing      = db.get(place_id, {})
     last_analyzed = existing.get("last_analyzed", "")
 
-    # 14日以内にAI分析済みならスキップ
-    if last_analyzed and existing.get("total_score", 0) > 0:
+    # 14日以内にAI分析済みならスキップ（ただし新スキーマ未移行の医院は再分析する）
+    if last_analyzed and existing.get("total_score", 0) > 0 and "equipment_stars" in existing:
         try:
             days_ago = (datetime.now() - datetime.strptime(last_analyzed, "%Y-%m-%d")).days
             if days_ago < 14:
@@ -709,6 +725,7 @@ def process_place(p: dict, db: dict, today: str, default_genre: str = "一般歯
         # 症例
         "case_analysis":   analysis.get("case_analysis", {}),
         # 設備・透明性・活動
+        "equipment_stars":       analysis.get("equipment_stars", {}),
         "equipment_evidence":    analysis.get("equipment_evidence", []),
         "transparency_evidence": analysis.get("transparency_evidence", []),
         "activity_evidence":     analysis.get("activity_evidence", []),
@@ -717,6 +734,8 @@ def process_place(p: dict, db: dict, today: str, default_genre: str = "一般歯
         "workplace_quality": analysis.get("workplace_quality", ""),
         # 患者適合
         "fit_for":                 analysis.get("fit_for", []),
+        "patient_fit":             analysis.get("patient_fit", {}),
+        "specialty_tags":          analysis.get("specialty_tags", []),
         "not_fit_for":             analysis.get("not_fit_for", []),
         "best_patient_profile":    analysis.get("best_patient_profile", ""),
         "not_recommended_profile": analysis.get("not_recommended_profile", ""),
