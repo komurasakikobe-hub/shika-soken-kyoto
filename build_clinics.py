@@ -255,7 +255,7 @@ def build_page(c, slug=""):
         conclusion_bits += (f'<p class="rr-concl-label good">この医院が向いている方</p>'
                             f'<ul class="rr-list good">{li(ref)}</ul>')
     if c.get("not_recommended_profile") or nref:
-        conclusion_bits += '<p class="rr-concl-label bad">注意が必要な方</p>'
+        conclusion_bits += '<p class="rr-concl-label bad">受診前に確認したい点（AI分析による参考情報）</p>'
         if c.get("not_recommended_profile"):
             conclusion_bits += f'<p class="rr-lead">{esc(c["not_recommended_profile"])}</p>'
         if nref:
@@ -485,7 +485,7 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
   </section>
 </main>
 <footer class="rr-foot">
-  <div class="in">当レポートのAI分析（サマリー・各スコア等）は、Googleマップの口コミや各医院公式サイト等の公開情報をもとに京都歯科総研が独自に生成した参考情報です。根拠となる情報がない項目は表示していません。診断・治療方針の決定を目的としたものではなく、受診の判断は必ず歯科医師にご相談ください。<br>© 京都歯科総研 KYOTO DENTAL RESEARCH</div>
+  <div class="in">当レポートのAI分析（サマリー・各スコア等）は、Googleマップの口コミや各医院公式サイト等の公開情報をもとに京都歯科総研が独自に生成した参考情報です。根拠となる情報がない項目は表示していません。診断・治療方針の決定を目的としたものではなく、受診の判断は必ず歯科医師にご相談ください。掲載内容の訂正は<a href="../../teisei.html" style="color:inherit;text-decoration:underline;">こちら</a>、免責事項の詳細は<a href="../../policy.html" style="color:inherit;text-decoration:underline;">運営ポリシー</a>をご覧ください。<br>© 京都歯科総研 KYOTO DENTAL RESEARCH</div>
 </footer>
 </body>
 </html>'''

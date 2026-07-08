@@ -506,7 +506,7 @@ NAV = '''<header class="topnav">
 FOOTER = '''<footer class="site-footer">
   <div class="wrap-x">
     <p class="foot-name">京都歯科総研</p>
-    <p class="foot-note">当サイトの情報は歯医者選びの一般的な参考情報であり、診断や治療方針の決定を目的としたものではありません。症状やお悩みについては、必ず歯科医師にご相談ください。</p>
+    <p class="foot-note">当サイトの情報は歯医者選びの一般的な参考情報であり、診断や治療方針の決定を目的としたものではありません。症状やお悩みについては、必ず歯科医師にご相談ください。詳細は<a href="../policy.html" style="color:inherit;text-decoration:underline;">運営ポリシー・免責事項</a>をご覧ください。</p>
     <p class="foot-copy">© 京都歯科総研 KYOTO DENTAL RESEARCH</p>
   </div>
 </footer>

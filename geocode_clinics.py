@@ -87,13 +87,19 @@ def main():
     total = len(items)
     print(f"対象: {total}院")
 
-    done = sum(1 for _, c in items if c.get("lat") and c.get("lng"))
+    def has_coord(c):
+        # build_nearest_station.py が lat/lng → latitude/longitude にリネームするため、
+        # どちらの形式でも「座標あり」と判定する（2026-07-09：リネーム後に全件を
+        # Nominatimへ再問い合わせしてしまう無駄を修正）
+        return (c.get("lat") and c.get("lng")) or (c.get("latitude") and c.get("longitude"))
+
+    done = sum(1 for _, c in items if has_coord(c))
     print(f"既に緯度経度あり: {done}院（スキップ）")
 
     processed = 0
     failed = 0
     for i, (pid, c) in enumerate(items, 1):
-        if c.get("lat") and c.get("lng"):
+        if has_coord(c):
             continue
         addr = c.get("address", "")
         result = geocode(addr)
