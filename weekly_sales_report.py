@@ -202,6 +202,7 @@ def main():
                 s = this_week.get(name, {})
                 html_doc = clinic_report.build_report(
                     hits[0],
+                    db=db,
                     views=s.get("clinic_click", 0),
                     clicks=s.get("official_click", 0),
                     maps=s.get("map_click", 0),
