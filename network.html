@@ -182,7 +182,7 @@
   </div>
 
   <div class="sky" role="group" aria-label="展開エリアの地図">
-    <svg id="netmap" viewBox="0 0 1000 942" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+    <svg id="netmap" viewBox="0 0 1000 757" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
       <g id="bgstars"></g>
       <g class="base" id="mapBase"></g>
       <g id="mapRegions"></g>
@@ -194,7 +194,7 @@
         <text class="map-subtitle" x="117" y="22" text-anchor="middle">KANSAI DENTAL RESEARCH NETWORK</text>
       </g>
       <!-- コンパスローズ -->
-      <g class="compass" transform="translate(72,852)">
+      <g class="compass" transform="translate(72,667)">
         <circle cx="0" cy="0" r="20" stroke="rgba(214,184,120,.4)" fill="none" stroke-width=".8"></circle>
         <circle cx="0" cy="0" r="14" stroke="rgba(214,184,120,.25)" fill="none" stroke-width=".6"></circle>
         <path d="M0,-26 L4,0 L0,8 L-4,0 Z" fill="rgba(214,184,120,.55)" stroke="none"></path>
@@ -241,27 +241,35 @@
    labelX/labelYはviewBox座標の絶対値指定。境界データを再生成したら要再確認 */
 const CITIES = [
   { key:"osaka",       name:"大阪歯科総研", city:"大阪市", en:"OSAKA",
-    live:true,  href:"https://shikasoken.com/", labelX:579, labelY:780, size:17, lg:true, showEn:true,
+    live:true,  href:"https://shikasoken.com/", labelX:650, labelY:598, size:17, lg:true, showEn:true,
     desc:"大阪市24区・約2,000院の公開情報とAI分析を無料で公開しています。" },
   { key:"kobe",        name:"神戸歯科総研", city:"神戸市", en:"KOBE",
-    live:true, href:"https://kobe.shikasoken.com/", labelX:204, labelY:697, size:17, lg:true, showEn:true,
+    live:true,  href:"https://kobe.shikasoken.com/", labelX:384, labelY:526, size:17, lg:true, showEn:true,
     desc:"神戸市9区・768院の公開情報とAI分析を無料で公開しています。" },
   { key:"kyoto",       name:"京都歯科総研", city:"京都市", en:"KYOTO",
-    live:true, href:"index.html", labelX:820, labelY:285, size:17, lg:true, showEn:true,
+    live:true,  href:"index.html", labelX:831, labelY:223, size:17, lg:true, showEn:true,
     desc:"京都市11区・673院の公開情報とAI分析を無料で公開しています。" },
   { key:"amagasaki",   name:"尼崎歯科総研", city:"尼崎市", en:"AMAGASAKI",
-    live:true, href:"https://amagasaki.shikasoken.com/", labelX:513, labelY:706, size:11, lg:false, showEn:false,
+    live:true,  href:"https://amagasaki.shikasoken.com/", labelX:608, labelY:554, size:11, lg:false, showEn:false,
     desc:"尼崎市209院の公開情報とAI分析を無料で公開しています。" },
   { key:"nishinomiya", name:"西宮歯科総研", city:"西宮市", en:"NISHINOMIYA",
-    live:true, href:"https://nishinomiya.shikasoken.com/", labelX:456, labelY:688, size:11, lg:false, showEn:false,
+    live:true,  href:"https://nishinomiya.shikasoken.com/", labelX:552, labelY:519, size:11, lg:false, showEn:false,
     desc:"西宮市249院の公開情報とAI分析を無料で公開しています。" },
-  { key:"ashiya",      name:"芦屋歯科総研", city:"芦屋市", en:"ASHIYA",
-    live:true, href:"https://ashiya.shikasoken.com/", labelX:407, labelY:663, size:8, lg:false, showEn:false,
+  { key:"ashiya",      name:"芦屋歯科総研", city:"芦屋市", short:"芦屋", en:"ASHIYA",
+    live:true,  href:"https://ashiya.shikasoken.com/", labelX:521, labelY:527, size:8, lg:false, showEn:false,
     desc:"芦屋市71院の公開情報とAI分析を無料で公開しています。" },
   { key:"hanshinnorth", name:"阪神北部歯科総研", city:"阪神北部", en:"HANSHIN-NORTH",
-    live:true, href:"https://hanshinnorth.shikasoken.com/", labelX:391, labelY:470, size:17, lg:true, showEn:true,
+    live:true,  href:"https://hanshinnorth.shikasoken.com/", labelX:505, labelY:382, size:17, lg:true, showEn:true,
     sub:["伊丹・宝塚・川西", "三田・猪名川"],
     desc:"伊丹市・宝塚市・川西市・三田市・猪名川町で構成されるエリア・310院の公開情報とAI分析を無料で公開しています。" },
+  { key:"higashiharima", name:"東播磨歯科総研", city:"東播磨", en:"HIGASHI-HARIMA",
+    live:true,  href:"https://higashiharima.shikasoken.com/", labelX:214, labelY:529, size:17, lg:true, showEn:true,
+    sub:["明石・加古川・高砂", "稲美・播磨"],
+    desc:"明石市・加古川市・高砂市・稲美町・播磨町で構成されるエリア・286院の公開情報とAI分析を無料で公開しています。" },
+  { key:"kitaharima", name:"北播磨歯科総研", city:"北播磨", en:"KITA-HARIMA",
+    live:false, href:"", labelX:291, labelY:320, size:17, lg:true, showEn:true,
+    sub:["三木・小野・西脇", "加西・加東・多可"],
+    desc:"三木市・小野市・西脇市・加西市・加東市・多可町で構成されるエリアです。データを収集・分析中です。公開までいましばらくお待ちください。" },
 ];
 
 /* 金の砂粒（決定的な擬似乱数で毎回同じ配置） */
@@ -272,7 +280,7 @@ const CITIES = [
   let dots = "";
   for (let i = 0; i < 90; i++){
     const x = Math.round(rnd() * 1000);
-    const y = Math.round(rnd() * 893);
+    const y = Math.round(rnd() * 708);
     const r = (rnd() * 1.1 + 0.3).toFixed(1);
     dots += `<circle class="bgstar" cx="${x}" cy="${y}" r="${r}"></circle>`;
   }
@@ -309,7 +317,7 @@ const CITIES = [
     <g class="region ${c.live ? "" : "soon"}" data-key="${c.key}" role="button" tabindex="0"
        aria-label="${c.name}${c.live ? "" : "（準備中）"}">
       ${r.paths.map(d => `<path d="${d}"></path>`).join("")}
-      <text x="${lx}" y="${ly}" text-anchor="middle"${c.lg ? ` class="lbl-lg"` : ` style="font-size:${c.size || 17}px"`}>${c.city}</text>
+      <text x="${lx}" y="${ly}" text-anchor="middle"${c.lg ? ` class="lbl-lg"` : ` style="font-size:${c.size || 17}px"`}>${c.short || c.city}</text>
       ${extra}
     </g>`;
   }).join("");
