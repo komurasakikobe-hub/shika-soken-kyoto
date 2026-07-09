@@ -20,4 +20,6 @@ git commit -m "月次リフレッシュ: 掲載院の評価・口コミ件数を
 
 Co-Authored-By: Claude (automated) <noreply@anthropic.com>" || echo "変更なし"
 git push
+# 公開はshika-sokenリポジトリのkyotoブランチから行われる（Cloudflare Pages接続先）
+git push https://github.com/komurasakikobe-hub/shika-soken.git main:kyoto
 echo "===== 完了 $(date) ====="
