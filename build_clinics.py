@@ -150,10 +150,110 @@ def build_jsonld(c, slug):
         "name": site_name,
         "url": f"https://{domain}/",
     }
-    return ('<script type="application/ld+json">'
-            + _json.dumps(data, ensure_ascii=False)
-            + "</script>")
+    # 2026-07-10（Google評価施策E2）：パンくず＋データ由来のFAQをJSON-LDで宣言。
+    # FAQリッチリザルトは一般サイト対象外だが、AI検索の回答抽出には効く
+    # （調査：FAQ形式は関連クエリでの引用率が高い）。回答はDBの事実のみ・断定しない。
+    page_url = f"https://{domain}/articles/clinics/{slug}.html"
+    breadcrumb = {
+        "@context": "https://schema.org", "@type": "BreadcrumbList",
+        "itemListElement": [
+            {"@type": "ListItem", "position": 1, "name": site_name, "item": f"https://{domain}/"},
+            {"@type": "ListItem", "position": 2, "name": "医院分析", "item": f"https://{domain}/articles/features/index.html"},
+            {"@type": "ListItem", "position": 3, "name": c.get("name", ""), "item": page_url},
+        ],
+    }
+    faqs = []
+    hours = c.get("business_hours") or []
+    if isinstance(hours, str):
+        hours = [hours] if hours else []
+    if hours:
+        faqs.append((f'{c.get("name","")}の診療時間は？',
+                     " / ".join(hours[:7]) + "（変更される場合があります。受診前に医院へご確認ください）"))
+    ns = c.get("nearest_station") or {}
+    if ns.get("name"):
+        dist = ns.get("straight_distance_m")
+        dist_txt = f"（直線距離 約{dist}m・当サイト算出の目安）" if dist else ""
+        faqs.append((f'{c.get("name","")}の最寄駅は？', f'{ns["name"]}駅{dist_txt}です。'))
+    es = c.get("equipment_stars") or {}
+    eq_list = [k for k in ("CT", "マイクロスコープ", "口腔内スキャナー", "個室") if (es.get(k) or 0) >= 3]
+    if eq_list:
+        faqs.append((f'{c.get("name","")}の設備は？',
+                     "公式サイトの記載から " + "・".join(eq_list) + " が確認できています（当サイト解析時点）。"))
+    out = ('<script type="application/ld+json">' + _json.dumps(data, ensure_ascii=False) + "</script>"
+           + '<script type="application/ld+json">' + _json.dumps(breadcrumb, ensure_ascii=False) + "</script>")
+    if len(faqs) >= 2:
+        faq_schema = {
+            "@context": "https://schema.org", "@type": "FAQPage",
+            "mainEntity": [{"@type": "Question", "name": q,
+                            "acceptedAnswer": {"@type": "Answer", "text": a}} for q, a in faqs],
+        }
+        out += '<script type="application/ld+json">' + _json.dumps(faq_schema, ensure_ascii=False) + "</script>"
+    return out
 
+
+# ── 区別データ集計（2026-07-10 Google評価施策E1：Area Context） ──
+# 各医院ページに「その医院×その区」でしか作れない一意の統計文脈を挿入する。
+# 量産テンプレページの「薄さ」を一次データの文脈で反転させるのが狙い。
+# 順位・優劣は出さない（設備・対応の事実と区内割合のみ＝法務安全）。
+import re as _re
+_WARD_STATS = {}
+
+def _ward_key(addr):
+    m = _re.search(r"京都市([一-龥]+区)", addr or "")
+    return m.group(1) if m else None
+
+def _has_night(c):
+    return any("夜間" in t for t in (c.get("specialty_tags") or []) + (c.get("site_features") or []))
+
+def compute_ward_stats(clinics):
+    """区ごとの 医院数・CT/マイクロスコープ導入率・夜間対応率を事前集計"""
+    global _WARD_STATS
+    groups = {}
+    for c in clinics:
+        if c.get("q_excluded") or not c.get("name"):
+            continue
+        w = _ward_key(c.get("address", ""))
+        if not w:
+            continue
+        groups.setdefault(w, []).append(c)
+    for w, cs in groups.items():
+        eq = [c for c in cs if isinstance(c.get("equipment_stars"), dict) and c["equipment_stars"]]
+        _WARD_STATS[w] = {
+            "n": len(cs),
+            "eq_n": len(eq),
+            "ct": sum(1 for c in eq if (c["equipment_stars"].get("CT") or 0) >= 3),
+            "micro": sum(1 for c in eq if (c["equipment_stars"].get("マイクロスコープ") or 0) >= 3),
+            "night": sum(1 for c in cs if _has_night(c)),
+        }
+
+def area_context_html(c):
+    """区内データ比較ブロック。区の集計が薄い場合は出さない（誤誘導防止）"""
+    w = _ward_key(c.get("address", ""))
+    st = _WARD_STATS.get(w)
+    if not st or st["n"] < 15 or st["eq_n"] < 10:
+        return ""
+    es = c.get("equipment_stars") or {}
+    rows = []
+    def stat(label, has, rate, unit="の医院で導入を確認"):
+        if has:
+            return (f"<li><strong>{label}：この医院は導入を確認。</strong>"
+                    f"{w}では{rate:.0f}%{unit}（当サイト解析分）。導入院はまだ少数派です</li>")
+        return (f"<li>{label}：公式サイトでは確認できませんでした（未確認）。"
+                f"{w}では{rate:.0f}%{unit}</li>")
+    if st["eq_n"]:
+        rows.append(stat("歯科用CT", (es.get("CT") or 0) >= 3, st["ct"] / st["eq_n"] * 100))
+        rows.append(stat("マイクロスコープ", (es.get("マイクロスコープ") or 0) >= 3, st["micro"] / st["eq_n"] * 100))
+    night_rate = st["night"] / st["n"] * 100
+    if _has_night(c):
+        rows.append(f"<li><strong>夜間診療：案内あり。</strong>{w}で夜間対応を案内しているのは{night_rate:.0f}%と貴重な存在です</li>")
+    else:
+        rows.append(f"<li>夜間診療：案内は確認できませんでした。{w}では{night_rate:.0f}%の医院が夜間対応を案内しています</li>")
+    return (f'<p class="rr-lead">{w}には当サイトの分析対象の歯科医院が{st["n"]}院あります。'
+            f'この医院を{w}全体のデータの中に置くと、次のことが分かります。</p>'
+            f'<ul class="rr-list good">{"".join(rows)}</ul>'
+            f'<p class="rr-note">割合は当サイトが公式サイト・口コミから機械的に解析できた範囲の値です'
+            f'（{w}の設備解析対象 {st["eq_n"]}院）。「未確認」は「無い」という意味ではありません。'
+            f'集計の方法・限界は<a href="../../policy.html">運営ポリシー</a>をご覧ください。データは毎月更新しています。</p>')
 
 def build_page(c, slug=""):
     name   = c.get("name", "")
@@ -306,6 +406,7 @@ def build_page(c, slug=""):
         ("患者体験の分析",        "Patient Experience",sec_patient),
         ("院長評価",              "Doctor Assessment", sec_doctor),
         ("設備の充実度",          "Facilities",        sec_equip),
+        ("地域の中で見る",        "Area Context",      area_context_html(c)),
         ("適合する患者像",        "Patient Fit",       sec_fit),
         ("医院タイプ",            "Clinic Type",       ctype_html),
         ("診療理念・注力治療",    "Philosophy & Focus",sec_policy),
@@ -495,6 +596,7 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 def main():
     db = json.load(open(DB, encoding="utf-8"))
     clinics = list(db.values()) if isinstance(db, dict) else db
+    compute_ward_stats(clinics)  # Area Context用の集計
     os.makedirs(OUT, exist_ok=True)
     n = 0
     valid = set()

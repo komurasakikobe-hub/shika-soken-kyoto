@@ -64,7 +64,9 @@ def main():
 
     # ── 医院ページ（検索流入の主戦場） ──
     for f in sorted((ROOT / "articles" / "clinics").glob("*.html")):
-        entries.append(url_entry(f"articles/clinics/{f.name}", priority="0.6"))
+        from datetime import date as _d
+        lastmod = _d.fromtimestamp(f.stat().st_mtime).isoformat()
+        entries.append(url_entry(f"articles/clinics/{f.name}", lastmod, "0.6"))
 
     sitemap = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'
