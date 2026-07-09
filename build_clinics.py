@@ -142,12 +142,14 @@ def build_jsonld(c, slug):
     hours = c.get("business_hours") or []
     if isinstance(hours, list) and hours:
         data["openingHours"] = hours[:7]
-    if c.get("rating") and c.get("total_reviews"):
-        data["aggregateRating"] = {
-            "@type": "AggregateRating",
-            "ratingValue": c["rating"],
-            "reviewCount": c["total_reviews"],
-        }
+    # 2026-07-10: aggregateRating撤去（Google規約：第三者由来レビューのマークアップは違反）
+    site_name = SITE_CFG.get("site_name", "")
+    domain = SITE_CFG.get("domain", "")
+    data["publisher"] = {
+        "@type": "Organization",
+        "name": site_name,
+        "url": f"https://{domain}/",
+    }
     return ('<script type="application/ld+json">'
             + _json.dumps(data, ensure_ascii=False)
             + "</script>")
