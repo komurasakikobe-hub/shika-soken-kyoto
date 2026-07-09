@@ -63,9 +63,10 @@ const CONDITION_MAP = {
 const CONDITION_LIST = Object.keys(CONDITION_MAP);
 
 // ── 状態管理（URLクエリと同期） ─────────────────────────────
+// 2026-07-09：悩み・治療も複数選択可に変更（treatment→treatments）
 const filters = {
   ward: "all",
-  treatment: null,
+  treatments: new Set(),
   conditions: new Set(),
 };
 
@@ -148,13 +149,14 @@ function calcRankScore(clinic) {
   const qualityAvg = psVals.length ? psVals.reduce((a, b) => a + b, 0) / psVals.length : qualityProxy100(clinic);
   score += qualityAvg * 0.32;
 
-  // 治療ジャンル一致
-  if (filters.treatment) {
-    const t = TREATMENT_MAP[filters.treatment];
+  // 治療ジャンル一致（複数選択可。選んだ悩みごとに一致を加点）
+  filters.treatments.forEach(tKey => {
+    const t = TREATMENT_MAP[tKey];
+    if (!t) return;
     let hit = t.genres.includes(clinic.genre);
     if (!hit) hit = t.evidence.some(w => evText.includes(w.toLowerCase()));
-    if (hit) { score += 22; matched.push(filters.treatment); }
-  }
+    if (hit) { score += 22; matched.push(tKey); }
+  });
 
   // 希望条件（複数）。
   // 注意（2026-07-08 発見・修正）：以前は「条件に合えば加点」だけで、
@@ -221,14 +223,15 @@ function getFilteredPool() {
     if (byWard.length >= 3) pool = byWard;
   }
 
-  if (filters.treatment) {
-    const t = TREATMENT_MAP[filters.treatment];
+  if (filters.treatments.size) {
+    const selected = Array.from(filters.treatments).map(k => TREATMENT_MAP[k]).filter(Boolean);
     const byTreatment = pool.filter(c => {
       const evText = ((c.equipment_evidence || []).join(" ") +
                       (c.doctor_evidence || []).join(" ") +
                       (c.specialty_evidence || []).join(" ") +
                       (c.catchphrase || "") + (c.ai_summary || "")).toLowerCase();
-      return t.genres.includes(c.genre) || t.evidence.some(w => evText.includes(w.toLowerCase()));
+      return selected.some(t =>
+        t.genres.includes(c.genre) || t.evidence.some(w => evText.includes(w.toLowerCase())));
     });
     if (byTreatment.length >= 3) pool = byTreatment;
   }
@@ -374,11 +377,34 @@ function showCompareTable() {
   overlay.hidden = false;
 }
 
+// ── 区内順位（2026-07-09 ②）：現在のフィルタと同じスコアで
+//    地域ごとの順位を算出し、カードに「地域内○位」を表示する ──
+const WARD_RE = /京都市([一-龥]+区)/; // nullの場合は市全体で順位を出す
+function wardOfAddr(addr) {
+  const m = (addr || "").match(WARD_RE); return m ? m[1] : null;
+}
+let wardRankMap = new Map(); // pid -> { ward, rank, total }
+function computeWardRanks() {
+  wardRankMap = new Map();
+  const groups = new Map();
+  allClinics.forEach(c => {
+    const w = wardOfAddr(c.address || "");
+    if (!w) return;
+    if (!groups.has(w)) groups.set(w, []);
+    groups.get(w).push({ pid: c.place_id || "", score: calcRankScore(c).score });
+  });
+  groups.forEach((arr, w) => {
+    arr.sort((a, b) => b.score - a.score);
+    arr.forEach((e, i) => wardRankMap.set(e.pid, { ward: w, rank: i + 1, total: arr.length }));
+  });
+}
+
+const PRIZE = { 1: ["金賞", "GOLD"], 2: ["銀賞", "SILVER"], 3: ["銅賞", "BRONZE"] };
+
 // ── レンダリング（FLIPアニメーション付き） ──────────────────
 function cardHTML(clinic, rank, matched) {
   const addr = clinic.address || "";
-  const wardMatch = addr.match(/京都市([一-龥]+区)/);
-  const ward = wardMatch ? wardMatch[1] : "";
+  const ward = wardOfAddr(addr) || "";
   const stationText = formatStationText(clinic.nearest_station);
   const info = infoLevel(clinic);
   const rating = clinic.rating ? clinic.rating.toFixed(1) : "—";
@@ -397,12 +423,20 @@ function cardHTML(clinic, rank, matched) {
       </div>`
     : "";
 
+  const wr = wardRankMap.get(clinic.place_id || "");
+  const wardHTML = wr
+    ? `<span class="rk-ward-rank">${esc(wr.ward)} ${wr.rank}位<small>／${wr.total}院</small></span>`
+    : esc(ward);
+  const prizeHTML = rank <= 3
+    ? `<span class="rk-prize rk-prize-${rank}"><span class="ja">${PRIZE[rank][0]}</span><span class="en">${PRIZE[rank][1]}</span></span>`
+    : "";
+
   return `
   <article class="rk-card" data-pid="${esc(clinic.place_id || "")}"${rank <= 3 ? ` data-top="${rank}"` : ""}>
-    <div class="rk-card-rank"><span class="num">${String(rank).padStart(2, "0")}</span><span class="unit">位</span></div>
+    <div class="rk-card-rank"><span class="num">${String(rank).padStart(2, "0")}</span><span class="unit">位</span>${prizeHTML}</div>
     <div class="rk-card-body">
       <h3 class="rk-card-name"><a href="${esc(url)}">${esc(clinic.name || "")}</a></h3>
-      <p class="rk-card-meta">${esc(ward)}${stationText ? "・" + esc(stationText) : ""}</p>
+      <p class="rk-card-meta">${wardHTML}${stationText ? "・" + esc(stationText) : ""}</p>
       <p class="rk-card-rating">Google ${rating}${reviews ? ` / 口コミ${reviews}件` : ""}${genre ? ` · ${esc(genre)}` : ""}</p>
       ${tags.length ? `<div class="rk-card-tags">${tags.map(t => `<span>${esc(t)}</span>`).join("")}</div>` : ""}
       ${matchHTML}
@@ -426,6 +460,28 @@ function esc(s) {
   return String(s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+// ── 数字のカウントアップ（2026-07-09 ④）：条件を選ぶたびに
+//    サイドパネルの数字がぐるぐる変わって見えるアニメーション ──
+function rollNumber(el, to, fmt) {
+  if (!el) return;
+  const from = Number(el.dataset.val || 0);
+  el.dataset.val = to;
+  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches || from === to) {
+    el.textContent = fmt(to);
+    return;
+  }
+  const t0 = performance.now(), dur = 650;
+  const step = now => {
+    const p = Math.min(1, (now - t0) / dur);
+    const eased = 1 - Math.pow(1 - p, 3);
+    el.textContent = fmt(Math.round(from + (to - from) * eased));
+    if (p < 1) requestAnimationFrame(step);
+  };
+  requestAnimationFrame(step);
+}
+
+let lastTop = []; // 症状検索（③）の提案表示が直近の上位を参照する
+
 function renderRanking() {
   const container = $("rankList");
   const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -438,13 +494,15 @@ function renderRanking() {
   }
   const prevIds = new Set(prevRects.keys());
 
+  computeWardRanks();
   const pool = getFilteredPool();
   const scored = pool.map(c => ({ clinic: c, ...calcRankScore(c) }));
   scored.sort((a, b) => b.score - a.score);
   const top = scored.slice(0, 50);
+  lastTop = top;
 
-  $("resultCount").textContent = `${top.length}院を表示（データランキング）`;
-  $("matchedCount").textContent = `${pool.length}院`;
+  rollNumber($("resultCount"), top.length, n => `${n}院を表示（データランキング）`);
+  rollNumber($("matchedCount"), pool.length, n => `${n.toLocaleString()}院`);
 
   if (top.length === 0) {
     container.innerHTML = `<div class="rk-empty">該当する医院が見つかりませんでした。条件を変更してみてください。</div>`;
@@ -495,8 +553,13 @@ function renderFilterUI() {
 
   buildFilterChips($("filterTreatment"), TREATMENT_LIST,
     t => t, t => t,
-    t => filters.treatment === t,
-    t => { filters.treatment = (filters.treatment === t) ? null : t; odrTrack("filter_select", { filter_type: "treatment", filter_value: t }); onFilterChange(); });
+    t => filters.treatments.has(t),
+    t => {
+      if (filters.treatments.has(t)) filters.treatments.delete(t);
+      else filters.treatments.add(t);
+      odrTrack("filter_select", { filter_type: "treatment", filter_value: t });
+      onFilterChange();
+    });
 
   buildFilterChips($("filterCondition"), CONDITION_LIST,
     c => c, c => c,
@@ -514,7 +577,7 @@ function renderCurrentFilterPanel() {
   if (filters.ward && filters.ward !== "all") {
     chips.push(WARD_LIST.find(w => w.key === filters.ward)?.label);
   }
-  if (filters.treatment) chips.push(filters.treatment);
+  filters.treatments.forEach(t => chips.push(t));
   filters.conditions.forEach(c => chips.push(c));
 
   const panel = $("currentFilterPanel");
@@ -537,7 +600,7 @@ Object.entries(WARD_TO_QS).forEach(([full, short]) => { QS_TO_WARD[short] = full
 function syncURL(push) {
   const params = new URLSearchParams();
   if (filters.ward && filters.ward !== "all") params.set("ward", WARD_TO_QS[filters.ward] || filters.ward);
-  if (filters.treatment) params.set("treatment", filters.treatment);
+  if (filters.treatments.size) params.set("treatment", Array.from(filters.treatments).join(","));
   if (filters.conditions.size) params.set("cond", Array.from(filters.conditions).join(","));
   const qs = params.toString();
   const url = qs ? `?${qs}` : location.pathname;
@@ -549,11 +612,13 @@ function syncURL(push) {
 }
 
 function serializeFilters() {
-  return { ward: filters.ward, treatment: filters.treatment, conditions: Array.from(filters.conditions) };
+  return { ward: filters.ward, treatments: Array.from(filters.treatments), conditions: Array.from(filters.conditions) };
 }
 function applySerializedFilters(s) {
   filters.ward = (s && s.ward) || "all";
-  filters.treatment = (s && s.treatment) || null;
+  // 旧形式（treatment: 単一文字列）の履歴とも互換を保つ
+  const ts = (s && (s.treatments || (s.treatment ? [s.treatment] : []))) || [];
+  filters.treatments = new Set(ts.filter(t => TREATMENT_MAP[t]));
   filters.conditions = new Set((s && s.conditions) || []);
 }
 
@@ -561,7 +626,9 @@ function parseFiltersFromURL() {
   const params = new URLSearchParams(location.search);
   const wardShort = params.get("ward");
   filters.ward = wardShort ? (QS_TO_WARD[wardShort] || "all") : "all";
-  filters.treatment = params.get("treatment") || null;
+  // カンマ区切りで複数指定可。既存の単一指定リンク（記事CTA等）もそのまま動く
+  const treatment = params.get("treatment");
+  filters.treatments = new Set(treatment ? treatment.split(",").filter(t => TREATMENT_MAP[t]) : []);
   const cond = params.get("cond");
   filters.conditions = new Set(cond ? cond.split(",").filter(Boolean) : []);
 }
@@ -619,6 +686,133 @@ function initCompareUI() {
   if (overlay) overlay.addEventListener("click", e => { if (e.target === overlay) overlay.hidden = true; });
 }
 
+// ── 症状テキスト検索（2026-07-09 ③）─────────────────────────
+// 「右の犬歯が3日前からしみる」のような自由文から、通院条件
+// （症状カテゴリ・希望条件・地域）を読み取ってランキングに反映し、
+// 上位医院を「なぜ選んだか」の根拠つきで提案する。
+// ※医療診断は行わない。読み取るのはあくまで「探す条件」であり、
+//   その旨を結果に必ず明記する（policy.htmlの方針に準拠）。
+const SYMPTOM_RULES = [
+  { re: /しみ|知覚過敏/, treat: "歯が痛い", read: "「しみる」→ むし歯・知覚過敏への対応情報がある医院を優先", kw: ["知覚過敏", "しみ", "虫歯"] },
+  { re: /痛(い|み|む|く)|ズキ|うず|激痛/, treat: "歯が痛い", read: "痛みの訴え → 急な痛み・むし歯治療の対応情報を優先", kw: ["痛み", "虫歯", "急患"] },
+  { re: /詰め物|かぶせ|被せ|銀歯|取れ|欠け|割れ/, treat: "詰め物が取れた", read: "詰め物・被せ物のトラブル → 補綴治療の情報を優先", kw: ["詰め物", "被せ物", "セラミック"] },
+  { re: /親知らず|親不知/, treat: "親知らず", read: "親知らず → 抜歯・口腔外科系の対応情報を優先", kw: ["親知らず", "抜歯"] },
+  { re: /歯茎|歯ぐき|歯肉|出血|血が出|腫れ|口臭|ぐらつ|ぐらぐら|グラグラ/, treat: "歯周病", read: "歯ぐき・腫れ・口臭など → 歯周病治療の情報を優先", kw: ["歯周病", "歯茎", "歯ぐき"] },
+  { re: /白く|黄ば|着色|ステイン|ホワイトニング/, treat: "ホワイトニング", read: "歯の色の悩み → ホワイトニング対応の医院を優先", kw: ["ホワイトニング"] },
+  { re: /歯並び|矯正|ガタガタ|出っ歯|受け口|マウスピース|インビザ/, treat: "歯列矯正", read: "歯並びの相談 → 矯正歯科の情報を優先", kw: ["矯正"] },
+  { re: /インプラント/, treat: "インプラント", read: "インプラント → 対応実績の情報を優先", kw: ["インプラント"] },
+  { re: /入れ歯|義歯|ブリッジ/, treat: "入れ歯", read: "入れ歯・義歯 → 補綴対応の情報を優先", kw: ["入れ歯", "義歯"] },
+  { re: /子ども|子供|こども|小児|息子|娘/, treat: "子どもの歯", read: "お子さんの受診 → 小児歯科の情報を優先", kw: ["小児", "子ども"] },
+  { re: /怖|苦手|緊張|トラウマ|不安/, treat: "歯医者が苦手", read: "通院への不安 → 痛みや不安への配慮の情報を優先", kw: ["無痛", "笑気", "カウンセリング"] },
+  { re: /クリーニング|歯石|検診|予防/, treat: "予防・定期検診", read: "予防・検診の希望 → 予防歯科の情報を優先", kw: ["予防", "定期検診"] },
+];
+const SYMPTOM_COND_RULES = [
+  { re: /夜|仕事帰り|遅い時間|残業/, cond: "夜間診療", read: "夜しか行けない → 夜間診療の案内がある医院を優先" },
+  { re: /土日|週末|土曜|日曜/, cond: "土日診療", read: "週末の通院希望 → 土日診療の案内がある医院を優先" },
+  { re: /車で|駐車/, cond: "駐車場あり", read: "車での通院 → 駐車場の案内がある医院を優先" },
+  { re: /子連れ|ベビーカー|赤ちゃん/, cond: "子ども連れに配慮", read: "お子さん連れ → キッズ対応の案内がある医院を優先" },
+  { re: /痛くない|無痛/, cond: "痛みに配慮", read: "痛みが不安 → 痛みへの配慮の評判がある医院を優先" },
+];
+const URGENT_RE = /今日中|今すぐ|激痛|眠れない|我慢できない|耐えられない/;
+
+function parseSymptomText(text) {
+  const treatments = new Set();
+  const conditions = new Set();
+  const readings = [];
+  const kws = [];
+  SYMPTOM_RULES.forEach(r => {
+    if (r.re.test(text) && !treatments.has(r.treat)) {
+      treatments.add(r.treat);
+      readings.push(r.read);
+      kws.push(...r.kw);
+    }
+  });
+  SYMPTOM_COND_RULES.forEach(r => {
+    if (r.re.test(text) && !conditions.has(r.cond)) {
+      conditions.add(r.cond);
+      readings.push(r.read);
+    }
+  });
+  let ward = null;
+  outer: for (const [key, keywords] of Object.entries(AREA_KEYWORDS)) {
+    for (const kw of keywords) {
+      if (text.includes(kw)) { ward = key; readings.push(`地名「${kw}」→ ${key.replace(/（.*）/, "")}で絞り込み`); break outer; }
+    }
+  }
+  return { treatments, conditions, ward, readings, kws, urgent: URGENT_RE.test(text) };
+}
+
+// 提案の根拠：一致した条件＋医院の公開情報からの引用＋口コミ実数
+function symptomReasons(item, parsed) {
+  const c = item.clinic;
+  const reasons = [];
+  if (item.matched.length) reasons.push(`読み取った条件との一致：${item.matched.join("・")}`);
+  const evPool = [...(c.specialty_evidence || []), ...(c.equipment_evidence || []), ...(c.doctor_evidence || [])];
+  const quote = evPool.find(e => parsed.kws.some(k => e.includes(k)));
+  if (quote) reasons.push(`公式サイトの記載：「${quote.length > 48 ? quote.slice(0, 48) + "…" : quote}」`);
+  if (c.rating) reasons.push(`Google口コミ ${c.rating.toFixed(1)}（${c.total_reviews || 0}件）`);
+  const st = formatStationText(c.nearest_station);
+  if (st) reasons.push(st);
+  const wr = wardRankMap.get(c.place_id || "");
+  if (wr) reasons.push(`${wr.ward}内 ${wr.rank}位／${wr.total}院`);
+  return reasons;
+}
+
+function runSymptomSearch() {
+  const input = $("symptomInput");
+  const result = $("symptomResult");
+  if (!input || !result) return;
+  const text = input.value.trim();
+  if (!text) return;
+  const parsed = parseSymptomText(text);
+  odrTrack("symptom_search", { query: text.slice(0, 80) });
+
+  if (parsed.treatments.size === 0 && parsed.conditions.size === 0 && !parsed.ward) {
+    result.hidden = false;
+    result.innerHTML = `<p class="rk-symptom-miss">症状を読み取れませんでした。「しみる」「腫れた」「詰め物が取れた」など、症状や希望の言葉を入れてみてください。</p>`;
+    return;
+  }
+
+  // 読み取った条件をフィルタに反映（ランキング全体も連動して並び替わる）
+  if (parsed.ward) filters.ward = parsed.ward;
+  filters.treatments = new Set(parsed.treatments);
+  parsed.conditions.forEach(c => filters.conditions.add(c));
+  renderFilterUI();
+  renderCurrentFilterPanel();
+  renderRanking();
+  syncURL(true);
+
+  const top3 = lastTop.slice(0, 3);
+  const cards = top3.map((item, i) => {
+    const c = item.clinic;
+    const reasons = symptomReasons(item, parsed);
+    return `<div class="rk-sym-clinic">
+      <p class="rk-sym-rank"><span class="rk-prize rk-prize-${i + 1}"><span class="ja">${PRIZE[i + 1][0]}</span></span><a href="${esc(clinicUrl(c))}">${esc(c.name || "")}</a></p>
+      <ul class="rk-sym-reasons">${reasons.map(r => `<li>${esc(r)}</li>`).join("")}</ul>
+    </div>`;
+  }).join("");
+
+  result.hidden = false;
+  result.innerHTML = `
+    <p class="rk-sym-head">AIが読み取った条件</p>
+    <ul class="rk-sym-read">${parsed.readings.map(r => `<li>${esc(r)}</li>`).join("")}</ul>
+    ${parsed.urgent ? `<p class="rk-sym-urgent">強い痛み・急ぎの場合は、順位に関わらず、まずお近くの医院に電話して当日の対応可否をご確認ください。</p>` : ""}
+    <p class="rk-sym-head">この条件での上位提案</p>
+    ${cards || `<p class="rk-symptom-miss">該当する医院が見つかりませんでした。</p>`}
+    <p class="rk-sym-note">※これは医療診断ではありません。入力文から「探す条件」を読み取り、各医院の公開情報と照合した参考情報です。症状がある場合は早めの受診をおすすめします。</p>`;
+  result.scrollIntoView({ behavior: "smooth", block: "nearest" });
+}
+
+function initSymptomSearch() {
+  const btn = $("symptomBtn");
+  const input = $("symptomInput");
+  if (!btn || !input) return;
+  btn.addEventListener("click", runSymptomSearch);
+  input.addEventListener("keydown", e => {
+    if (e.key === "Enter" && (e.metaKey || e.ctrlKey)) runSymptomSearch();
+  });
+}
+
 // ── 初期化 ───────────────────────────────────────────────
 document.addEventListener("DOMContentLoaded", async () => {
   parseFiltersFromURL();
@@ -628,6 +822,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   initMobileCta();
   initCardDelegation();
   initCompareUI();
+  initSymptomSearch();
 
   await loadDB();
   await loadSlugMap();

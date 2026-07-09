@@ -65,13 +65,22 @@
 <!-- ════════════════════════════════════════════════════════
      フィルタータブ
 ════════════════════════════════════════════════════════ -->
+<section class="rk-symptom" aria-label="症状から探す">
+  <p class="rk-filter-label">SYMPTOM SEARCH — 症状の言葉から探す（β）</p>
+  <div class="rk-symptom-box">
+    <textarea id="symptomInput" rows="2" placeholder="例：右の犬歯が3日前からしみる。仕事帰りの夜しか行けない"></textarea>
+    <button type="button" id="symptomBtn">AIに条件を読み取らせる</button>
+  </div>
+  <div class="rk-symptom-result" id="symptomResult" hidden></div>
+</section>
+
 <section class="rk-filters" aria-label="絞り込み条件">
   <div class="rk-filter-group">
     <p class="rk-filter-label">地域</p>
     <div class="rk-filter-row" id="filterWard"></div>
   </div>
   <div class="rk-filter-group">
-    <p class="rk-filter-label">悩み・治療</p>
+    <p class="rk-filter-label">悩み・治療（複数選択可）</p>
     <div class="rk-filter-row" id="filterTreatment"></div>
   </div>
   <div class="rk-filter-group">

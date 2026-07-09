@@ -118,6 +118,56 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
   background:var(--brand-deep);border-color:var(--brand-deep);color:#fff;
 }
 
+/* ── 症状から探す（③） ── */
+.rk-symptom{padding:0 clamp(16px,4vw,40px) 24px;max-width:900px;}
+.rk-symptom-box{
+  display:flex;gap:10px;align-items:stretch;
+  background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
+  padding:10px;
+}
+.rk-symptom-box textarea{
+  flex:1;border:none;resize:none;font-family:inherit;font-size:.88rem;
+  line-height:1.7;color:var(--ink);padding:6px 8px;background:transparent;
+}
+.rk-symptom-box textarea:focus{outline:none;}
+.rk-symptom-box button{
+  flex-shrink:0;align-self:center;
+  background:var(--brand-deep);color:#fff;border:none;border-radius:999px;
+  font-family:inherit;font-size:.82rem;font-weight:700;
+  padding:11px 20px;cursor:pointer;transition:background .15s;
+}
+.rk-symptom-box button:hover{background:var(--brand);}
+@media(max-width:600px){
+  .rk-symptom-box{flex-direction:column;}
+  .rk-symptom-box button{align-self:stretch;}
+}
+.rk-symptom-result{
+  margin-top:14px;background:var(--surface);border:1px solid var(--line);
+  border-radius:var(--r);padding:18px 20px;
+}
+.rk-sym-head{
+  font-family:'Roboto Mono',monospace;font-size:.68rem;letter-spacing:.12em;
+  color:var(--warm-deep);text-transform:uppercase;margin:14px 0 8px;
+}
+.rk-sym-head:first-child{margin-top:0;}
+.rk-sym-read{margin:0;padding-left:1.1em;}
+.rk-sym-read li{font-size:.8rem;color:var(--ink-soft);line-height:1.9;}
+.rk-sym-urgent{
+  background:var(--warm-soft);border-left:3px solid var(--warm);
+  font-size:.8rem;color:var(--warm-deep);padding:10px 14px;border-radius:6px;
+  margin:12px 0 0;line-height:1.8;
+}
+.rk-sym-clinic{border-top:1px dashed var(--line);padding:12px 0 4px;}
+.rk-sym-clinic:first-of-type{border-top:none;}
+.rk-sym-rank{display:flex;align-items:center;gap:10px;margin:0 0 6px;font-weight:700;}
+.rk-sym-rank a{color:var(--ink);font-size:.95rem;}
+.rk-sym-rank a:hover{color:var(--brand);}
+.rk-sym-rank .rk-prize{flex-direction:row;margin-top:0;padding:3px 10px;}
+.rk-sym-reasons{margin:0 0 8px;padding-left:1.2em;}
+.rk-sym-reasons li{font-size:.78rem;color:var(--ink-soft);line-height:1.85;}
+.rk-sym-note{font-size:.72rem;color:var(--ink-faint);line-height:1.8;margin:14px 0 0;}
+.rk-symptom-miss{font-size:.82rem;color:var(--ink-soft);margin:0;line-height:1.8;}
+
 /* ── 順位の見方 ── */
 .rk-methodology{padding:20px clamp(16px,4vw,40px) 0;}
 .rk-methodology details{
@@ -179,14 +229,35 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 .rk-card-rank .num{font-size:1.9rem;letter-spacing:-.02em;color:var(--ink);}
 .rk-card-rank .unit{font-size:.62rem;letter-spacing:.06em;color:var(--ink-faint);margin-top:2px;}
 
-/* 上位3件は番号を一段大きく強調する（メダル色は使わない。深緑のアクセント線のみ） */
-.rk-card[data-top="1"]::before,
-.rk-card[data-top="2"]::before,
-.rk-card[data-top="3"]::before{background:var(--brand);}
-.rk-card[data-top="1"] .rk-card-rank .num{font-size:2.6rem;color:var(--brand-deep);}
-.rk-card[data-top="2"] .rk-card-rank .num{font-size:2.3rem;color:var(--brand-deep);}
-.rk-card[data-top="3"] .rk-card-rank .num{font-size:2.1rem;color:var(--brand-deep);}
-.rk-card[data-top="1"]{padding-top:26px;padding-bottom:26px;}
+/* 上位3件は金賞・銀賞・銅賞（2026-07-09 ユーザー指示①）。
+   落ち着いたメタリック調の3色で、番号・左アクセント線・賞ラベルを彩る */
+:root{
+  --gold:   #b8912f; --gold-soft:   #fbf6e8;
+  --silver: #7e8c98; --silver-soft: #f2f5f7;
+  --bronze: #a5652f; --bronze-soft: #f9f0e8;
+}
+.rk-card[data-top="1"]::before{background:linear-gradient(180deg,#d4af37,#9a7420);width:4px;}
+.rk-card[data-top="2"]::before{background:linear-gradient(180deg,#aebcc6,#6d7d8b);width:4px;}
+.rk-card[data-top="3"]::before{background:linear-gradient(180deg,#c98a4b,#8a4f1d);width:4px;}
+.rk-card[data-top="1"] .rk-card-rank .num{font-size:2.6rem;color:var(--gold);}
+.rk-card[data-top="2"] .rk-card-rank .num{font-size:2.3rem;color:var(--silver);}
+.rk-card[data-top="3"] .rk-card-rank .num{font-size:2.1rem;color:var(--bronze);}
+.rk-card[data-top="1"]{padding-top:26px;padding-bottom:26px;background:linear-gradient(135deg,var(--gold-soft) 0%,var(--surface) 34%);}
+.rk-card[data-top="2"]{background:linear-gradient(135deg,var(--silver-soft) 0%,var(--surface) 30%);}
+.rk-card[data-top="3"]{background:linear-gradient(135deg,var(--bronze-soft) 0%,var(--surface) 30%);}
+.rk-prize{
+  display:flex;flex-direction:column;align-items:center;gap:1px;
+  margin-top:8px;padding:4px 8px;border-radius:6px;line-height:1.3;
+}
+.rk-prize .ja{font-size:.72rem;font-weight:700;letter-spacing:.08em;}
+.rk-prize .en{font-family:'Roboto Mono',monospace;font-size:.52rem;letter-spacing:.16em;opacity:.75;}
+.rk-prize-1{background:var(--gold-soft);color:var(--gold);border:1px solid #e3cf96;}
+.rk-prize-2{background:var(--silver-soft);color:var(--silver);border:1px solid #c8d2da;}
+.rk-prize-3{background:var(--bronze-soft);color:var(--bronze);border:1px solid #dfc0a0;}
+
+/* 区内順位（②） */
+.rk-ward-rank{font-weight:600;color:var(--ink-soft);}
+.rk-ward-rank small{font-size:.9em;color:var(--ink-faint);font-weight:400;}
 .rk-card-body{flex:1;min-width:0;}
 .rk-card-name{font-size:1.02rem;font-weight:700;margin:0 0 6px;}
 .rk-card-name a:hover{color:var(--brand);}
