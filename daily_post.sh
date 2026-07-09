@@ -14,6 +14,9 @@ set -o pipefail
 
 SITE_DIR="/Users/komurasakishoutaira/Desktop/クロード/京都歯科総研"
 SURVEY_DIR="/Users/komurasakishoutaira/Desktop/クロード/AI評判設計システム"
+# keyword_survey.py / blog_generator.py は共有client_config.json（大阪設定）を既定で読むため、
+# CLIENT_CONFIG環境変数で京都用configを直接指定する（2026-07-10・大阪ペット医療ナビと同方式）
+export CLIENT_CONFIG="$SURVEY_DIR/client_config_kyoto.json"
 LOG_DIR="$SITE_DIR/_daily_post_logs"
 TODAY=$(date +%Y-%m-%d)
 LOG_FILE="$LOG_DIR/$TODAY.log"
