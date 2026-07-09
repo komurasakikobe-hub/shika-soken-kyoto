@@ -218,6 +218,7 @@ h1,h2,h3,p,li{line-break:strict;text-wrap:pretty;}
     <a href="../shindan/index.html">AI診断</a>
     <a href="../../index.html">トップ</a>
     <a href="../index.html">コラム</a>
+    <a href="../../network.html">展開エリア</a>
     <a href="../../shikumi.html">医院・開業医の方へ</a>
   </nav>
 </header>
