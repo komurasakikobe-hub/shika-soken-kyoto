@@ -10,13 +10,26 @@
   "contact_email": "komurasaki.kobe@gmail.com",
   "ga4_measurement_id": "",
   "_ga4_note": "公開時にGA4新プロパティを作成して測定IDを入れる",
-  "wards": ["北区", "上京区", "左京区", "中京区", "東山区", "下京区", "南区", "右京区", "伏見区", "山科区", "西京区"],
+  "wards": [
+    "北区",
+    "上京区",
+    "左京区",
+    "中京区",
+    "東山区",
+    "下京区",
+    "南区",
+    "右京区",
+    "伏見区",
+    "山科区",
+    "西京区"
+  ],
   "stats": {
-    "clinics_analyzed": 0,
-    "reviews_parsed": 0,
-    "sites_crawled": 0,
-    "clinics_published": 0,
-    "reviews_published": 0
+    "clinics_analyzed": 931,
+    "reviews_parsed": 20130,
+    "sites_crawled": 636,
+    "clinics_published": 673,
+    "reviews_published": 14919,
+    "ai_analyzed": 563
   },
   "_stats_note": "データ収集完了後に実数を入れる。トップページの手打ち数字と必ず一致させること",
   "_official_stat_note": "京都市「医療統計の概況」（厚生労働省 令和6年医療施設（動態）調査に基づく、基準日2024-10-01）：京都市内の歯科診療所778施設（前年783施設から5施設減）。収集完了後、この数値との乖離を監査の目安にする。"

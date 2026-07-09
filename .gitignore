@@ -2,5 +2,8 @@
 .DS_Store
 _backups/
 __pycache__/
+*.pyc
 _reports/
-_daily_post_logs/
+outreach_log.json
+email_optout.json
+*.log
