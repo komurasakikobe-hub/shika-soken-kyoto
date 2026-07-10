@@ -33,7 +33,7 @@
 - [ ] GitHub Privateリポジトリ作成・push（ユーザー操作）
 - [ ] Cloudflare Pages接続・ドメイン決定（ユーザー操作）
 - [ ] GA4新プロパティ・Search Console（ユーザー操作）
-- [ ] 毎日投稿 launchd（時刻は大阪9:00・神戸9:30とずらして 10:00）
+- [ ] 毎日投稿：コラムは大阪歯科総研に全都市集約済みのため、この都市単独でのdaily_post.sh launchd化は不要（[[shared-column-policy]]）。個別記事生成が必要な場合はユーザー承認必須
 
 ## 注意（大阪版で踏んだ地雷 — 横展開マニュアル §3 の要約）
 - slug衝突（generate_slug_map.py 必須）／ジオコーディング座標集約（同一座標4件以上を監査）

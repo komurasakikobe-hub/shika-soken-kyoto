@@ -6,16 +6,14 @@
 <title>医院・開業医の方へ｜京都歯科総研</title>
 <meta name="description" content="京都歯科総研の医院向けサポート（記事作成・Google口コミ返信・情報発信の支援）のご案内。掲載順位やAIの評価は操作しません。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/odr-ds.css">
 <style>
 :root{--pine:#1f4b3f;--terra:#d98b5f;--paper:#f6f8f7;--ink:#1c2b25;--ink2:#586962;--line:#e4ebe7;}
 *{box-sizing:border-box;}
 body{margin:0;font-family:'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;line-height:1.9;}
 a{color:inherit;text-decoration:none;}
-.nav{background:var(--pine);color:#fff;height:64px;display:flex;align-items:center;justify-content:space-between;padding:0 clamp(20px,4vw,44px);}
-.nav .logo{font-weight:700;}
-.nav .logo small{display:block;font-size:.58rem;letter-spacing:.16em;color:#9cbbae;font-weight:400;}
-.nav .back{font-size:.82rem;color:#cfe0d8;}
+/* HEADER：全ページ共通のodr-brandbar（assets/odr-ds.css）を使用。ページ固有CSSは持たない */
 .wrap{max-width:760px;margin:0 auto;padding:0 clamp(20px,4vw,44px);}
 .hero{background:var(--pine);color:#fff;padding:clamp(40px,6vw,64px) 0;}
 .eyebrow{font-size:.72rem;font-weight:700;letter-spacing:.18em;color:#9cbbae;margin:0 0 14px;}
@@ -55,10 +53,18 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
 <script src="assets/odr-track.js"></script>
 </head>
 <body>
-<header class="nav">
-  <a class="logo" href="index.html">京都歯科総研<small>KYOTO DENTAL RESEARCH</small></a>
-  <a class="back" href="network.html">展開エリア</a>
-  <a class="back" href="index.html">← トップ</a>
+<header class="odr-brandbar odr-scope">
+  <a class="odr-sig" href="index.html">
+    <span class="odr-sig-mark">ODR</span>
+    <span class="odr-sig-name">京都歯科総研<small>Kyoto Dental Research Institute</small></span>
+  </a>
+  <nav>
+    <a href="articles/shindan/index.html">ランキング&amp;AI診断</a>
+    <a href="articles/features/index.html">特徴から探す</a>
+    <a href="articles/index.html">コラム</a>
+    <a href="network.html">展開エリア</a>
+    <a href="index.html">← トップ</a>
+  </nav>
 </header>
 
 <section class="hero">
@@ -136,7 +142,7 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
         </label>
         <input type="hidden" name="_subject" value="【医院お問い合わせ】京都歯科総研">
         <button type="submit" class="cbtn">この内容で問い合わせる</button>
-        <p class="cnote" id="cform-note">入力後、「問い合わせる」を押すと送信されます。</p>
+        <p class="cnote" id="cform-note">「問い合わせる」を押すと、入力内容を引き継いだメール作成画面が開きます。</p>
       </form>
     </section>
   </div>
@@ -144,7 +150,7 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
 
 <footer class="disc">
   <div class="wrap">当ページは医院・開業医の方向けのご案内です。掲載情報の分析は公開情報にもとづき、すべての医院に同一の基準を適用しています。<br>© 京都歯科総研 KYOTO DENTAL RESEARCH</div>
-</footer>
+<p style="font-size:.75rem;opacity:.8;"><a href="policy.html" style="color:inherit;text-decoration:underline;">運営ポリシー・免責事項</a></p></footer>
 <script>
 (function(){
   var f=document.getElementById('clinicForm');
@@ -153,7 +159,14 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
   f.addEventListener('submit',function(e){
     e.preventDefault();
     if(f.action.indexOf('YOUR_FORM_ID')>=0){
-      if(note){note.textContent='フォームの設定が未完了です（送信先IDが未設定）。';note.style.color='#c0392b';}
+      /* Formspree未設定の間は、入力内容を引き継いだメール作成画面を開く（無料・確実） */
+      var fd=new FormData(f);
+      var body='医院名: '+(fd.get('医院名')||'')+'\nご担当者名: '+(fd.get('ご担当者名')||'')+
+               '\nメール: '+(fd.get('email')||'')+'\n電話: '+(fd.get('電話番号')||'')+
+               '\n\nご相談内容:\n'+(fd.get('ご相談内容')||'');
+      location.href='mailto:komurasaki.kobe@gmail.com?subject='+
+        encodeURIComponent('【医院お問い合わせ】京都歯科総研')+'&body='+encodeURIComponent(body);
+      if(note){note.textContent='メール作成画面を開きました。そのまま送信してください（開かない場合は komurasaki.kobe@gmail.com まで直接お送りください）。';}
       return;
     }
     var btn=f.querySelector('.cbtn'); if(btn){btn.disabled=true;btn.textContent='送信中…';}
