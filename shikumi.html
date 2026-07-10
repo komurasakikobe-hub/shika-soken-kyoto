@@ -5,7 +5,8 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AIに選ばれる仕組み｜京都歯科総研</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/odr-ds.css">
 <style>
   :root {
     --navy:      #0d2f4f;
@@ -33,21 +34,8 @@
     -webkit-font-smoothing:antialiased;
   }
 
-  /* ── HEADER ── */
-  .site-header{
-    background:var(--navy);color:var(--white);
-    padding:0 40px;position:sticky;top:0;z-index:100;
-    border-bottom:2px solid var(--teal);
-  }
-  .header-inner{
-    max-width:1080px;margin:0 auto;
-    display:flex;align-items:center;justify-content:space-between;
-    height:64px;
-  }
-  .logo{font-size:1.05rem;font-weight:700;letter-spacing:.08em;color:var(--white);text-decoration:none;}
-  .logo span{color:var(--teal-soft);font-size:.72rem;font-weight:400;display:block;letter-spacing:.12em;}
-  .back-link{color:rgba(255,255,255,.65);text-decoration:none;font-size:.82rem;letter-spacing:.06em;}
-  .back-link:hover{color:var(--white);}
+  /* ── HEADER：全ページ共通のodr-brandbar（assets/odr-ds.css）を使用。ページ固有CSSは持たない ── */
+  .odr-brandbar{position:sticky;top:0;z-index:100;}
 
   /* ── HERO ── */
   .hero{
@@ -204,7 +192,6 @@
     .wrap{padding:0 20px;}
     .section{padding:48px 0;}
     .hero{padding:56px 20px 48px;}
-    .site-header{padding:0 20px;}
     .cta-section{padding:56px 20px;}
   }
 
@@ -215,22 +202,26 @@ h1,h2,h3,h4,h5,p,li,dd,figcaption,td,th,
   text-wrap:pretty;       /* 1文字残り・不自然に短い最終行を自動回避 */
 }
 h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
+@media(max-width:760px){.sec-lead{white-space:normal!important}.result-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}}
 </style>
 <script src="assets/site-config.js"></script>
 <script src="assets/odr-track.js"></script>
 </head>
 <body>
 
-<!-- HEADER -->
-<header class="site-header">
-  <div class="header-inner">
-    <a href="index.html" class="logo">
-      京都歯科総研
-      <span>KYOTO DENTAL RESEARCH</span>
-    </a>
-    <a href="network.html" class="back-link">展開エリア</a>
-    <a href="index.html" class="back-link">← トップに戻る</a>
-  </div>
+<!-- HEADER（全ページ共通のodr-brandbarに統一） -->
+<header class="odr-brandbar odr-scope">
+  <a class="odr-sig" href="index.html">
+    <span class="odr-sig-mark">ODR</span>
+    <span class="odr-sig-name">京都歯科総研<small>Kyoto Dental Research Institute</small></span>
+  </a>
+  <nav>
+    <a href="articles/shindan/index.html">ランキング&amp;AI診断</a>
+    <a href="articles/features/index.html">特徴から探す</a>
+    <a href="articles/index.html">コラム</a>
+    <a href="network.html">展開エリア</a>
+    <a href="index.html">← トップに戻る</a>
+  </nav>
 </header>
 
 <!-- HERO -->
@@ -260,7 +251,7 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
       <div class="problem-card">
         <h3>口コミの返信、求人の文章、ブログ——全部、院長の仕事になっている</h3>
         <p>診療の合間に返信を書き、夜に求人原稿を直し、休日にブログを考える。どれも「自分がやるしかない」と思われている仕事ですが、実は下書きまでは任せられる仕事です。</p>
-      
+      </div>
       <div class="problem-card">
         <h3>ホームページはあるが更新できていない</h3>
         <p>Googleは更新頻度をサイトの信頼性指標として使います。更新されないサイトは徐々に評価が下がり、検索結果での表示順位が下落します。</p>
@@ -268,7 +259,7 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
       <div class="problem-card">
         <h3>何をやればいいかわからないまま、時間だけが過ぎる</h3>
         <p>SEO・MEO・SNS・AI対策・採用・スタッフ教育——やるべきことが多すぎて、結局どれも中途半端に。私たちのゴールは、先生が診療に専念できるところまで「診療以外」を引き受けることです。</p>
-      
+      </div>
     </div>
   </div>
 </section>
@@ -449,7 +440,7 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
   京都歯科総研 — KYOTO DENTAL RESEARCH<br>
   <a href="index.html">トップページに戻る</a><br><br>
   &copy; 2025 京都歯科総研
-</footer>
+<p style="font-size:.75rem;opacity:.8;"><a href="policy.html" style="color:inherit;text-decoration:underline;">運営ポリシー・免責事項</a></p></footer>
 
 </body>
 </html>
