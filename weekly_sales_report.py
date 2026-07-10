@@ -10,7 +10,11 @@
   ⑤ komurasaki.kobe@gmail.com へ自動送信
 
 必要な事前設定（.envに追記。詳細はCLAUDE.md「週次営業レポート」参照）：
-  GA4_PROPERTY_ID=123456789            ← GA4管理画面のプロパティID（数字）
+  GA4_PROPERTY_IDS=123456789,987654321 ← GA4管理画面のプロパティID（数字・カンマ区切りで複数可）
+                                          2026-07-11〜：shika-soken/kokedama両アカウントの
+                                          プロパティIDを両方書く（片方の無料枠切れに備えた冗長化）。
+                                          サービスアカウントを両アカウントのプロパティに
+                                          閲覧者として追加しておくこと。旧GA4_PROPERTY_ID（単数）にも後方互換
   GA4_SA_KEY=/path/to/service-account.json ← GCPサービスアカウントの鍵ファイル
   GMAIL_APP_PASSWORD=xxxxxxxxxxxxxxxx  ← Gmailアプリパスワード（2段階認証必須）
   MAIL_FROM=komurasaki.kobe@gmail.com
@@ -49,7 +53,9 @@ def load_env():
 
 load_env()
 
-GA4_PROPERTY_ID = os.environ.get("GA4_PROPERTY_ID", "")
+GA4_PROPERTY_IDS = [p.strip() for p in os.environ.get(
+    "GA4_PROPERTY_IDS", os.environ.get("GA4_PROPERTY_ID", "")
+).split(",") if p.strip()]
 GA4_SA_KEY = os.environ.get("GA4_SA_KEY", "")
 GMAIL_APP_PASSWORD = os.environ.get("GMAIL_APP_PASSWORD", "")
 MAIL_FROM = os.environ.get("MAIL_FROM", CFG.get("contact_email", ""))
@@ -57,7 +63,8 @@ MAIL_TO = os.environ.get("MAIL_TO", CFG.get("contact_email", ""))
 
 
 def fetch_ga4_clinic_events(days_back_start: int, days_back_end: int):
-    """GA4から医院別イベント数を取得。{clinic_name: {event: count}} を返す。"""
+    """GA4から医院別イベント数を取得。GA4_PROPERTY_IDS内の全プロパティ（shika-soken/kokedama
+    両アカウント分）を横断集計し、{clinic_name: {event: count}} にマージして返す。"""
     from google.analytics.data_v1beta import BetaAnalyticsDataClient
     from google.analytics.data_v1beta.types import (
         RunReportRequest, DateRange, Dimension, Metric, FilterExpression,
@@ -66,57 +73,73 @@ def fetch_ga4_clinic_events(days_back_start: int, days_back_end: int):
     os.environ["GOOGLE_APPLICATION_CREDENTIALS"] = GA4_SA_KEY
     client = BetaAnalyticsDataClient()
 
-    req = RunReportRequest(
-        property=f"properties/{GA4_PROPERTY_ID}",
-        date_ranges=[DateRange(
-            start_date=f"{days_back_start}daysAgo",
-            end_date=f"{days_back_end}daysAgo",
-        )],
-        dimensions=[Dimension(name="eventName"), Dimension(name="customEvent:clinic_name")],
-        metrics=[Metric(name="eventCount")],
-        dimension_filter=FilterExpression(
-            or_group=FilterExpressionList(expressions=[
-                FilterExpression(filter=Filter(
-                    field_name="eventName",
-                    string_filter=Filter.StringFilter(value=v),
-                )) for v in ["clinic_click", "official_click", "map_click", "compare_add"]
-            ])
-        ),
-        limit=10000,
-    )
-    res = client.run_report(req)
     out = {}
-    for row in res.rows:
-        event = row.dimension_values[0].value
-        clinic = row.dimension_values[1].value
-        count = int(row.metric_values[0].value)
-        if not clinic or clinic == "(not set)":
+    for property_id in GA4_PROPERTY_IDS:
+        req = RunReportRequest(
+            property=f"properties/{property_id}",
+            date_ranges=[DateRange(
+                start_date=f"{days_back_start}daysAgo",
+                end_date=f"{days_back_end}daysAgo",
+            )],
+            dimensions=[Dimension(name="eventName"), Dimension(name="customEvent:clinic_name")],
+            metrics=[Metric(name="eventCount")],
+            dimension_filter=FilterExpression(
+                or_group=FilterExpressionList(expressions=[
+                    FilterExpression(filter=Filter(
+                        field_name="eventName",
+                        string_filter=Filter.StringFilter(value=v),
+                    )) for v in ["clinic_click", "official_click", "map_click", "compare_add"]
+                ])
+            ),
+            limit=10000,
+        )
+        try:
+            res = client.run_report(req)
+        except Exception as e:
+            print(f"  ⚠️ GA4プロパティ {property_id} の取得に失敗（他プロパティは続行）: {e}")
             continue
-        out.setdefault(clinic, {})[event] = out.setdefault(clinic, {}).get(event, 0) + count
+        for row in res.rows:
+            event = row.dimension_values[0].value
+            clinic = row.dimension_values[1].value
+            count = int(row.metric_values[0].value)
+            if not clinic or clinic == "(not set)":
+                continue
+            out.setdefault(clinic, {})[event] = out.setdefault(clinic, {}).get(event, 0) + count
     return out
 
 
 def fetch_filter_trends():
-    """今週よく押されたフィルター（filter_select）上位を取得。"""
+    """今週よく押されたフィルター（filter_select）上位を取得。GA4_PROPERTY_IDS内の
+    全プロパティを横断集計してマージする。"""
     from google.analytics.data_v1beta import BetaAnalyticsDataClient
     from google.analytics.data_v1beta.types import (
         RunReportRequest, DateRange, Dimension, Metric, FilterExpression, Filter,
     )
     client = BetaAnalyticsDataClient()
-    req = RunReportRequest(
-        property=f"properties/{GA4_PROPERTY_ID}",
-        date_ranges=[DateRange(start_date="7daysAgo", end_date="1daysAgo")],
-        dimensions=[Dimension(name="customEvent:filter_value")],
-        metrics=[Metric(name="eventCount")],
-        dimension_filter=FilterExpression(filter=Filter(
-            field_name="eventName",
-            string_filter=Filter.StringFilter(value="filter_select"),
-        )),
-        limit=15,
-    )
-    res = client.run_report(req)
-    return [(r.dimension_values[0].value, int(r.metric_values[0].value))
-            for r in res.rows if r.dimension_values[0].value not in ("", "(not set)")]
+    totals = {}
+    for property_id in GA4_PROPERTY_IDS:
+        req = RunReportRequest(
+            property=f"properties/{property_id}",
+            date_ranges=[DateRange(start_date="7daysAgo", end_date="1daysAgo")],
+            dimensions=[Dimension(name="customEvent:filter_value")],
+            metrics=[Metric(name="eventCount")],
+            dimension_filter=FilterExpression(filter=Filter(
+                field_name="eventName",
+                string_filter=Filter.StringFilter(value="filter_select"),
+            )),
+            limit=15,
+        )
+        try:
+            res = client.run_report(req)
+        except Exception as e:
+            print(f"  ⚠️ GA4プロパティ {property_id} の取得に失敗（他プロパティは続行）: {e}")
+            continue
+        for r in res.rows:
+            v = r.dimension_values[0].value
+            if v in ("", "(not set)"):
+                continue
+            totals[v] = totals.get(v, 0) + int(r.metric_values[0].value)
+    return sorted(totals.items(), key=lambda kv: -kv[1])[:15]
 
 
 def build_sales_email_draft(clinic_name: str, stats: dict, trend_note: str) -> str:
