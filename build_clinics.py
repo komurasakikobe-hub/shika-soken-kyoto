@@ -345,7 +345,10 @@ def evidence_panel_html(c):
     ev_night = evening_hours(c)
     latest = latest_closing_minutes(c)
     if ev_night is True:
-        facts.append(f"夜間帯の診療あり（最終 {latest // 60}時{latest % 60:02d}分まで）")
+        if latest is not None:
+            facts.append(f"夜間帯の診療あり（最終 {latest // 60}時{latest % 60:02d}分まで）")
+        else:
+            facts.append("夜間・救急の診療あり（医院名・区分に基づく）")
     elif ev_night is False:
         facts.append("夜間帯の診療なし（18時までに終了）")
     wk = weekend_hours(c)

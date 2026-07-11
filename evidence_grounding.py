@@ -41,8 +41,22 @@ def latest_closing_minutes(clinic):
     return latest
 
 
+# 夜間・救急を明示する強いシグナル（診療時間データが実態を捉えられない救急病院向け）
+_NIGHT_SIGNAL_RE = re.compile(r"夜間|深夜|24時間|２４時間|救急|時間外|ナイト|エマージェンシー")
+
+
+def _night_operation_signal(clinic):
+    """医院名そのものに夜間/救急営業の証拠があるか（例:「◯◯夜間動物救急センター」）。
+    Googleの診療時間は夜間救急の実態を欠くため、名前が救急業態を示す場合のみ事実に優先する。
+    ※タグや口コミは「夜間診療」タグの付き過ぎ・否定文混入があるため対象にしない（名前限定）。"""
+    return bool(_NIGHT_SIGNAL_RE.search(clinic.get("name") or ""))
+
+
 def evening_hours(clinic):
-    """夜間帯の診療があるか。19:30以降=True / 18:00以前=False / その間・不明=None（判定保留）。"""
+    """夜間帯の診療があるか。19:30以降=True / 18:00以前=False / その間・不明=None（判定保留）。
+    ただし名前・口コミに夜間/救急営業の明確な証拠があれば、時間データに関わらずTrue。"""
+    if _night_operation_signal(clinic):
+        return True
     latest = latest_closing_minutes(clinic)
     if latest is None:
         return None

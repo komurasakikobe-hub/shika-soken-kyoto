@@ -353,7 +353,13 @@ function evLatestClosing(c) {
   }
   return latest;
 }
+const EV_NIGHT_SIGNAL_RE = /夜間|深夜|24時間|２４時間|救急|時間外|ナイト|エマージェンシー/;
+function evNightSignal(c) {
+  // 医院名が夜間/救急業態を示す場合、診療時間データより優先（Python版と同一ロジック）
+  return EV_NIGHT_SIGNAL_RE.test(c.name || "");
+}
 function evEvening(c) {
+  if (evNightSignal(c)) return true;
   const latest = evLatestClosing(c);
   if (latest === null) return null;
   if (latest >= 19 * 60 + 30) return true;
@@ -502,7 +508,9 @@ function evidencePanelHTML(c) {
   }
   const facts = [];
   const evn = evEvening(c), latest = evLatestClosing(c);
-  if (evn === true) facts.push(`夜間帯の診療あり（最終 ${Math.floor(latest / 60)}時${String(latest % 60).padStart(2, "0")}分まで）`);
+  if (evn === true) facts.push(latest !== null
+    ? `夜間帯の診療あり（最終 ${Math.floor(latest / 60)}時${String(latest % 60).padStart(2, "0")}分まで）`
+    : "夜間・救急の診療あり（医院名・区分に基づく）");
   else if (evn === false) facts.push("夜間帯の診療なし（18時までに終了）");
   const wk = evWeekend(c);
   if (wk === true) facts.push("土日いずれかの診療あり");
