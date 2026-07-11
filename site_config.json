@@ -23,9 +23,9 @@
     "西京区"
   ],
   "stats": {
-    "clinics_analyzed": 931,
-    "reviews_parsed": 20130,
-    "sites_crawled": 636,
+    "clinics_analyzed": 673,
+    "reviews_parsed": 14919,
+    "sites_crawled": 456,
     "clinics_published": 673,
     "reviews_published": 14919,
     "ai_analyzed": 563

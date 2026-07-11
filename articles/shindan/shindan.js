@@ -239,19 +239,36 @@ function getFilteredPool() {
   return pool;
 }
 
-// 最寄駅の表示テキストを組み立てる。公式サイト記載があれば断定形（徒歩○分）、
-// 座標からの推定のみの場合は「約○m」または「徒歩○〜○分相当の目安」とし、
-// 断定を避ける（2026-07-08 実装）。
-function formatStationText(ns) {
-  if (!ns) return "";
-  if (ns.official_walk_minutes != null) {
+// アクセス表示テキスト（患者目線・2026-07-11 全面改修）。
+// 駅が徒歩圏（1.2km以内）なら従来どおり駅基準。徒歩圏に駅がない医院は
+// 「徒歩144分」のような無意味な換算をやめ、最寄りバス停→高速IC→車の順で
+// 患者が実際に使う目安に切り替える（データはbuild_access_info.pyが付与）。
+function formatStationText(ns, clinic) {
+  const c = clinic || {};
+  if (ns && ns.official_walk_minutes != null) {
     return `${ns.name}駅から徒歩${ns.official_walk_minutes}分（公式サイト）`;
   }
-  if (ns.straight_distance_m != null) {
-    if (ns.straight_distance_m <= 600) {
-      return `${ns.name}駅から約${ns.straight_distance_m}m`;
-    }
+  const d = ns ? ns.straight_distance_m : null;
+  if (d != null && d <= 600) {
+    return `${ns.name}駅から約${d}m`;
+  }
+  if (d != null && d <= 1200) {
     return `${ns.name}駅から徒歩${ns.estimated_walk_minutes_min}〜${ns.estimated_walk_minutes_max}分相当の目安`;
+  }
+  // ここから徒歩圏に駅がない医院（患者が実際に使う目安に切替）
+  const bus = c.nearest_bus_stop;
+  if (bus && bus.distance_m != null && bus.distance_m <= 500) {
+    const min = Math.max(1, Math.ceil(bus.distance_m / 80));
+    return `バス停「${bus.name}」から徒歩約${min}分の目安`;
+  }
+  const ic = c.nearest_ic;
+  if (ic && ic.distance_m != null && ic.distance_m <= 8000) {
+    const min = Math.max(1, Math.ceil(ic.distance_m / 500)); // 実勢約30km/hで換算
+    return `${ic.name}から車で約${min}分の目安`;
+  }
+  if (ns && d != null) {
+    const min = Math.max(1, Math.ceil(d / 500));
+    return `${ns.name}駅から車で約${min}分の目安`;
   }
   return "";
 }
@@ -279,6 +296,247 @@ function reviewTrendsHTML(clinic) {
     <ul class="rk-trend-list">${items.map(t => `<li>${esc(t)}</li>`).join("")}</ul>
   </div>`;
 }
+
+// ═══ AI ANALYSIS「＋根拠」パネル（2026-07-11新設） ═══════════════
+// evidence_grounding.py のJS移植版。ロジックを変更する場合は必ずPython側と両方直すこと。
+const EV_TOPICS = ["ホワイトニング","インプラント","矯正","予防","小児","子ども","子供","キッズ",
+  "審美","セラミック","入れ歯","義歯","親知らず","歯周病","クリーニング",
+  "猫","犬","エキゾチック","うさぎ","鳥","手術","腫瘍","皮膚","眼科"];
+const EV_ATTRS = ["女性","高齢","バリアフリー","個室","ベビーカー","託児",
+  "丁寧","優しい","痛くない","痛みに配慮","清潔"];
+const EV_SYNONYMS = {
+  "子ども":["子ども","子供","小児","キッズ","お子さま","お子様"],
+  "子供":["子ども","子供","小児","キッズ","お子さま","お子様"],
+  "小児":["子ども","子供","小児","キッズ","お子さま","お子様"],
+  "キッズ":["子ども","子供","小児","キッズ","お子さま","お子様"],
+  "矯正":["矯正","インビザライン","マウスピース"],
+  "入れ歯":["入れ歯","義歯","デンチャー"],
+  "義歯":["入れ歯","義歯","デンチャー"],
+  "予防":["予防","クリーニング","定期検診","メンテナンス"],
+};
+const EV_SPEED_RE = /短期間|短時間|スピーディ|すぐに|即日|早く終|早かった/;
+const EV_CLAUSE_SPLIT_RE = /[。、！？\n]|一方で?|ただし|しかし|なお|また|ものの|反面/;
+const EV_NEG_CLAUSE_RE = /他院|不向き|向いてい?ま?せ?ん|向かない|おすすめしません|お勧めしません|適しません|検討をお勧め|検討をおすすめ|難しい|できません|対応していません|注意が必要|には合わない|は避け/;
+const EV_SUMMARY_TERMS = [...EV_TOPICS, ...EV_ATTRS,
+  "夜","夜間","土日","週末","駅","駐車","車で","急","短期間","短時間",
+  "怖","不安","痛み","安心","丁寧","説明","清潔","通いやすい","アクセス"];
+
+function evScanSummaryClaims(text, c) {
+  if (!text) return [];
+  const out = [], seen = new Set();
+  for (const seg of String(text).split(EV_CLAUSE_SPLIT_RE)) {
+    const clause = (seg || "").trim();
+    if (!clause) continue;
+    const negative = EV_NEG_CLAUSE_RE.test(clause);
+    for (const term of EV_SUMMARY_TERMS) {
+      if (clause.includes(term)) {
+        const [verdict, basis] = evGroundClaim(term, c, negative);
+        const key = term + "|" + verdict + "|" + negative;
+        if (seen.has(key)) continue;
+        seen.add(key);
+        out.push({ clause, term, verdict, basis, negative });
+      }
+    }
+  }
+  return out;
+}
+
+function evLatestClosing(c) {
+  const lines = Array.isArray(c.business_hours) ? c.business_hours : [];
+  if (!lines.length) return null;
+  let latest = null;
+  for (const line of lines) {
+    for (const m of line.matchAll(/～\s*(\d{1,2})時(\d{2})?/g)) {
+      const t = parseInt(m[1], 10) * 60 + parseInt(m[2] || "0", 10);
+      if (latest === null || t > latest) latest = t;
+    }
+  }
+  return latest;
+}
+function evEvening(c) {
+  const latest = evLatestClosing(c);
+  if (latest === null) return null;
+  if (latest >= 19 * 60 + 30) return true;
+  if (latest <= 18 * 60) return false;
+  return null;
+}
+function evWeekend(c) {
+  const lines = Array.isArray(c.business_hours) ? c.business_hours : [];
+  if (!lines.length) return null;
+  for (const line of lines) {
+    if ((line.startsWith("土曜日") || line.startsWith("日曜日")) &&
+        !line.includes("定休日") && /\d{1,2}時/.test(line)) return true;
+  }
+  return false;
+}
+function evParking(c) {
+  const stars = c.equipment_stars || {};
+  if ((stars["駐車場"] || 0) > 0) return true;
+  const s = [...(c.site_features || []), ...(c.equipment_evidence || [])].join("／");
+  return s.includes("駐車") ? true : null;
+}
+function evStationWalk(c) {
+  const st = c.nearest_station || {};
+  return (st.estimated_walk_minutes_min === undefined || st.estimated_walk_minutes_min === null)
+    ? null : st.estimated_walk_minutes_min;
+}
+function evCorpus(c) {
+  const parts = [
+    ...(c.phrases || []), ...(c.reputation_tags || []), ...(c.specialty_tags || []),
+    ...(c.focus_treatments || []), ...(c.site_features || []),
+    ...(c.equipment_evidence || []), ...(c.qualifications || []),
+  ];
+  for (const k of ["reputation_summary", "philosophy", "catchphrase", "doctor_career"]) {
+    if (c[k]) parts.push(String(c[k]));
+  }
+  return parts.join("／");
+}
+function evGroundClaim(claim, c, negative) {
+  const corpus = evCorpus(c);
+  if (claim.includes("夜")) {
+    const ev = evEvening(c);
+    if (ev === null) {
+      const latest = evLatestClosing(c);
+      if (latest === null) return ["inferred", "診療時間データなし（AIによる推定）"];
+      return ["inferred", `最終受付が${Math.floor(latest / 60)}時台のため夜間の解釈は断定せず（AIによる推定）`];
+    }
+    if (negative) return !ev ? ["grounded", "診療時間より（夜間帯の診療なし）"]
+                             : ["contradicted", "診療時間では夜間帯の診療あり"];
+    return ev ? ["grounded", "診療時間より（夜間帯の診療あり）"]
+              : ["contradicted", "診療時間では夜間帯の診療なし"];
+  }
+  if (claim.includes("土日") || claim.includes("週末") || claim.includes("休日")) {
+    const wk = evWeekend(c);
+    if (wk === null) return ["inferred", "診療時間データなし（AIによる推定）"];
+    if (negative) return !wk ? ["grounded", "診療時間より（土日の診療なし）"]
+                             : ["contradicted", "診療時間では土日診療あり"];
+    return wk ? ["grounded", "診療時間より（土日の診療あり）"]
+              : ["contradicted", "診療時間では土日の診療なし"];
+  }
+  if (claim.includes("駅")) {
+    const walk = evStationWalk(c);
+    if (walk === null) return ["inferred", "最寄駅データなし（AIによる推定）"];
+    if (negative) return walk >= 12 ? ["grounded", `最寄駅から徒歩約${walk}分〜（直線距離からの推計）`]
+                                    : ["contradicted", `最寄駅から徒歩約${walk}分〜と近い`];
+    return walk <= 8 ? ["grounded", `最寄駅から徒歩約${walk}分〜（直線距離からの推計）`]
+                     : ["inferred", `最寄駅から徒歩約${walk}分〜（AIによる推定）`];
+  }
+  if (claim.includes("駐車") || claim.includes("車で")) {
+    if (evParking(c)) return negative ? ["contradicted", "駐車場ありの記載を確認"]
+                                      : ["grounded", "公式サイト等で駐車場を確認"];
+    return ["inferred", "駐車場情報なし（AIによる推定）"];
+  }
+  if (/急|短期間|短時間|すぐ/.test(claim)) {
+    const m = corpus.match(EV_SPEED_RE);
+    if (m && negative) return ["contradicted", `口コミに「${m[0]}」等の肯定的な記述あり`];
+    if (m) return ["grounded", `口コミに「${m[0]}」等の記述あり`];
+    return ["inferred", "実データに記述なし（AIによる推定）"];
+  }
+  const negatedTopic = claim.includes("以外") || claim.includes("よりも");
+  for (const kw of EV_TOPICS) {
+    if (claim.includes(kw)) {
+      if (negatedTopic) return ["inferred", "比較・除外表現を含むため断定せず（AIによる推定）"];
+      const hit = (EV_SYNONYMS[kw] || [kw]).find(s => corpus.includes(s));
+      if (hit) return negative ? ["contradicted", `口コミ・公式サイトに「${hit}」の肯定的な記述あり`]
+                               : ["grounded", `口コミ・公式サイトに「${hit}」の記述あり`];
+      return ["inferred", "実データに記述なし（AIによる推定）"];
+    }
+  }
+  for (const kw of EV_ATTRS) {
+    if (claim.includes(kw)) {
+      if (corpus.includes(kw)) return ["grounded", `口コミ・公式サイトに「${kw}」の記述あり`];
+      return ["inferred", "実データに記述なし（AIによる推定）"];
+    }
+  }
+  const ps = c.patient_scores || {};
+  if (/怖|不安|痛み/.test(claim)) {
+    const score = ps["痛みへの配慮"] || ps["優しさ"];
+    if (score && score >= 75) return ["grounded", `口コミ分析スコア（痛みへの配慮・優しさ ${score}点）より`];
+    return ["inferred", "実データに記述なし（AIによる推定）"];
+  }
+  const skip = ["したい", "希望", "重視", "中心", "検討", "通え", "都合", "治療", "診療", "対応", "な人", "たい人"];
+  for (const m of claim.matchAll(/[ぁ-んァ-ヶ一-龠a-zA-Z]{2,}/g)) {
+    const token = m[0];
+    if (skip.includes(token)) continue;
+    if (corpus.includes(token)) return ["grounded", `口コミ・公式サイトに「${token}」の記述あり`];
+  }
+  return ["inferred", "実データに記述なし（AIによる推定）"];
+}
+
+function evidencePanelHTML(c) {
+  const blocks = [];
+  // 0) 分析文の主張ごとの根拠（最重要）
+  const claims = evScanSummaryClaims(c.ai_summary || "", c);
+  if (claims.length) {
+    let rows = "";
+    for (const x of claims) {
+      const badge = x.verdict === "grounded" ? '<span class="rk-ev-badge ok">根拠あり</span>'
+        : x.verdict === "contradicted" ? '<span class="rk-ev-badge bad">要確認</span>'
+        : '<span class="rk-ev-badge guess">AIによる推定</span>';
+      const ctx = x.negative ? "（注意点として）" : "";
+      rows += `<li><span class="rk-ev-term">「${esc(x.term)}」${ctx}</span>${badge}<span class="rk-ev-basis">${esc(x.basis)}</span></li>`;
+    }
+    blocks.push(["この分析文が何にもとづくか",
+      `<p class="rk-ev-summary">${esc(c.ai_summary || "")}</p><ul class="rk-ev-list">${rows}</ul>`]);
+  }
+  const tags = c.reputation_tags || [];
+  const phrases = (c.phrases || []).slice(0, 3);
+  if (tags.length || phrases.length) {
+    let inner = "";
+    if (tags.length) inner += `<p class="rk-ev-line"><span class="rk-ev-k">口コミ分析で抽出されたタグ</span>${tags.map(t => `<span class="rk-ev-tag">${esc(t)}</span>`).join("")}</p>`;
+    if (phrases.length) inner += `<p class="rk-ev-k">実際の口コミからの引用</p>` +
+      phrases.map(p => `<blockquote class="rk-ev-quote">「${esc(p)}」</blockquote>`).join("");
+    const meta = [];
+    if (c.total_reviews) meta.push(`口コミ${c.total_reviews}件を分析`);
+    if (c.sources_analyzed) meta.push(`解析ソース${c.sources_analyzed}種類`);
+    if (c.last_analyzed) meta.push(`分析日 ${esc(String(c.last_analyzed))}`);
+    if (meta.length) inner += `<p class="rk-ev-meta">${meta.join(" ・ ")}</p>`;
+    blocks.push(["口コミからの根拠", inner]);
+  }
+  if (c.deep_fetched) {
+    const parts = [];
+    if ((c.focus_treatments || []).length) parts.push("注力分野: " + c.focus_treatments.map(esc).join("・"));
+    if ((c.equipment_evidence || []).length) parts.push("設備の記載: " + c.equipment_evidence.map(esc).join("・"));
+    if ((c.site_features || []).length) parts.push("サイト記載の特徴: " + c.site_features.map(esc).join("・"));
+    if (parts.length) blocks.push(["公式サイトからの根拠", parts.map(p => `<p class="rk-ev-line">${p}</p>`).join("")]);
+  }
+  const facts = [];
+  const evn = evEvening(c), latest = evLatestClosing(c);
+  if (evn === true) facts.push(`夜間帯の診療あり（最終 ${Math.floor(latest / 60)}時${String(latest % 60).padStart(2, "0")}分まで）`);
+  else if (evn === false) facts.push("夜間帯の診療なし（18時までに終了）");
+  const wk = evWeekend(c);
+  if (wk === true) facts.push("土日いずれかの診療あり");
+  else if (wk === false) facts.push("土日の診療なし");
+  if (evParking(c)) facts.push("駐車場あり");
+  const walk = evStationWalk(c);
+  if (walk !== null) facts.push(`最寄駅から徒歩約${walk}分〜（直線距離からの推計）`);
+  if (facts.length) blocks.push(["診療時間・立地からの事実", facts.map(f => `<p class="rk-ev-line">${esc(f)}</p>`).join("")]);
+  let rows = "";
+  for (const [kind, label] of [["fit_for", "向いている"], ["not_fit_for", "注意"]]) {
+    for (const item of (c[kind] || [])) {
+      const [verdict, basis] = evGroundClaim(item, c, kind === "not_fit_for");
+      const badge = verdict === "grounded"
+        ? '<span class="rk-ev-badge ok">根拠あり</span>'
+        : '<span class="rk-ev-badge guess">AIによる推定</span>';
+      rows += `<li><span class="rk-ev-kind">${label}</span>「${esc(item)}」${badge}<span class="rk-ev-basis">${esc(basis)}</span></li>`;
+    }
+  }
+  if (rows) blocks.push(["「向いている方・注意点」の判定内訳", `<ul class="rk-ev-list">${rows}</ul>`]);
+  if (!blocks.length) return "";
+  const body = blocks.map(([t, inner]) => `<div class="rk-ev-block"><p class="rk-ev-h">${t}</p>${inner}</div>`).join("");
+  const note = '<p class="rk-ev-note">「根拠あり」は口コミ・公式サイト・診療時間等の公開データに対応する記述が確認できたもの、「AIによる推定」は直接の記述がなくAIが総合的に推測したものです。本分析は公開情報に基づく意見・論評であり、医療上の判断や治療結果を保証するものではありません。</p>';
+  return `<button type="button" class="rk-ev-toggle" aria-expanded="false">＋根拠を見る</button><div class="rk-ev-panel" hidden>${body}${note}</div>`;
+}
+
+document.addEventListener("click", ev => {
+  const b = ev.target.closest(".rk-ev-toggle");
+  if (!b) return;
+  const p = b.nextElementSibling;
+  const open = b.getAttribute("aria-expanded") === "true";
+  b.setAttribute("aria-expanded", open ? "false" : "true");
+  b.textContent = open ? "＋根拠を見る" : "－根拠を閉じる";
+  if (p) p.hidden = open;
+});
 
 // 情報確認度：公開情報がどれだけ確認できたか（医院の優劣ではない）。
 // 情報が薄い医院は「悪い」ではなく「判断材料が少ない」と表示する。
@@ -341,7 +599,7 @@ function compareValue(c, kind) {
   const es = c.equipment_stars || {};
   switch (kind) {
     case "station": return ns ? `${ns.name}駅` : "—";
-    case "dist": return formatStationText(ns) || "—";
+    case "dist": return formatStationText(ns, c) || "—";
     case "weekend": {
       const sat = tags.some(t => t.includes("土日診療") || t.includes("土曜"));
       const night = tags.some(t => t.includes("夜間診療"));
@@ -405,7 +663,7 @@ const PRIZE = { 1: ["金賞", "GOLD"], 2: ["銀賞", "SILVER"], 3: ["銅賞", "B
 function cardHTML(clinic, rank, matched) {
   const addr = clinic.address || "";
   const ward = wardOfAddr(addr) || "";
-  const stationText = formatStationText(clinic.nearest_station);
+  const stationText = formatStationText(clinic.nearest_station, clinic);
   const info = infoLevel(clinic);
   const rating = clinic.rating ? clinic.rating.toFixed(1) : "—";
   const reviews = clinic.total_reviews || 0;
@@ -441,7 +699,7 @@ function cardHTML(clinic, rank, matched) {
       ${tags.length ? `<div class="rk-card-tags">${tags.map(t => `<span>${esc(t)}</span>`).join("")}</div>` : ""}
       ${matchHTML}
       ${reviewTrendsHTML(clinic)}
-      ${summary ? `<div class="rk-ai"><p class="rk-ai-label">AI ANALYSIS</p><p class="rk-ai-text">${esc(summary)}</p></div>` : ""}
+      ${summary ? `<div class="rk-ai"><p class="rk-ai-label">AI ANALYSIS</p><p class="rk-ai-text">${esc(summary)}</p>${evidencePanelHTML(clinic)}</div>` : ""}
       ${info.cls === "low" ? `<p class="rk-info-note">公開情報が少ないため、条件との一致を十分に判定できません。</p>` : ""}
       <div class="rk-card-foot">
         <span class="rk-info-badge rk-info-${info.cls}">${info.label}</span>
@@ -757,7 +1015,7 @@ function symptomReasons(item, parsed) {
   const quote = evPool.find(e => parsed.kws.some(k => e.includes(k)));
   if (quote) reasons.push(`公式サイトの記載：「${quote.length > 48 ? quote.slice(0, 48) + "…" : quote}」`);
   if (c.rating) reasons.push(`Google口コミ ${c.rating.toFixed(1)}（${c.total_reviews || 0}件）`);
-  const st = formatStationText(c.nearest_station);
+  const st = formatStationText(c.nearest_station, c);
   if (st) reasons.push(st);
   const wr = wardRankMap.get(c.place_id || "");
   if (wr) reasons.push(`${wr.ward}内 ${wr.rank}位／${wr.total}院`);

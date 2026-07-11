@@ -10,6 +10,12 @@
 import os, re, json, html
 from urllib.parse import quote
 
+from evidence_grounding import (
+    ground_claim, evening_hours, weekend_hours, parking_fact,
+    station_walk_min, latest_closing_minutes,
+    scan_summary_claims, summary_has_contradiction,
+)
+
 ROOT = os.path.dirname(__file__)
 DB = os.path.join(ROOT, "clinic_db.json")
 SITE_CFG = json.load(open(os.path.join(ROOT, "site_config.json"), encoding="utf-8"))
@@ -169,11 +175,29 @@ def build_jsonld(c, slug):
     if hours:
         faqs.append((f'{c.get("name","")}の診療時間は？',
                      " / ".join(hours[:7]) + "（変更される場合があります。受診前に医院へご確認ください）"))
+    # アクセスFAQ（患者目線・2026-07-11改修）：駅が徒歩圏(1.2km)ならこれまで通り。
+    # 徒歩圏に駅がない医院は、患者が実際に使う目安（バス停→IC→車）に切り替える。
     ns = c.get("nearest_station") or {}
     if ns.get("name"):
         dist = ns.get("straight_distance_m")
-        dist_txt = f"（直線距離 約{dist}m・当サイト算出の目安）" if dist else ""
-        faqs.append((f'{c.get("name","")}の最寄駅は？', f'{ns["name"]}駅{dist_txt}です。'))
+        if dist is not None and dist > 1200:
+            bus = c.get("nearest_bus_stop") or {}
+            ic = c.get("nearest_ic") or {}
+            if bus.get("name") and (bus.get("distance_m") or 9999) <= 500:
+                mins = max(1, -(-bus["distance_m"] // 80))
+                faqs.append((f'{c.get("name","")}へのアクセスは？',
+                             f'バス停「{bus["name"]}」から徒歩約{mins}分の目安です（当サイト算出）。お車の場合は駐車場の有無を医院にご確認ください。'))
+            elif ic.get("name") and (ic.get("distance_m") or 99999) <= 8000:
+                mins = max(1, -(-ic["distance_m"] // 500))
+                faqs.append((f'{c.get("name","")}へのアクセスは？',
+                             f'{ic["name"]}から車で約{mins}分の目安です（当サイト算出）。駐車場の有無は医院にご確認ください。'))
+            else:
+                mins = max(1, -(-dist // 500))
+                faqs.append((f'{c.get("name","")}へのアクセスは？',
+                             f'{ns["name"]}駅から車で約{mins}分の目安です（当サイト算出）。'))
+        else:
+            dist_txt = f"（直線距離 約{dist}m・当サイト算出の目安）" if dist else ""
+            faqs.append((f'{c.get("name","")}の最寄駅は？', f'{ns["name"]}駅{dist_txt}です。'))
     es = c.get("equipment_stars") or {}
     eq_list = [k for k in ("CT", "マイクロスコープ", "口腔内スキャナー", "個室") if (es.get(k) or 0) >= 3]
     if eq_list:
@@ -255,6 +279,114 @@ def area_context_html(c):
             f'（{w}の設備解析対象 {st["eq_n"]}院）。「未確認」は「無い」という意味ではありません。'
             f'集計の方法・限界は<a href="../../policy.html">運営ポリシー</a>をご覧ください。データは毎月更新しています。</p>')
 
+def evidence_panel_html(c):
+    """AI Analysis の「＋根拠」パネル。判断の元になった実データを開示する（2026-07-11新設）。
+    患者・院長・オーナーが「AIはなぜそう言ったのか」を検証できるようにするのが目的。"""
+    e = esc
+    blocks = []
+
+    # 0) 分析文（AI ANALYSIS本文）の主張ごとの根拠 ─ 最重要セクション
+    #    要約の一文一文を「根拠あり／AI推定」に分解して示す。矛盾は表示せず修正で消す前提。
+    claims = scan_summary_claims(c.get("ai_summary", ""), c)
+    if claims:
+        rows = ""
+        for x in claims:
+            v = x["verdict"]
+            if v == "grounded":
+                badge = '<span class="rr-ev-badge ok">根拠あり</span>'
+            elif v == "contradicted":
+                badge = '<span class="rr-ev-badge bad">要確認</span>'
+            else:
+                badge = '<span class="rr-ev-badge guess">AIによる推定</span>'
+            ctx = '（注意点として）' if x["negative"] else ''
+            rows += (f'<li><span class="rr-ev-term">「{e(x["term"])}」{ctx}</span>{badge}'
+                     f'<span class="rr-ev-basis">{e(x["basis"])}</span></li>')
+        inner = (f'<p class="rr-ev-summary">{e(c.get("ai_summary", ""))}</p>'
+                 f'<ul class="rr-ev-list">{rows}</ul>')
+        blocks.append(('この分析文が何にもとづくか', inner))
+
+    # 1) 口コミからの根拠
+    tags = c.get("reputation_tags") or []
+    phrases = (c.get("phrases") or [])[:3]
+    if tags or phrases:
+        inner = ""
+        if tags:
+            inner += '<p class="rr-ev-line"><span class="rr-ev-k">口コミ分析で抽出されたタグ</span>' + \
+                     "".join(f'<span class="rr-ev-tag">{e(t)}</span>' for t in tags) + "</p>"
+        if phrases:
+            inner += '<p class="rr-ev-k">実際の口コミからの引用</p>' + \
+                     "".join(f'<blockquote class="rr-ev-quote">「{e(p)}」</blockquote>' for p in phrases)
+        meta = []
+        if c.get("total_reviews"):
+            meta.append(f'口コミ{c["total_reviews"]}件を分析')
+        if c.get("sources_analyzed"):
+            meta.append(f'解析ソース{c["sources_analyzed"]}種類')
+        if c.get("last_analyzed"):
+            meta.append(f'分析日 {e(str(c["last_analyzed"]))}')
+        if meta:
+            inner += f'<p class="rr-ev-meta">{" ・ ".join(meta)}</p>'
+        blocks.append(('口コミからの根拠', inner))
+
+    # 2) 公式サイトからの根拠（深掘り解析済みの場合のみ）
+    if c.get("deep_fetched"):
+        parts = []
+        if c.get("focus_treatments"):
+            parts.append("注力分野: " + "・".join(map(e, c["focus_treatments"])))
+        if c.get("equipment_evidence"):
+            parts.append("設備の記載: " + "・".join(map(e, c["equipment_evidence"])))
+        if c.get("site_features"):
+            parts.append("サイト記載の特徴: " + "・".join(map(e, c["site_features"])))
+        if parts:
+            blocks.append(('公式サイトからの根拠',
+                           "".join(f'<p class="rr-ev-line">{p}</p>' for p in parts)))
+
+    # 3) 診療時間・立地からの根拠（機械的に導出した事実）
+    facts = []
+    ev_night = evening_hours(c)
+    latest = latest_closing_minutes(c)
+    if ev_night is True:
+        facts.append(f"夜間帯の診療あり（最終 {latest // 60}時{latest % 60:02d}分まで）")
+    elif ev_night is False:
+        facts.append("夜間帯の診療なし（18時までに終了）")
+    wk = weekend_hours(c)
+    if wk is True:
+        facts.append("土日いずれかの診療あり")
+    elif wk is False:
+        facts.append("土日の診療なし")
+    if parking_fact(c):
+        facts.append("駐車場あり")
+    walk = station_walk_min(c)
+    if walk is not None:
+        facts.append(f"最寄駅から徒歩約{walk}分〜（直線距離からの推計）")
+    if facts:
+        blocks.append(('診療時間・立地からの事実',
+                       "".join(f'<p class="rr-ev-line">{e(f)}</p>' for f in facts)))
+
+    # 4) 「向いている方・注意点」それぞれの判定根拠
+    rows = ""
+    for kind, label in (("fit_for", "向いている"), ("not_fit_for", "注意")):
+        for item in (c.get(kind) or []):
+            verdict, basis = ground_claim(item, c, negative=(kind == "not_fit_for"))
+            badge = ('<span class="rr-ev-badge ok">根拠あり</span>' if verdict == "grounded"
+                     else '<span class="rr-ev-badge guess">AIによる推定</span>')
+            rows += (f'<li><span class="rr-ev-kind">{label}</span>「{e(item)}」{badge}'
+                     f'<span class="rr-ev-basis">{e(basis)}</span></li>')
+    if rows:
+        blocks.append(('「向いている方・注意点」の判定内訳', f'<ul class="rr-ev-list">{rows}</ul>'))
+
+    if not blocks:
+        return ""
+
+    body = "".join(f'<div class="rr-ev-block"><p class="rr-ev-h">{title}</p>{inner}</div>'
+                   for title, inner in blocks)
+    note = ('<p class="rr-ev-note">「根拠あり」は口コミ・公式サイト・診療時間等の公開データに'
+            '対応する記述が確認できたもの、「AIによる推定」は直接の記述がなくAIが総合的に'
+            '推測したものです。本分析は公開情報に基づく意見・論評であり、医療上の判断や'
+            '治療結果を保証するものではありません。</p>')
+    return ('<button type="button" class="rr-ev-toggle" aria-expanded="false">＋根拠を見る</button>'
+            f'<div class="rr-ev-panel" hidden>{body}{note}</div>')
+
+
 def build_page(c, slug=""):
     name   = c.get("name", "")
     catch  = c.get("catchphrase", "")
@@ -307,7 +439,7 @@ def build_page(c, slug=""):
     # ── 各セクションの中身を組み立て（空はNone扱いで非表示・自動連番） ──
     ai = c.get("ai_summary", "")
     sec_summary = (f'<div class="rr-ai"><span class="rr-ai-label">AI Analysis</span>'
-                   f'<p>{esc(ai)}</p></div>') if ai else ""
+                   f'<p>{esc(ai)}</p>{evidence_panel_html(c)}</div>') if ai else ""
 
     # 主要所見：口コミ特徴＋専門性タグを統合した"Key Findings"
     key = []
@@ -488,6 +620,35 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-ai::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--terra),var(--pine));}
 .rr-ai-label{display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;color:var(--terra);margin-bottom:8px;}
 .rr-ai p{margin:0;font-size:1.02rem;line-height:1.9;}
+/* ＋根拠パネル（2026-07-11） */
+.rr-ev-toggle{margin-top:14px;background:none;border:1px solid var(--line);border-radius:999px;
+  padding:7px 16px;font-size:.8rem;color:var(--pine);cursor:pointer;font-family:inherit;}
+.rr-ev-toggle:hover{border-color:var(--pine);background:rgba(31,75,63,.04);}
+.rr-ev-toggle[aria-expanded="true"]{background:var(--pine);color:#fff;border-color:var(--pine);}
+.rr-ev-panel{margin-top:16px;border-top:1px dashed var(--line);padding-top:16px;}
+.rr-ev-block{margin-bottom:16px;}
+.rr-ev-h{font-family:var(--mono);font-size:.68rem;letter-spacing:.14em;color:var(--terra);margin:0 0 8px;}
+.rr-ev-line{margin:0 0 6px;font-size:.85rem;line-height:1.8;color:#3d4643;}
+.rr-ev-k{display:block;font-size:.78rem;color:#6b7570;margin:0 0 6px;}
+.rr-ev-tag{display:inline-block;background:rgba(31,75,63,.07);border-radius:999px;
+  padding:3px 12px;font-size:.78rem;color:var(--pine);margin:0 6px 6px 0;}
+.rr-ev-quote{margin:0 0 8px;padding:8px 14px;border-left:3px solid var(--terra);
+  background:#faf8f5;font-size:.85rem;line-height:1.8;color:#3d4643;}
+.rr-ev-meta{margin:4px 0 0;font-size:.72rem;color:#8b928e;}
+.rr-ev-list{list-style:none;margin:0;padding:0;}
+.rr-ev-list li{padding:8px 0;border-bottom:1px solid #f0f0ee;font-size:.85rem;line-height:1.7;}
+.rr-ev-list li:last-child{border-bottom:none;}
+.rr-ev-kind{display:inline-block;font-size:.68rem;color:#8b928e;margin-right:6px;
+  border:1px solid var(--line);border-radius:4px;padding:1px 6px;}
+.rr-ev-badge{display:inline-block;font-size:.68rem;border-radius:4px;padding:2px 8px;margin-left:8px;}
+.rr-ev-badge.ok{background:rgba(31,75,63,.1);color:var(--pine);}
+.rr-ev-badge.guess{background:#f3ede2;color:#8a6d3b;}
+.rr-ev-badge.bad{background:#fbe9e7;color:#b23c17;}
+.rr-ev-basis{display:block;font-size:.76rem;color:#6b7570;margin-top:3px;}
+.rr-ev-summary{margin:0 0 12px;padding:12px 14px;background:#f7f9f8;border-radius:10px;
+  font-size:.9rem;line-height:1.85;color:#2c3532;}
+.rr-ev-term{font-weight:600;color:#2c3532;}
+.rr-ev-note{margin:8px 0 0;font-size:.72rem;line-height:1.8;color:#8b928e;}
 /* Key Findings */
 .rr-findings{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:10px;}
 .rr-findings li{position:relative;padding:12px 16px 12px 40px;background:#fff;border:1px solid var(--line);border-radius:10px;font-size:.92rem;font-weight:500;}
@@ -590,6 +751,15 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 <footer class="rr-foot">
   <div class="in">当レポートのAI分析（サマリー・各スコア等）は、Googleマップの口コミや各医院公式サイト等の公開情報をもとに京都歯科総研が独自に生成した参考情報です。根拠となる情報がない項目は表示していません。診断・治療方針の決定を目的としたものではなく、受診の判断は必ず歯科医師にご相談ください。掲載内容の訂正は<a href="../../teisei.html" style="color:inherit;text-decoration:underline;">こちら</a>、免責事項の詳細は<a href="../../policy.html" style="color:inherit;text-decoration:underline;">運営ポリシー</a>をご覧ください。<br>© 京都歯科総研 KYOTO DENTAL RESEARCH</div>
 </footer>
+<script>
+document.addEventListener("click",function(ev){
+  var b=ev.target.closest(".rr-ev-toggle"); if(!b)return;
+  var p=b.nextElementSibling; var open=b.getAttribute("aria-expanded")==="true";
+  b.setAttribute("aria-expanded",open?"false":"true");
+  b.textContent=open?"＋根拠を見る":"－根拠を閉じる";
+  if(p)p.hidden=open;
+});
+</script>
 </body>
 </html>'''
 
