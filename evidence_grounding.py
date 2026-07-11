@@ -113,6 +113,17 @@ def build_corpus(clinic):
     return "／".join(parts)
 
 
+def source_reason(clinic, hit):
+    """根拠理由の文面。分析した口コミの規模（件数）を添えて、
+    『1件の口コミ』に見えないようにする。件数不明のときは規模に触れない。"""
+    n = clinic.get("total_reviews") or 0
+    if n >= 20:
+        return f"口コミ{n}件と公式サイトを分析し、「{hit}」への言及を確認しています"
+    if n > 0:
+        return f"口コミ{n}件と公式サイトの記載から「{hit}」を確認しています"
+    return f"公式サイトと口コミの記載から「{hit}」を確認しています"
+
+
 # ── キーワード群 ─────────────────────────────────────────
 
 # 施術・ニーズ系（コーパスに肯定的記述があるかで判定。否定主張と衝突したら contradicted）
@@ -153,8 +164,8 @@ def ground_claim(claim, clinic, negative=False):
         if ev is None:
             latest = latest_closing_minutes(clinic)
             if latest is None:
-                return "inferred", "診療時間データなし（AIによる推定）"
-            return "inferred", f"最終受付が{latest // 60}時台のため夜間の解釈は断定せず（AIによる推定）"
+                return "inferred", "診療時間の公開情報が十分でないため、傾向からのAI推定です"
+            return "inferred", f"最終受付が{latest // 60}時台のため夜間の解釈は断定できず、AIが推定しています"
         if negative:
             return ("grounded", "診療時間より（平日18時台までに終了・夜間帯の診療なし）") if not ev \
                 else ("contradicted", "診療時間では夜間帯の診療あり")
@@ -165,7 +176,7 @@ def ground_claim(claim, clinic, negative=False):
     if "土日" in claim or "週末" in claim or "休日" in claim:
         wk = weekend_hours(clinic)
         if wk is None:
-            return "inferred", "診療時間データなし（AIによる推定）"
+            return "inferred", "診療時間の公開情報が十分でないため、傾向からのAI推定です"
         if negative:
             return ("grounded", "診療時間より（土日の診療なし）") if not wk \
                 else ("contradicted", "診療時間では土日診療あり")
@@ -176,7 +187,7 @@ def ground_claim(claim, clinic, negative=False):
     if "駅" in claim:
         walk = station_walk_min(clinic)
         if walk is None:
-            return "inferred", "最寄駅データなし（AIによる推定）"
+            return "inferred", "最寄駅の情報が十分でないため、傾向からのAI推定です"
         if negative:  # 「駅近を重視する人には不向き」等
             return ("grounded", f"最寄駅から徒歩約{walk}分〜（直線距離からの推計）") if walk >= 12 \
                 else ("contradicted", f"最寄駅から徒歩約{walk}分〜と近い")
@@ -189,7 +200,7 @@ def ground_claim(claim, clinic, negative=False):
         if pk:
             return ("contradicted", "駐車場ありの記載を確認") if negative \
                 else ("grounded", "公式サイト等で駐車場を確認")
-        return "inferred", "駐車場情報なし（AIによる推定）"
+        return "inferred", "駐車場の公開情報が確認できないため、傾向からのAI推定です"
 
     # 5) 早さ（急いで・短期間）
     if re.search(r"急|短期間|短時間|すぐ", claim):
@@ -197,8 +208,8 @@ def ground_claim(claim, clinic, negative=False):
         if m and negative:
             return "contradicted", f"口コミに「{m.group(0)}」等の肯定的な記述あり"
         if m:
-            return "grounded", f"口コミに「{m.group(0)}」等の記述あり"
-        return "inferred", "実データに記述なし（AIによる推定）"
+            return "grounded", source_reason(clinic, m.group(0))
+        return "inferred", "公開情報に個別の記載はありませんが、分析全体からAIが総合的に判断した見立てです"
 
     # 6) 施術・ニーズ系キーワード
     #    「〜以外」「〜より」等の否定・比較を含む主張は語の単純一致では判定できないため推定扱い
@@ -206,37 +217,37 @@ def ground_claim(claim, clinic, negative=False):
     for kw in _TOPIC_KEYWORDS:
         if kw in claim:
             if negated_topic:
-                return "inferred", "比較・除外表現を含むため断定せず（AIによる推定）"
+                return "inferred", "表現の解釈が分かれるため、断定せずAIが推定しています"
             hit = next((s for s in _SYNONYMS.get(kw, [kw]) if s in corpus), None)
             if hit:
                 if negative:
                     return "contradicted", f"口コミ・公式サイトに「{hit}」の肯定的な記述あり"
-                return "grounded", f"口コミ・公式サイトに「{hit}」の記述あり"
-            return "inferred", "実データに記述なし（AIによる推定）"
+                return "grounded", source_reason(clinic, hit)
+            return "inferred", "公開情報に個別の記載はありませんが、分析全体からAIが総合的に判断した見立てです"
 
     # 7) 属性系キーワード
     for kw in _ATTR_KEYWORDS:
         if kw in claim:
             if kw in corpus:
-                return "grounded", f"口コミ・公式サイトに「{kw}」の記述あり"
-            return "inferred", "実データに記述なし（AIによる推定）"
+                return "grounded", source_reason(clinic, kw)
+            return "inferred", "公開情報に個別の記載はありませんが、分析全体からAIが総合的に判断した見立てです"
 
     # 8) 患者スコア由来（怖がり・痛み）
     ps = clinic.get("patient_scores") or {}
     if re.search(r"怖|不安|痛み", claim):
         score = ps.get("痛みへの配慮") or ps.get("優しさ")
         if score and score >= 75:
-            return "grounded", f"口コミ分析スコア（痛みへの配慮・優しさ {score}点）より"
-        return "inferred", "実データに記述なし（AIによる推定）"
+            return "grounded", f"口コミ全体を分析した『痛みへの配慮・優しさ』スコア {score}／100 にもとづく傾向です"
+        return "inferred", "公開情報に個別の記載はありませんが、分析全体からAIが総合的に判断した見立てです"
 
     # 9) 汎用: 主張中の2文字以上の語がコーパスにあるか
     for token in re.findall(r"[ぁ-んァ-ヶ一-龠a-zA-Z]{2,}", claim):
         if token in ("したい", "希望", "重視", "中心", "検討", "通え", "都合", "治療", "診療", "対応", "な人", "たい人"):
             continue
         if token in corpus:
-            return "grounded", f"口コミ・公式サイトに「{token}」の記述あり"
+            return "grounded", source_reason(clinic, token)
 
-    return "inferred", "実データに記述なし（AIによる推定）"
+    return "inferred", "公開情報に個別の記載はありませんが、分析全体からAIが総合的に判断した見立てです"
 
 
 # ═══ 自由文（AI ANALYSIS本文）の一文単位の根拠分解 ══════════════════

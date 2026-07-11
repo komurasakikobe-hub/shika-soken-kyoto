@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>AIに選ばれる仕組み｜京都歯科総研</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=Inter:wght@300;400;600;700;800&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Shippori+Mincho:wght@600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="assets/odr-ds.css">
 <style>
   :root {
@@ -40,14 +40,14 @@
   /* ── HERO ── */
   .hero{
     background:linear-gradient(150deg,var(--navy) 0%,var(--navy-mid) 60%,var(--teal) 100%);
-    color:var(--white);padding:80px 40px 72px;position:relative;overflow:hidden;
+    color:var(--white);padding:80px clamp(24px,4vw,56px) 72px;position:relative;overflow:hidden;
   }
   .hero::before{
     content:"";position:absolute;inset:0;
     background:radial-gradient(circle at 80% 25%, rgba(26,122,138,.3), transparent 55%);
     pointer-events:none;
   }
-  .hero-inner{max-width:960px;margin:0 auto;position:relative;z-index:1;}
+  .hero-inner{max-width:1440px;margin:0 auto;position:relative;z-index:1;}
   .hero-badge{
     display:inline-block;background:rgba(26,122,138,.35);
     border:1px solid rgba(26,122,138,.6);color:rgba(255,255,255,.9);
@@ -55,6 +55,7 @@
     font-family:'Inter',sans-serif;
   }
   .hero h1{
+    font-family:'Shippori Mincho',serif;
     font-size:clamp(1.5rem,4vw,2.4rem);font-weight:700;line-height:1.45;
     margin-bottom:18px;letter-spacing:.03em;
   }
@@ -62,7 +63,7 @@
   .hero-sub{font-size:.95rem;color:rgba(255,255,255,.78);max-width:600px;line-height:1.9;}
 
   /* ── WRAP ── */
-  .wrap{max-width:960px;margin:0 auto;padding:0 40px;}
+  .wrap{max-width:1080px;margin:0 auto;padding:0 clamp(24px,4vw,56px);}
   .section{padding:64px 0;}
 
   /* ── SECTION HEAD ── */
@@ -82,7 +83,7 @@
 
   /* ── FLOW ── */
   .flow-section{background:var(--gray-bg);}
-  .flow-steps{display:grid;gap:0;margin-top:8px;}
+  .flow-steps{display:grid;gap:0;margin-top:8px;max-width:1180px;}
   .flow-step{
     display:grid;grid-template-columns:64px 1fr;gap:24px;
     align-items:flex-start;position:relative;
@@ -104,7 +105,66 @@
     border-radius:4px;padding:24px 28px;margin-bottom:20px;
   }
   .step-title{font-size:.97rem;font-weight:700;color:var(--navy);margin-bottom:8px;}
-  .step-desc{font-size:.84rem;color:var(--ink-soft);line-height:1.9;}
+  .step-desc{font-size:.84rem;color:var(--ink-soft);line-height:1.9;max-width:700px;}
+  .step-sources{margin-top:14px;padding-top:12px;border-top:1px dashed var(--gray-line);
+    font-size:.76rem;color:var(--teal);font-weight:600;letter-spacing:.02em;line-height:1.7;}
+  .step-sources b{color:var(--navy);}
+  /* STEPの「＋サンプルを見る」パネル */
+  /* 「サンプルを見る」→ 右の余白にサンプルを開く（2カラム） */
+  .step-body.has-sample{display:grid;grid-template-columns:1fr;gap:0;transition:gap .2s;}
+  .step-text{min-width:0;max-width:700px;}
+  .samp-panel{display:none;min-width:0;}
+  .step-body.has-sample.open{grid-template-columns:minmax(0,1fr) minmax(0,440px);gap:30px;align-items:start;}
+  .step-body.has-sample.open .step-text{max-width:none;}
+  .step-body.has-sample.open .samp-panel{display:block;}
+  .step-sample-btn{margin-top:16px;display:inline-flex;align-items:center;gap:6px;font-size:.8rem;font-weight:700;
+    color:var(--teal);border:1px solid var(--teal);border-radius:999px;padding:6px 16px;cursor:pointer;background:none;
+    font-family:inherit;transition:background .15s,color .15s;}
+  .step-sample-btn:hover{background:var(--teal);color:#fff;}
+  @media(max-width:900px){.step-body.has-sample.open{grid-template-columns:1fr;gap:16px;}.step-text{max-width:none;}}
+  .samp{position:relative;background:var(--gray-bg);border:1px solid var(--gray-line);
+    border-radius:8px;padding:18px 18px 14px;margin-top:14px;}
+  .samp-tag{position:absolute;top:12px;right:12px;font-size:.6rem;font-weight:700;letter-spacing:.06em;
+    color:#92400e;background:var(--gold-bg);border:1px solid #e6d29a;border-radius:4px;padding:2px 8px;}
+  .samp-h{font-size:.82rem;font-weight:700;color:var(--navy);margin:0 0 12px;padding-right:90px;}
+  .samp-note{font-size:.72rem;color:var(--ink-soft);margin:12px 0 0;line-height:1.7;}
+  .samp-review{background:#fff;border:1px solid var(--gray-line);border-radius:6px;padding:10px 12px;
+    font-size:.8rem;color:var(--ink-soft);line-height:1.75;margin:0 0 8px;}
+  .samp-review .stars{color:#e6a817;letter-spacing:1px;margin-right:6px;}
+  .samp-reply{background:#fff;border-left:3px solid var(--teal);border-radius:0 6px 6px 0;
+    padding:10px 12px;font-size:.8rem;color:var(--ink);line-height:1.85;}
+  .samp-reply .lbl{display:block;font-size:.62rem;font-weight:700;color:var(--teal);letter-spacing:.06em;margin-bottom:4px;}
+  .samp-metrics{display:flex;flex-direction:column;gap:8px;}
+  .samp-metric{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--gray-line);
+    border-radius:6px;padding:9px 12px;font-size:.82rem;flex-wrap:wrap;}
+  .samp-metric .k{flex:1;min-width:120px;color:var(--ink-soft);font-weight:600;}
+  .samp-metric .a{color:var(--ink-soft);font-family:'Inter',sans-serif;}
+  .samp-metric .arw{color:var(--teal);font-weight:700;}
+  .samp-metric .b{color:var(--navy);font-weight:800;font-family:'Inter',sans-serif;}
+  .samp-metric .up{font-size:.68rem;color:#166534;font-weight:700;background:var(--green-bg);border-radius:4px;padding:1px 7px;}
+  .samp-secret{margin:10px 0 0;font-size:.74rem;color:var(--ink-soft);background:#fff;
+    border:1px dashed var(--gray-line);border-radius:6px;padding:10px 12px;line-height:1.7;}
+  .samp-blur{filter:blur(4.5px);user-select:none;color:var(--navy);font-weight:700;}
+  .samp-block{background:#fff;border:1px solid var(--gray-line);border-radius:6px;padding:11px 13px;margin-bottom:8px;}
+  .samp-block-h{font-size:.8rem;font-weight:700;color:var(--navy);margin:0 0 8px;}
+  .samp-lv{font-size:.66rem;font-weight:700;color:#166534;background:var(--green-bg);border-radius:4px;padding:1px 8px;margin-left:6px;white-space:nowrap;}
+  .samp-mini{font-size:.74rem;color:var(--ink-soft);margin:7px 0 0;line-height:1.7;}
+  .samp-block .samp-metric{background:var(--gray-bg);border:none;padding:7px 10px;}
+  .samp-frame{width:100%;height:540px;border:1px solid var(--gray-line);border-radius:8px;background:#fff;display:block;}
+  @media(max-width:900px){.samp-frame{height:460px;}}
+  /* 月次レポート：全画面モーダル */
+  .report-modal{position:fixed;inset:0;z-index:1000;background:rgba(13,33,54,.6);
+    display:flex;flex-direction:column;padding:10px;backdrop-filter:blur(2px);}
+  .report-modal[hidden]{display:none;}
+  .report-modal-in{max-width:none;width:100%;flex:1;margin:0 auto;display:flex;flex-direction:column;min-height:0;
+    background:#fff;border-radius:12px;overflow:hidden;box-shadow:0 24px 70px rgba(0,0,0,.4);}
+  .report-modal-bar{display:flex;align-items:center;justify-content:space-between;gap:12px;
+    padding:12px 18px;border-bottom:1px solid var(--gray-line);background:#fff;}
+  .rm-tag{font-size:12.5px;font-weight:700;color:var(--navy);}
+  .rm-close{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:8px 16px;
+    font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;flex:none;}
+  .rm-close:hover{background:var(--navy-deep,#0D2136);}
+  .report-modal-frame{flex:1;width:100%;border:none;background:#fff;min-height:0;}
   .step-tag{
     display:inline-block;font-family:'Inter',sans-serif;font-size:.68rem;
     font-weight:700;padding:2px 10px;border-radius:2px;margin-left:8px;
@@ -197,15 +257,36 @@
 
 /* ===== 改行・可読性の共通ルール（改行マニュアル v1.0） ===== */
 h1,h2,h3,h4,h5,p,li,dd,figcaption,td,th,
-.lead,.sec-lead,.step-desc,.cta-sub,.hero-sub,.hero .lead,.hero p{
-  line-break:strict;      /* 日本語の禁則処理 */
-  text-wrap:pretty;       /* 1文字残り・不自然に短い最終行を自動回避 */
+.lead,.sec-lead,.step-desc,.cta-sub,.hero-sub,.hero .lead,.hero p,.samp-mini,.samp-note{
+  line-break:strict;         /* 日本語の禁則処理 */
+  text-wrap:pretty;          /* 1文字残り・不自然に短い最終行を自動回避 */
+  word-break:auto-phrase;    /* 文節単位で改行し「あ」等の孤立を防ぐ（対応ブラウザ） */
 }
 h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
 @media(max-width:760px){.sec-lead{white-space:normal!important}.result-table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch}}
 </style>
 <script src="assets/site-config.js"></script>
 <script src="assets/odr-track.js"></script>
+<script>
+function toggleSample(btn){
+  var body = btn.closest('.step-body');
+  if(!body) return;
+  var open = body.classList.toggle('open');
+  var ic = btn.querySelector('.ic');
+  if(ic) ic.textContent = open ? '−' : '＋';
+  btn.setAttribute('aria-expanded', open ? 'true' : 'false');
+}
+function openReport(){
+  var m=document.getElementById('reportModal'), f=document.getElementById('reportFrame');
+  if(f && !f.src) f.src='sample-report.html';
+  if(m){ m.hidden=false; document.body.style.overflow='hidden'; }
+}
+function closeReport(){
+  var m=document.getElementById('reportModal');
+  if(m){ m.hidden=true; document.body.style.overflow=''; }
+}
+document.addEventListener('keydown',function(e){ if(e.key==='Escape') closeReport(); });
+</script>
 </head>
 <body>
 
@@ -216,11 +297,11 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
     <span class="odr-sig-name">京都歯科総研<small>Kyoto Dental Research Institute</small></span>
   </a>
   <nav>
-    <a href="articles/shindan/index.html">ランキング&amp;AI診断</a>
+    <a href="articles/shindan/index.html">ランキング・AI診断</a>
     <a href="articles/features/index.html">特徴から探す</a>
     <a href="articles/index.html">コラム</a>
     <a href="network.html">展開エリア</a>
-    <a href="index.html">← トップに戻る</a>
+    <a href="shikumi.html">医院・開業医の方へ</a>
   </nav>
 </header>
 
@@ -279,39 +360,51 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
             <span class="step-tag tag-ai">AI自動</span>
           </div>
           <p class="step-desc">
-            複数の生成AI（ChatGPT・Geminiなど）とGoogle口コミのキーワードをもとに、京都で関心の高い歯科テーマを分析しています。<br>その結果から、次に扱うべき記事テーマを決定しています。</p>
+            記事のテーマは、思いつきではなく<strong>データで決めています</strong>。京都の歯科医院およそ673院・7万件を超える口コミの分析と、実際に検索されているキーワードを<strong>複数のAI（ChatGPT・Geminiなど）で突き合わせ</strong>、「京都で関心が高いのに、まだ他が書いていない」切り口を毎月洗い出します。<br>だから、数打ちではなく<strong>“検索需要のある一本”</strong>に狙いを定められます。</p>
         </div>
       </div>
 
       <div class="flow-step">
         <div class="step-num">02</div>
         <div class="step-body">
-          <div class="step-title">毎朝、Claude AIがSEO記事を自動執筆
+          <div class="step-title">毎朝、複数のAIが「実データ」から記事を自動執筆
             <span class="step-tag tag-auto">毎日自動</span>
           </div>
           <p class="step-desc">
-            Anthropic社のClaude（最新モデル）が、京都の歯科事情に特化した
-            SEO記事を毎朝自動で生成します。
-            「京都市 子どもの虫歯予防」「伏見区 痛くない歯医者」など、
-            実際に検索されているキーワードを記事タイトル・本文に自然に組み込みます。
-            記事はこのサイト（京都歯科総研）に蓄積され、AIの学習データになり続けます。
+            単に「AIが文章を書く」のとは違います。実際に検索されているキーワード、当サイトが独自に分析した京都の歯科データ、各医院の公開情報を素材に、<strong>複数の最新AIが役割を分担して</strong>1本を仕上げます（テーマ設計・下書き・重複チェック・事実確認）。<br>
+            「京都市 子どもの虫歯予防」「此花区 痛くない歯医者」のような実需のあるテーマを、<strong>この地域の実データ</strong>（例：夜間対応の案内がある歯科は約6%）を交えた具体的な記事にします。一般論だけの記事は公開しません。<br>
+            毎朝記事を自動公開し、蓄積された記事群が、Googleと生成AIに参照される「京都の歯科の一次情報」として育ち続けます。
           </p>
+          <p class="step-sources">素材：<b>実際の検索キーワード</b>　／　<b>約673院</b>の公開情報　／　<b>7万件超</b>の口コミ分析</p>
         </div>
       </div>
 
       <div class="flow-step">
         <div class="step-num">03</div>
-        <div class="step-body">
-          <div class="step-title">口コミへの返信をAIが自動生成
-            <span class="step-tag tag-ai">AI支援</span>
+        <div class="step-body has-sample">
+          <div class="step-text">
+            <div class="step-title">口コミを増やし、返信まで最適化
+              <span class="step-tag tag-ai">AI支援</span>
+            </div>
+            <p class="step-desc">
+              評価は「待つ」より<strong>設計する</strong>もの。満足された患者さんに負担なく口コミをお願いできる導線づくりから、届いた口コミへの最適な返信までをAIが支援します。<br>
+              返信文は、<strong>Googleで評価が伸びやすい構成を独自に計算し尽くしたパターン</strong>で自動生成――オーナーは3案から選んでコピー＆ペーストするだけ。丁寧な返信を積み重ねることで、<strong>口コミの「質」と返信率</strong>を高めていきます。<br>
+              さらに、<strong>口コミそのものを増やすための独自のノウハウ・ツール</strong>も月額プランでご用意しています（具体的な方法は個別にご案内します）。</p>
+            <button type="button" class="step-sample-btn" onclick="toggleSample(this)" aria-expanded="false"><span class="ic">＋</span> サンプルを見る</button>
           </div>
-          <p class="step-desc">
-            Googleマップに届いた患者様の口コミに対して、
-            AIが返信文を3パターン自動生成します。<br>「引用・共感・追加情報・再来店促進」の4要素を含む、
-            Googleが推奨する返信構造に基づいて作成されます。
-            オーナーはコピー＆ペーストするだけ。返信率を高めることで
-            Googleスコアの向上につながります。
-          </p>
+          <div class="samp-panel">
+            <div class="samp">
+              <span class="samp-tag">サンプル</span>
+              <p class="samp-h">実際に生成される返信文の一例</p>
+              <p class="samp-review"><span class="stars">★★★★★</span>説明がとても丁寧で、痛みもほとんどなく安心して通えました。また子どもの検診でもお世話になります。</p>
+              <div class="samp-reply">
+                <span class="lbl">AIが生成した返信案（3案から選ぶだけ）</span>
+                この度は心温まるお言葉をありがとうございます。「痛みが少なく安心できた」とのお声、私どもが最も大切にしている点をそう感じていただけ、大変嬉しく思います。お子さまの定期検診では、年齢に合わせた進め方もご相談いただけますので、次回もどうぞお気軽にお声がけください。またお会いできる日を楽しみにしております。
+              </div>
+              <p class="samp-secret">評価が伸びる返信構成・口コミ獲得の設計：<span class="samp-blur">◯◯◯・◯◯◯◯・◯◯◯◯…</span>　<span style="white-space:nowrap;">🔒 独自ロジックのため非公開</span></p>
+              <p class="samp-note">※ 文面はサンプルです。口コミ獲得は各プラットフォームの規約に沿った正当な方法のみを用います。</p>
+            </div>
+          </div>
         </div>
       </div>
 
@@ -323,6 +416,7 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
           </div>
           <p class="step-desc">
             掲載データは定期的に見直しています。<br>Google口コミの件数・評価の変化、複数の生成AI（ChatGPT・Geminiなど）での評価傾向、公式サイト情報の更新などを反映し、内容を最新に保ちます。</p>
+          <button type="button" class="step-sample-btn" onclick="openReport()"><span class="ic">＋</span> サンプル（月次レポート）を全画面で見る</button>
         </div>
       </div>
 
@@ -331,7 +425,7 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
         <div class="step-body">
           <div class="step-title">検索やAIから、患者さんに見つけてもらう</div>
           <p class="step-desc">
-            このポータルサイト自体が「京都 歯科」「伏見区 歯医者」などのキーワードで
+            このポータルサイト自体が「京都 歯科」「此花区 歯医者」などのキーワードで
             GoogleとAIに上位表示されるよう育てています。
             困っている患者さんが、信頼できる情報にたどり着きやすくなります。
           </p>
@@ -441,6 +535,16 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
   <a href="index.html">トップページに戻る</a><br><br>
   &copy; 2025 京都歯科総研
 <p style="font-size:.75rem;opacity:.8;"><a href="policy.html" style="color:inherit;text-decoration:underline;">運営ポリシー・免責事項</a></p></footer>
+
+<div class="report-modal" id="reportModal" hidden onclick="if(event.target===this)closeReport()">
+  <div class="report-modal-in">
+    <div class="report-modal-bar">
+      <span class="rm-tag">月次成果レポート（サンプル）｜院名・数値はイメージ・一部モザイク</span>
+      <button type="button" class="rm-close" onclick="closeReport()" aria-label="閉じる">✕ 閉じる</button>
+    </div>
+    <iframe class="report-modal-frame" id="reportFrame" title="月次成果レポートのサンプル"></iframe>
+  </div>
+</div>
 
 </body>
 </html>

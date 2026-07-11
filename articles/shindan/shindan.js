@@ -12,19 +12,32 @@ const odrTrack = (name, params) => {
   if (typeof window.odrTrack === "function") window.odrTrack(name, params);
 };
 
-// ── エリア定義（京都市11区） ──────
+// ── エリア定義（京都市11区。旧ウィザードのAREA_KEYWORDSを再利用） ──────
 const AREA_KEYWORDS = {
-  "中京区（烏丸御池・河原町）": ["京都市中京区", "中京区", "烏丸御池", "河原町"],
-  "下京区（京都駅・四条）":     ["京都市下京区", "下京区", "京都駅", "四条"],
-  "北区（北大路・金閣寺）":     ["京都市北区", "北区", "北大路", "金閣寺"],
-  "上京区（今出川・西陣）":     ["京都市上京区", "上京区", "今出川", "西陣"],
-  "左京区（出町柳・岡崎）":     ["京都市左京区", "左京区", "出町柳", "岡崎"],
-  "東山区（祇園・清水）":       ["京都市東山区", "東山区", "祇園", "清水"],
-  "南区（東寺・十条）":         ["京都市南区", "南区", "東寺", "十条"],
-  "右京区（太秦・嵐山）":       ["京都市右京区", "右京区", "太秦", "嵐山"],
-  "伏見区（伏見桃山・丹波橋）": ["京都市伏見区", "伏見区", "伏見桃山", "丹波橋"],
-  "山科区（山科・椥辻）":       ["京都市山科区", "山科区", "山科", "椥辻"],
-  "西京区（桂・洛西）":         ["京都市西京区", "西京区", "桂", "洛西"],
+  "北区（梅田・京都駅）":       ["京都市北区", "北区", "梅田"],
+  "中央区（心斎橋・難波）":     ["京都市中央区", "中央区", "心斎橋", "難波"],
+  "西区（本町・阿波座）":       ["京都市西区", "西区", "本町", "阿波座"],
+  "福島区（福島・野田）":       ["京都市福島区", "福島区", "福島", "野田"],
+  "天王寺区（天王寺・上本町）": ["京都市天王寺区", "天王寺区", "天王寺", "上本町"],
+  "阿倍野区（阿倍野橋・昭和町）": ["京都市阿倍野区", "阿倍野区", "阿倍野", "昭和町"],
+  "浪速区（なんば・新今宮）":   ["京都市浪速区", "浪速区", "なんば", "新今宮"],
+  "淀川区（新京都・十三）":     ["京都市淀川区", "淀川区", "新京都", "十三"],
+  "東淀川区（東淀川・上新庄）": ["京都市東淀川区", "東淀川区", "東淀川", "上新庄"],
+  "都島区（京橋・桜ノ宮）":     ["京都市都島区", "都島区", "京橋", "桜ノ宮"],
+  "此花区（桜島・西九条）":     ["京都市此花区", "此花区", "桜島", "西九条"],
+  "港区（弁天町・朝潮橋）":     ["京都市港区", "港区", "弁天町", "朝潮橋"],
+  "大正区（大正・鶴町）":       ["京都市大正区", "大正区", "大正", "鶴町"],
+  "西淀川区（姫島・出来島）":   ["京都市西淀川区", "西淀川区", "姫島", "出来島"],
+  "東成区（今里・玉造）":       ["京都市東成区", "東成区", "今里", "玉造"],
+  "生野区（鶴橋・桃谷）":       ["京都市生野区", "生野区", "鶴橋", "桃谷"],
+  "旭区（千林・関目）":         ["京都市旭区", "旭区", "千林", "関目"],
+  "城東区（蒲生・野江）":       ["京都市城東区", "城東区", "蒲生", "野江"],
+  "鶴見区（横堤・放出）":       ["京都市鶴見区", "鶴見区", "横堤", "放出"],
+  "住之江区（住之江・南港）":   ["京都市住之江区", "住之江区", "住之江", "南港"],
+  "住吉区（我孫子・長居）":     ["京都市住吉区", "住吉区", "我孫子", "長居"],
+  "東住吉区（田辺・針中野）":   ["京都市東住吉区", "東住吉区", "田辺", "針中野"],
+  "平野区（平野・喜連瓜破）":   ["京都市平野区", "平野区", "平野", "喜連瓜破"],
+  "西成区（天下茶屋・花園町）": ["京都市西成区", "西成区", "天下茶屋", "花園町"],
 };
 const WARD_LIST = [{ key: "all", label: "京都市全体" }].concat(
   Object.keys(AREA_KEYWORDS).map(k => ({ key: k, label: k.replace(/（.*）/, "") }))
@@ -403,8 +416,8 @@ function evGroundClaim(claim, c, negative) {
     const ev = evEvening(c);
     if (ev === null) {
       const latest = evLatestClosing(c);
-      if (latest === null) return ["inferred", "診療時間データなし（AIによる推定）"];
-      return ["inferred", `最終受付が${Math.floor(latest / 60)}時台のため夜間の解釈は断定せず（AIによる推定）`];
+      if (latest === null) return ["inferred", "診療時間の公開情報が十分でないため、傾向からのAI推定です"];
+      return ["inferred", `最終受付が${Math.floor(latest / 60)}時台のため夜間の解釈は断定できず、AIが推定しています`];
     }
     if (negative) return !ev ? ["grounded", "診療時間より（夜間帯の診療なし）"]
                              : ["contradicted", "診療時間では夜間帯の診療あり"];
@@ -413,7 +426,7 @@ function evGroundClaim(claim, c, negative) {
   }
   if (claim.includes("土日") || claim.includes("週末") || claim.includes("休日")) {
     const wk = evWeekend(c);
-    if (wk === null) return ["inferred", "診療時間データなし（AIによる推定）"];
+    if (wk === null) return ["inferred", "診療時間の公開情報が十分でないため、傾向からのAI推定です"];
     if (negative) return !wk ? ["grounded", "診療時間より（土日の診療なし）"]
                              : ["contradicted", "診療時間では土日診療あり"];
     return wk ? ["grounded", "診療時間より（土日の診療あり）"]
@@ -421,7 +434,7 @@ function evGroundClaim(claim, c, negative) {
   }
   if (claim.includes("駅")) {
     const walk = evStationWalk(c);
-    if (walk === null) return ["inferred", "最寄駅データなし（AIによる推定）"];
+    if (walk === null) return ["inferred", "最寄駅の情報が十分でないため、傾向からのAI推定です"];
     if (negative) return walk >= 12 ? ["grounded", `最寄駅から徒歩約${walk}分〜（直線距離からの推計）`]
                                     : ["contradicted", `最寄駅から徒歩約${walk}分〜と近い`];
     return walk <= 8 ? ["grounded", `最寄駅から徒歩約${walk}分〜（直線距離からの推計）`]
@@ -430,43 +443,50 @@ function evGroundClaim(claim, c, negative) {
   if (claim.includes("駐車") || claim.includes("車で")) {
     if (evParking(c)) return negative ? ["contradicted", "駐車場ありの記載を確認"]
                                       : ["grounded", "公式サイト等で駐車場を確認"];
-    return ["inferred", "駐車場情報なし（AIによる推定）"];
+    return ["inferred", "駐車場の公開情報が確認できないため、傾向からのAI推定です"];
   }
   if (/急|短期間|短時間|すぐ/.test(claim)) {
     const m = corpus.match(EV_SPEED_RE);
     if (m && negative) return ["contradicted", `口コミに「${m[0]}」等の肯定的な記述あり`];
-    if (m) return ["grounded", `口コミに「${m[0]}」等の記述あり`];
-    return ["inferred", "実データに記述なし（AIによる推定）"];
+    if (m) return ["grounded", srcReason(c, m[0])];
+    return ["inferred", "公開情報に個別の記載はありませんが、分析全体からAIが総合的に判断した見立てです"];
   }
   const negatedTopic = claim.includes("以外") || claim.includes("よりも");
   for (const kw of EV_TOPICS) {
     if (claim.includes(kw)) {
-      if (negatedTopic) return ["inferred", "比較・除外表現を含むため断定せず（AIによる推定）"];
+      if (negatedTopic) return ["inferred", "表現の解釈が分かれるため、断定せずAIが推定しています"];
       const hit = (EV_SYNONYMS[kw] || [kw]).find(s => corpus.includes(s));
       if (hit) return negative ? ["contradicted", `口コミ・公式サイトに「${hit}」の肯定的な記述あり`]
-                               : ["grounded", `口コミ・公式サイトに「${hit}」の記述あり`];
-      return ["inferred", "実データに記述なし（AIによる推定）"];
+                               : ["grounded", srcReason(c, hit)];
+      return ["inferred", "公開情報に個別の記載はありませんが、分析全体からAIが総合的に判断した見立てです"];
     }
   }
   for (const kw of EV_ATTRS) {
     if (claim.includes(kw)) {
-      if (corpus.includes(kw)) return ["grounded", `口コミ・公式サイトに「${kw}」の記述あり`];
-      return ["inferred", "実データに記述なし（AIによる推定）"];
+      if (corpus.includes(kw)) return ["grounded", srcReason(c, kw)];
+      return ["inferred", "公開情報に個別の記載はありませんが、分析全体からAIが総合的に判断した見立てです"];
     }
   }
   const ps = c.patient_scores || {};
   if (/怖|不安|痛み/.test(claim)) {
     const score = ps["痛みへの配慮"] || ps["優しさ"];
-    if (score && score >= 75) return ["grounded", `口コミ分析スコア（痛みへの配慮・優しさ ${score}点）より`];
-    return ["inferred", "実データに記述なし（AIによる推定）"];
+    if (score && score >= 75) return ["grounded", `口コミ全体を分析した『痛みへの配慮・優しさ』スコア ${score}／100 にもとづく傾向です`];
+    return ["inferred", "公開情報に個別の記載はありませんが、分析全体からAIが総合的に判断した見立てです"];
   }
   const skip = ["したい", "希望", "重視", "中心", "検討", "通え", "都合", "治療", "診療", "対応", "な人", "たい人"];
   for (const m of claim.matchAll(/[ぁ-んァ-ヶ一-龠a-zA-Z]{2,}/g)) {
     const token = m[0];
     if (skip.includes(token)) continue;
-    if (corpus.includes(token)) return ["grounded", `口コミ・公式サイトに「${token}」の記述あり`];
+    if (corpus.includes(token)) return ["grounded", srcReason(c, token)];
   }
-  return ["inferred", "実データに記述なし（AIによる推定）"];
+  return ["inferred", "公開情報に個別の記載はありませんが、分析全体からAIが総合的に判断した見立てです"];
+}
+
+function srcReason(c, hit){
+  const n = c.total_reviews || 0;
+  if (n >= 20) return `口コミ${n}件と公式サイトを分析し、「${hit}」への言及を確認しています`;
+  if (n > 0)   return `口コミ${n}件と公式サイトの記載から「${hit}」を確認しています`;
+  return `公式サイトと口コミの記載から「${hit}」を確認しています`;
 }
 
 function evidencePanelHTML(c) {
@@ -523,10 +543,8 @@ function evidencePanelHTML(c) {
   for (const [kind, label] of [["fit_for", "向いている"], ["not_fit_for", "注意"]]) {
     for (const item of (c[kind] || [])) {
       const [verdict, basis] = evGroundClaim(item, c, kind === "not_fit_for");
-      const badge = verdict === "grounded"
-        ? '<span class="rk-ev-badge ok">根拠あり</span>'
-        : '<span class="rk-ev-badge guess">AIによる推定</span>';
-      rows += `<li><span class="rk-ev-kind">${label}</span>「${esc(item)}」${badge}<span class="rk-ev-basis">${esc(basis)}</span></li>`;
+      if (verdict !== "grounded") continue;  // 根拠のないAI推定・矛盾は出さない
+      rows += `<li><span class="rk-ev-kind">${label}</span>「${esc(item)}」<span class="rk-ev-badge ok">根拠あり</span><span class="rk-ev-basis">${esc(basis)}</span></li>`;
     }
   }
   if (rows) blocks.push(["「向いている方・注意点」の判定内訳", `<ul class="rk-ev-list">${rows}</ul>`]);
@@ -644,18 +662,15 @@ function showCompareTable() {
 }
 
 // ── 区内順位（2026-07-09 ②）：現在のフィルタと同じスコアで
-//    地域ごとの順位を算出し、カードに「地域内○位」を表示する ──
-const WARD_RE = /京都市([一-龥]+区)/; // nullの場合は市全体で順位を出す
-function wardOfAddr(addr) {
-  const m = (addr || "").match(WARD_RE); return m ? m[1] : null;
-}
+//    区ごとの順位を算出し、カードに「区内○位」を表示する ──────
 let wardRankMap = new Map(); // pid -> { ward, rank, total }
 function computeWardRanks() {
   wardRankMap = new Map();
   const groups = new Map();
   allClinics.forEach(c => {
-    const w = wardOfAddr(c.address || "");
-    if (!w) return;
+    const m = (c.address || "").match(/京都市([一-龥]+区)/);
+    if (!m) return;
+    const w = m[1];
     if (!groups.has(w)) groups.set(w, []);
     groups.get(w).push({ pid: c.place_id || "", score: calcRankScore(c).score });
   });
@@ -665,12 +680,13 @@ function computeWardRanks() {
   });
 }
 
+// ── レンダリング（FLIPアニメーション付き） ──────────────────
 const PRIZE = { 1: ["金賞", "GOLD"], 2: ["銀賞", "SILVER"], 3: ["銅賞", "BRONZE"] };
 
-// ── レンダリング（FLIPアニメーション付き） ──────────────────
 function cardHTML(clinic, rank, matched) {
   const addr = clinic.address || "";
-  const ward = wardOfAddr(addr) || "";
+  const wardMatch = addr.match(/京都市([一-龥]+区)/);
+  const ward = wardMatch ? wardMatch[1] : "";
   const stationText = formatStationText(clinic.nearest_station, clinic);
   const info = infoLevel(clinic);
   const rating = clinic.rating ? clinic.rating.toFixed(1) : "—";

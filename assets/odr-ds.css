@@ -1,5 +1,5 @@
 /* =====================================================================
-   大阪歯科総研 Design System  (ODR-DS v1)
+   京都歯科総研 Design System  (ODR-DS v1)
    ---------------------------------------------------------------------
    全ページ共通の単一の真実（Single Source of Truth）。
    ページ個別CSSより先に読み込み、トークン・共通コンポーネントを供給する。
@@ -62,13 +62,14 @@ body.odr{margin:0;font-family:var(--odr-sans);color:var(--odr-ink);background:va
 .odr-brandbar{background:var(--odr-pine);color:#fff;height:64px;display:flex;align-items:center;
   justify-content:space-between;padding:0 var(--sp-page);}
 .odr-sig{display:flex;align-items:center;gap:12px;text-decoration:none;color:#fff;}
-.odr-sig-mark{font-family:var(--odr-mono);font-weight:600;font-size:.92rem;letter-spacing:.14em;
+/* フォントは固定pxに（index.htmlのhtml{font-size:112.5%}に依存せず全ページで同一サイズに統一） */
+.odr-sig-mark{font-family:var(--odr-mono);font-weight:600;font-size:16.5px;letter-spacing:.14em;
   border:1.5px solid rgba(255,255,255,.85);border-radius:7px;padding:5px 9px;line-height:1;}
-.odr-sig-name{font-weight:700;font-size:.98rem;letter-spacing:.02em;line-height:1.2;}
-.odr-sig-name small{display:block;font-family:var(--odr-mono);font-size:.56rem;font-weight:400;
+.odr-sig-name{font-weight:700;font-size:17.5px;letter-spacing:.02em;line-height:1.2;}
+.odr-sig-name small{display:block;font-family:var(--odr-mono);font-size:10px;font-weight:400;
   letter-spacing:.22em;color:#9cbbae;text-transform:uppercase;margin-top:2px;}
 .odr-brandbar nav{display:flex;gap:22px;align-items:center;}
-.odr-brandbar nav a{color:#cfe0d8;text-decoration:none;font-size:.84rem;}
+.odr-brandbar nav a{color:#cfe0d8;text-decoration:none;font-size:15px;}
 .odr-brandbar nav a:hover{color:#fff;}
 @media(max-width:640px){.odr-brandbar nav{display:none;}}
 

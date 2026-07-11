@@ -1,10 +1,11 @@
 /* =========================================================
    京都歯科総研 — 京都市 歯科医院データランキング
-   静かな研究機関トーンのUI（深緑・白・テラコッタ、絵文字/メダル/王冠なし）
+   静かな研究機関トーンのUI（深緑・白・テラコッタ、絵文字なし）
+   ※上位3院の金賞・銀賞・銅賞表示は2026-07-09のユーザー指示で導入
    ========================================================= */
 :root {
   --brand:      #2b6c61;
-  --brand-deep: #1d4f47;
+  --brand-deep: #1f4b3f; /* ODR-DS --odr-pine と統一 */
   --brand-soft: #e8f4f0;
   --warm:       #dd7550;
   --warm-deep:  #b5651d;
@@ -29,14 +30,14 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 
 /* ── 共通ヘッダー ── */
 .site-header{
-  background:var(--brand-deep);border-bottom:3px solid var(--warm);
+  background:var(--brand-deep);
   padding:0 clamp(16px,4vw,40px);
   display:flex;align-items:center;justify-content:space-between;
-  height:72px;position:relative;z-index:10;
+  height:64px;position:relative;z-index:10;
 }
 .site-header .logo{
-  color:#fff;font-family:'Shippori Mincho',serif;
-  font-size:1.1rem;font-weight:700;letter-spacing:.04em;
+  color:#fff;font-family:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;
+  font-size:1.0rem;font-weight:700;letter-spacing:.02em;
   display:flex;flex-direction:column;line-height:1.3;
 }
 .site-header .logo small{
@@ -45,7 +46,7 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 }
 .shindan-header-nav{display:flex;align-items:center;gap:22px;}
 .shindan-header-nav a{
-  color:rgba(255,255,255,.75);font-size:.82rem;letter-spacing:.03em;
+  color:#cfe0d8;font-size:.84rem;letter-spacing:.03em;
   transition:color .15s;
 }
 .shindan-header-nav a:hover{color:#fff;}
@@ -64,13 +65,13 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 
 /* ── ヒーロー（メインコピー） ── */
 .rk-hero{
-  padding:28px clamp(16px,4vw,40px) 36px;
+  padding:16px clamp(16px,4vw,40px) 24px;
   max-width:900px;
 }
 .rk-hero-eyebrow{
   font-family:'Roboto Mono',monospace;font-size:.68rem;
   letter-spacing:.22em;color:var(--warm);text-transform:uppercase;
-  margin:0 0 16px;
+  margin:0 0 10px;
 }
 .rk-hero-title{
   font-size:clamp(1.5rem,3.4vw,2.15rem);font-weight:700;
@@ -183,14 +184,34 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 .rk-methodology-body{margin-top:14px;font-size:.82rem;color:var(--ink-soft);}
 .rk-methodology-body ul{margin:8px 0;padding-left:1.2em;}
 .rk-methodology-body li{line-height:1.9;}
+/* 各項目：右に「＋」、押すと右側に詳細（右の余白を活用）。項目間の余白は詰める */
+.rk-mth-list{margin:6px 0 4px;}
+.rk-mth-item{
+  display:grid;grid-template-columns:minmax(0,280px) 1fr;column-gap:24px;align-items:start;
+  border-top:1px solid var(--line);
+}
+.rk-mth-item:last-child{border-bottom:1px solid var(--line);}
+.rk-mth-item>summary{
+  grid-column:1;list-style:none;cursor:pointer;
+  display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:5px 0;font-size:.82rem;font-weight:500;color:var(--ink-soft);
+}
+.rk-mth-item>summary::-webkit-details-marker{display:none;}
+.rk-mth-item>summary::after{content:"+";color:var(--warm);font-weight:700;font-size:1.05rem;line-height:1;flex-shrink:0;}
+.rk-mth-item[open]>summary::after{content:"–";}
+.rk-mth-d{grid-column:2;margin:0;padding:5px 0;font-size:.8rem;color:var(--ink-faint);line-height:1.65;}
+@media(max-width:600px){
+  .rk-mth-item{grid-template-columns:1fr;column-gap:0;}
+  .rk-mth-d{grid-column:1;padding:0 0 8px;}
+}
 .rk-methodology-link{
   display:inline-block;margin-top:8px;color:var(--brand);font-weight:600;
 }
 
 /* ── レイアウト ── */
 .rk-layout{
-  max-width:1240px;margin:28px auto 60px;
-  padding:0 clamp(16px,4vw,40px);
+  max-width:1460px;margin:28px auto 60px;
+  padding:0 clamp(12px,2.5vw,24px);
   display:grid;grid-template-columns:1fr 280px;gap:40px;
   align-items:start;
 }
@@ -209,10 +230,10 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 }
 
 /* ── ランキングカード ── */
-.rk-list{display:flex;flex-direction:column;gap:12px;}
+.rk-list{display:flex;flex-direction:column;gap:10px;}
 .rk-card{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-  padding:22px 24px;display:flex;gap:20px;
+  padding:12px 18px;display:flex;gap:16px;
   will-change:transform;
 }
 .rk-card{position:relative;overflow:hidden;}
@@ -226,7 +247,7 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
   display:flex;flex-direction:column;align-items:center;justify-content:flex-start;
   width:56px;padding-top:2px;
 }
-.rk-card-rank .num{font-size:1.9rem;letter-spacing:-.02em;color:var(--ink);}
+.rk-card-rank .num{font-size:1.5rem;letter-spacing:-.02em;color:var(--ink);}
 .rk-card-rank .unit{font-size:.62rem;letter-spacing:.06em;color:var(--ink-faint);margin-top:2px;}
 
 /* 上位3件は金賞・銀賞・銅賞（2026-07-09 ユーザー指示①）。
@@ -239,10 +260,10 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 .rk-card[data-top="1"]::before{background:linear-gradient(180deg,#d4af37,#9a7420);width:4px;}
 .rk-card[data-top="2"]::before{background:linear-gradient(180deg,#aebcc6,#6d7d8b);width:4px;}
 .rk-card[data-top="3"]::before{background:linear-gradient(180deg,#c98a4b,#8a4f1d);width:4px;}
-.rk-card[data-top="1"] .rk-card-rank .num{font-size:2.6rem;color:var(--gold);}
-.rk-card[data-top="2"] .rk-card-rank .num{font-size:2.3rem;color:var(--silver);}
-.rk-card[data-top="3"] .rk-card-rank .num{font-size:2.1rem;color:var(--bronze);}
-.rk-card[data-top="1"]{padding-top:26px;padding-bottom:26px;background:linear-gradient(135deg,var(--gold-soft) 0%,var(--surface) 34%);}
+.rk-card[data-top="1"] .rk-card-rank .num{font-size:2rem;color:var(--gold);}
+.rk-card[data-top="2"] .rk-card-rank .num{font-size:1.8rem;color:var(--silver);}
+.rk-card[data-top="3"] .rk-card-rank .num{font-size:1.7rem;color:var(--bronze);}
+.rk-card[data-top="1"]{padding-top:14px;padding-bottom:14px;background:linear-gradient(135deg,var(--gold-soft) 0%,var(--surface) 34%);}
 .rk-card[data-top="2"]{background:linear-gradient(135deg,var(--silver-soft) 0%,var(--surface) 30%);}
 .rk-card[data-top="3"]{background:linear-gradient(135deg,var(--bronze-soft) 0%,var(--surface) 30%);}
 .rk-prize{
@@ -259,30 +280,30 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 .rk-ward-rank{font-weight:600;color:var(--ink-soft);}
 .rk-ward-rank small{font-size:.9em;color:var(--ink-faint);font-weight:400;}
 .rk-card-body{flex:1;min-width:0;}
-.rk-card-name{font-size:1.02rem;font-weight:700;margin:0 0 6px;}
+.rk-card-name{font-size:1.02rem;font-weight:700;margin:0 0 3px;}
 .rk-card-name a:hover{color:var(--brand);}
-.rk-card-meta{font-size:.8rem;color:var(--ink-faint);margin:0 0 4px;}
-.rk-card-rating{font-size:.82rem;color:var(--ink-soft);margin:0 0 10px;}
-.rk-card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px;}
+.rk-card-meta{font-size:.8rem;color:var(--ink-faint);margin:0 0 2px;}
+.rk-card-rating{font-size:.82rem;color:var(--ink-soft);margin:0 0 6px;}
+.rk-card-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:7px;}
 .rk-card-tags span{
   font-size:.7rem;background:var(--bg);border:1px solid var(--line);
   color:var(--ink-faint);padding:3px 10px;border-radius:999px;
 }
 .rk-match{
-  background:var(--brand-soft);border-radius:8px;padding:10px 14px;margin-bottom:12px;
+  background:var(--brand-soft);border-radius:8px;padding:7px 12px;margin-bottom:7px;
 }
 .rk-match-label{
-  font-size:.68rem;letter-spacing:.06em;color:var(--brand);font-weight:700;margin:0 0 4px;
+  font-size:.68rem;letter-spacing:.06em;color:var(--brand);font-weight:700;margin:0 0 2px;
 }
 .rk-match-list{margin:0;padding-left:1.1em;}
-.rk-match-list li{font-size:.78rem;color:var(--brand-deep);line-height:1.8;}
-.rk-ai{border-top:1px dashed var(--line);padding-top:12px;margin-top:4px;}
+.rk-match-list li{font-size:.78rem;color:var(--brand-deep);line-height:1.55;}
+.rk-ai{border-top:1px dashed var(--line);padding-top:8px;margin-top:2px;}
 .rk-ai-label{
   font-family:'Roboto Mono',monospace;font-size:.66rem;letter-spacing:.1em;
-  color:var(--warm-deep);margin:0 0 6px;
+  color:var(--warm-deep);margin:0 0 3px;
 }
-.rk-ai-text{font-size:.82rem;color:var(--ink-soft);line-height:1.85;margin:0;}
-.rk-card-links{display:flex;gap:16px;margin-top:14px;flex-wrap:wrap;}
+.rk-ai-text{font-size:.82rem;color:var(--ink-soft);line-height:1.55;margin:0;}
+.rk-card-links{display:flex;gap:16px;margin-top:8px;flex-wrap:wrap;}
 .rk-card-links a{
   font-size:.8rem;font-weight:600;color:var(--brand);
   border-bottom:1px solid transparent;
@@ -355,7 +376,7 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 .rk-trend-list li{font-size:.78rem;color:var(--ink-soft);line-height:1.8;}
 
 /* ── 情報確認度バッジ ── */
-.rk-card-foot{margin-top:10px;}
+.rk-card-foot{margin-top:6px;}
 .rk-info-badge{
   display:inline-block;font-size:.68rem;letter-spacing:.04em;
   padding:3px 10px;border-radius:999px;border:1px solid var(--line);
@@ -363,7 +384,7 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 }
 .rk-info-hi{border-color:var(--brand);color:var(--brand);background:var(--brand-soft);}
 .rk-info-note{
-  font-size:.74rem;color:var(--ink-faint);margin:8px 0 0;line-height:1.7;
+  font-size:.74rem;color:var(--ink-faint);margin:4px 0 0;line-height:1.6;
 }
 
 /* ── 比較トレイ ── */
@@ -446,7 +467,7 @@ h1,h2,h3,p,li,dd{
 h1{ text-wrap:balance; }
 
 /* ═══ AI ANALYSIS「＋根拠」パネル（2026-07-11） ═══ */
-.rk-ev-toggle{margin-top:10px;background:none;border:1px solid #dfe3e0;border-radius:999px;
+.rk-ev-toggle{margin-top:6px;background:none;border:1px solid #dfe3e0;border-radius:999px;
   padding:6px 14px;font-size:.76rem;color:#1f4b3f;cursor:pointer;font-family:inherit;}
 .rk-ev-toggle:hover{border-color:#1f4b3f;background:rgba(31,75,63,.04);}
 .rk-ev-toggle[aria-expanded="true"]{background:#1f4b3f;color:#fff;border-color:#1f4b3f;}

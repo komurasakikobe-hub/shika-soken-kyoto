@@ -18,7 +18,10 @@ SITE_CFG = json.load(open(os.path.join(ROOT, "site_config.json"), encoding="utf-
 CITY_SHORT = SITE_CFG.get("city_short", SITE_CFG.get("city", ""))
 N_PUBLISHED = SITE_CFG.get("stats", {}).get("clinics_published", 0)
 OUT = os.path.join(ROOT, "articles", "features")
-CAP = 24          # 1カテゴリの表示上限（Netflix行）
+CAP = 48          # 1カテゴリの表示上限（Netflix行）。地域・条件で絞り込むため母数を多めに
+# コラム棚と同じホバー矢印（左右チェブロン）
+FARROW_L = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"/></svg>'
+FARROW_R = '<svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
 VERIFY = "--verify" in sys.argv
 SLUG_MAP_PATH = os.path.join(ROOT, "clinic_slugs.json")
 with open(SLUG_MAP_PATH, encoding="utf-8") as _f:
@@ -34,9 +37,9 @@ def nowrap_pipe(escaped_title):
 def slugify(name): return re.sub(r'[\\/:*?"<>|　\s・。、]', '_', name)[:60]
 
 def ward(addr):
-    m = re.search(r'京都市\s*([^\s0-9０-９]{1,4}区)', addr or "")
+    m = re.search(r'京都市\s*([^\s0-9０-９区]{1,3}区)', addr or "")
     if m: return "京都市" + m.group(1)
-    m = re.search(r'([^\s0-9０-９]{1,4}区)', addr or "")
+    m = re.search(r'([^\s0-9０-９区]{1,3}区)', addr or "")
     return m.group(1) if m else ""
 
 def rating(c): return float(c.get("rating", 0) or 0)
@@ -73,9 +76,25 @@ CATEGORIES = [
     ("female",   "女性医師が在籍する医院",               "女性医師の在籍が公式情報から確認できた医院です。",             lambda c: "女性医師" in tags(c)),
 ]
 
-# カテゴリ → 関連記事：コラムは全都市共通で shikasoken.com/articles/ に集約済み（横展開マニュアル§8）。
-# 都市サイトにはローカル記事が存在しないため空にする（リンク切れ防止）。
-CATEGORY_ARTICLES = {}
+# カテゴリ → 関連記事（記事本文の内容と合致するもののみ。無理に全カテゴリを埋めない）
+# 2026-07-10 コラム全都市共通化：記事は地名除去のうえ存置（URL＝ファイル名は旧のまま）。
+# タイトル表示は地名除去後のものを使う。内容が実際に合致するカテゴリのみ登録（無理に全カテゴリを埋めない）。
+CATEGORY_ARTICLES = {
+    "ct":       [("2026-07-04_CTとマイクロスコープがある京都の歯科を選ぶ理由.html", "CTとマイクロスコープがある歯科が重要な理由"),
+                 ("2026-07-04_根管治療が上手い京都の歯科医院を見分ける方法.html", "根管治療が上手い歯科の見分け方｜専門医の選び方")],
+    "micro":    [("2026-07-04_CTとマイクロスコープがある京都の歯科を選ぶ理由.html", "CTとマイクロスコープがある歯科が重要な理由"),
+                 ("2026-07-04_根管治療が上手い京都の歯科医院を見分ける方法.html", "根管治療が上手い歯科の見分け方｜専門医の選び方")],
+    "implant":  [("2026-07-04_京都のインプラント費用とリスクを正しく理解する.html", "インプラント｜費用相場とリスクを正しく理解する")],
+    "ortho":    [("2026-07-04_京都で矯正は何歳から？選び方を徹底解説.html", "矯正は何歳から？マウスピース・ワイヤーの選び方"),
+                 ("2026-07-04_歯並びが気になったら｜京都で矯正相談すべきタイミング.html", "歯並びが気になる方へ｜矯正相談するベストタイミング")],
+    "kids":     [("2026-07-04_子どもの虫歯予防｜京都の小児歯科はいつから？.html", "子どもの虫歯予防｜小児歯科にいつから通うべきか"),
+                 ("2026-07-04_京都で矯正は何歳から？選び方を徹底解説.html", "矯正は何歳から？マウスピース・ワイヤーの選び方")],
+    "prevent":  [("2026-07-04_予防歯科クリーニングの頻度とメリット｜京都市版.html", "予防歯科のクリーニング頻度とメリット"),
+                 ("2026-07-04_子どもの虫歯予防｜京都の小児歯科はいつから？.html", "子どもの虫歯予防｜小児歯科にいつから通うべきか")],
+    "esthetic": [("2026-07-04_京都ホワイトニング｜種類・費用・選び方を徹底比較.html", "ホワイトニング｜種類・選び方・費用比較ガイド"),
+                 ("2026-07-04_銀歯を白くしたい！京都でセラミック治療の費用と方法.html", "銀歯を白くしたい方へ｜セラミック費用と方法を解説")],
+    "kids_fit": [("2026-07-04_子どもの虫歯予防｜京都の小児歯科はいつから？.html", "子どもの虫歯予防｜小児歯科にいつから通うべきか")],
+}
 
 
 def select(V, pred):
@@ -107,7 +126,9 @@ def main():
         chips = "".join(f'<span class="fc-chip">{esc(x)}</span>' for x in confirmed_equip(c)[:4])
         chips_html = f'<div class="fc-chips">{chips}</div>' if chips else ""
         area = f'<span class="fc-area">{esc(w)}</span>' if w else ""
-        return (f'<a class="fcard" href="../clinics/{esc(slug)}.html">'
+        conds = confirmed_equip(c)  # 絞り込み用の全条件
+        return (f'<a class="fcard" data-ward="{esc(w)}" data-cond="{esc(" ".join(conds))}" '
+                f'href="../clinics/{esc(slug)}.html">'
                 f'<span class="fc-name">{esc(c["name"])}</span>'
                 f'{area}{rate}{chips_html}</a>')
 
@@ -125,7 +146,35 @@ def main():
         sections += (f'<section class="fsec" id="{cid}">'
                      f'<h2 class="fsec-t">{esc(title)}</h2>'
                      f'<p class="fsec-l">{esc(lead)}</p>'
-                     f'<div class="frow">{cards}</div>{more}{related_html}</section>')
+                     f'<div class="frow-wrap">'
+                     f'<button type="button" class="frow-arrow frow-arrow--prev" aria-label="前へ" onclick="frowScroll(this,-1)">{FARROW_L}</button>'
+                     f'<div class="frow">{cards}</div>'
+                     f'<button type="button" class="frow-arrow frow-arrow--next" aria-label="次へ" onclick="frowScroll(this,1)">{FARROW_R}</button>'
+                     f'</div>{more}{related_html}</section>')
+
+    # 右サイドの絞り込み用：表示カードに含まれる区を頻度順に集める
+    from collections import Counter
+    _wc = Counter()
+    for _cid, _t, _l, _xs in data:
+        for _c in _xs[:CAP]:
+            _w = ward(_c.get("address", ""))
+            if _w:
+                _wc[_w] += 1
+    ward_chips = ('<button type="button" class="ff-chip ff-ward on" data-ward="">すべて</button>'
+                  + "".join(f'<button type="button" class="ff-chip ff-ward" data-ward="{esc(w)}">{esc(w.replace("京都市", ""))}</button>'
+                            for w, _ in _wc.most_common()))
+    cond_chips = "".join(f'<button type="button" class="ff-chip ff-cond" data-cond="{esc(k)}">{esc(k)}</button>'
+                         for k in EQUIP_KEYS)
+    filter_html = (
+        '<div class="ff-inner">'
+        '<p class="ff-title">条件でしぼり込む</p>'
+        '<p class="ff-h">地域</p>'
+        f'<div class="ff-chips">{ward_chips}</div>'
+        '<p class="ff-h">こだわり条件</p>'
+        f'<div class="ff-chips">{cond_chips}</div>'
+        '<button type="button" class="ff-reset" id="ffReset">条件をリセット</button>'
+        '<p class="ff-empty" id="ffEmpty" hidden>選んだ条件に合う掲載医院が見つかりませんでした。条件を減らしてお試しください。</p>'
+        '</div>')
 
     # ブランド共通の研究データ（実集計・論文メタ用）
     n_clinics = len(V)
@@ -133,6 +182,7 @@ def main():
     updated = max((c.get("last_analyzed") for c in V if c.get("last_analyzed")), default="").replace("-", ".")
     os.makedirs(OUT, exist_ok=True)
     html_out = (TEMPLATE.replace("{sections}", sections)
+                .replace("{filter}", filter_html)
                 .replace("{n_clinics}", f"{n_clinics:,}")
                 .replace("{n_reviews}", f"{n_reviews:,}")
                 .replace("{updated}", updated)
@@ -149,27 +199,56 @@ TEMPLATE = '''<!DOCTYPE html>
 <title>特徴から探す｜京都歯科総研</title>
 <meta name="description" content="京都市内の歯科医院を、CT設備・対応治療・子ども連れへの配慮など、確認できた特徴ごとに一覧。公開情報およびAI分析にもとづく参考情報です。">
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Shippori+Mincho:wght@600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/odr-ds.css">
 <style>
 :root{--pine:#1f4b3f;--terra:#d98b5f;--paper:#f6f8f7;--ink:#1c2b25;--ink2:#586962;--line:#e4ebe7;}
 *{box-sizing:border-box;}
 body{margin:0;font-family:var(--odr-sans);color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;line-height:1.8;}
 a{color:inherit;text-decoration:none;}
-.rf-crumb{max-width:1040px;margin:14px auto 0;padding:0 clamp(20px,4vw,40px);display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:var(--odr-mono);font-size:.72rem;letter-spacing:.02em;}
+.rf-crumb{max-width:1440px;margin:14px auto 0;padding:0 clamp(24px,4vw,56px);display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:var(--odr-mono);font-size:.72rem;letter-spacing:.02em;}
 .rf-crumb a{color:var(--odr-ink2);text-decoration:none;}
 .rf-crumb a:hover{color:var(--odr-pine);text-decoration:underline;}
 .rf-crumb .rf-sep{color:var(--odr-silver);}
 .rf-crumb .rf-current{color:var(--odr-terra);font-weight:700;}
-.f-hero{background:var(--pine);color:#fff;padding:clamp(34px,5vw,60px) clamp(20px,4vw,40px) clamp(30px,4vw,44px);}
-.f-hero-in{max-width:1040px;margin:0 auto;}
-.f-hero h1{font-size:var(--fs-heading);font-weight:700;margin:18px 0 12px;line-height:1.35;}
+.f-hero{background:var(--pine);color:#fff;padding:clamp(34px,5vw,60px) clamp(24px,4vw,56px) clamp(30px,4vw,44px);}
+.f-hero-in{max-width:1440px;margin:0 auto;}
+.f-hero h1{font-family:'Shippori Mincho',serif;font-size:var(--fs-heading);font-weight:700;margin:18px 0 12px;line-height:1.35;}
 .f-hero p{color:#d6e6df;font-size:.98rem;margin:0 0 22px;max-width:var(--wrap-read);}
-main{max-width:1040px;margin:0 auto;padding:clamp(24px,3vw,40px) clamp(16px,4vw,40px) 72px;}
-.fsec{margin:0 0 40px;}
+/* 2カラム：本文＋右の絞り込みフィルター */
+.f-layout{max-width:1440px;margin:0 auto;padding:0 clamp(24px,4vw,56px);display:grid;grid-template-columns:1fr 258px;gap:36px;align-items:start;}
+.f-main{min-width:0;padding:clamp(24px,3vw,40px) 0 72px;}
+.f-filter{position:sticky;top:16px;margin-top:clamp(24px,3vw,40px);background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px;}
+.ff-title{font-size:.92rem;font-weight:700;color:var(--pine);margin:0 0 6px;}
+.ff-h{font-family:'Roboto Mono',monospace;font-size:.64rem;letter-spacing:.1em;color:var(--ink2);text-transform:uppercase;margin:14px 0 8px;}
+.ff-chips{display:flex;flex-wrap:wrap;gap:6px;max-height:196px;overflow-y:auto;}
+.ff-chip{font-size:.76rem;font-weight:600;color:var(--ink2);background:#fff;border:1px solid var(--line);border-radius:999px;padding:6px 12px;cursor:pointer;font-family:inherit;transition:background .15s,color .15s,border-color .15s;}
+.ff-chip:hover{border-color:var(--pine);color:var(--pine);}
+.ff-chip.on{background:var(--pine);color:#fff;border-color:var(--pine);}
+.ff-reset{margin-top:16px;width:100%;font-size:.78rem;font-weight:600;color:var(--ink2);background:none;border:1px solid var(--line);border-radius:8px;padding:8px;cursor:pointer;font-family:inherit;transition:border-color .15s,color .15s;}
+.ff-reset:hover{border-color:var(--terra);color:var(--terra);}
+.ff-empty{margin:14px 0 0;font-size:.78rem;color:var(--terra);line-height:1.7;}
+@media(max-width:900px){
+  .f-layout{grid-template-columns:1fr;gap:0;}
+  .f-filter{position:static;margin:14px 0 6px;order:-1;}
+  .ff-chips{max-height:none;}
+}
+.fsec{margin:0 0 22px;}
 .fsec-t{font-size:1.14rem;font-weight:700;color:var(--pine);margin:0 0 4px;}
 .fsec-l{color:var(--ink2);font-size:.86rem;margin:0 0 14px;}
-.frow{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;}
+/* コラム棚と同じNetflix風：右端で見切れ（右bleed）＋ホバー矢印 */
+.frow-wrap{position:relative;}
+.frow{display:flex;gap:12px;overflow-x:auto;padding-bottom:8px;-webkit-overflow-scrolling:touch;scroll-snap-type:x proximity;
+  margin:0;padding-right:0;scrollbar-width:thin;}
+.frow-arrow{position:absolute;top:0;bottom:8px;width:52px;z-index:2;display:flex;align-items:center;justify-content:center;
+  border:none;background:transparent;color:var(--ink,#222);cursor:pointer;opacity:0;transition:opacity .2s;}
+.frow-arrow svg{background:#fff;border-radius:50%;padding:9px;width:38px;height:38px;box-sizing:border-box;
+  box-shadow:0 2px 10px rgba(20,20,25,.18);transition:transform .18s ease;}
+.frow-arrow:hover svg{transform:scale(1.16);}
+.frow-wrap:hover .frow-arrow{opacity:1;}
+.frow-arrow--prev{left:0;justify-content:flex-start;padding-left:6px;}
+.frow-arrow--next{right:0;justify-content:flex-end;padding-right:6px;}
+@media(hover:none){.frow-arrow{display:none;}}
 .fcard{flex:0 0 auto;width:186px;background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 15px;scroll-snap-align:start;transition:border-color .15s,transform .15s;display:flex;flex-direction:column;gap:5px;}
 .fcard:hover{border-color:var(--pine);transform:translateY(-2px);}
 .fc-name{font-weight:700;color:var(--pine);font-size:.9rem;line-height:1.45;}
@@ -193,16 +272,23 @@ h1,h2,h3,p,li{line-break:strict;text-wrap:pretty;}
 </style>
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
+<script>
+function frowScroll(btn, dir){
+  var row = btn.parentElement.querySelector('.frow');
+  if(!row) return;
+  row.scrollBy({left: dir * row.clientWidth * 0.9, behavior:'smooth'});
+}
+</script>
 </head>
 <body>
 <header class="odr-brandbar">
   <a class="odr-sig" href="../../index.html">
     <span class="odr-sig-mark">ODR</span>
-    <span class="odr-sig-name">京都歯科総研<small>Kyoto Dental Research</small></span>
+    <span class="odr-sig-name">京都歯科総研<small>Kyoto Dental Research Institute</small></span>
   </a>
   <nav>
-    <a href="../shindan/index.html">ランキング&amp;AI診断</a>
-    <a href="../../index.html">トップ</a>
+    <a href="../shindan/index.html">ランキング・AI診断</a>
+    <a href="../features/index.html">特徴から探す</a>
     <a href="../index.html">コラム</a>
     <a href="../../network.html">展開エリア</a>
     <a href="../../shikumi.html">医院・開業医の方へ</a>
@@ -226,7 +312,8 @@ h1,h2,h3,p,li{line-break:strict;text-wrap:pretty;}
     </div>
   </div>
 </section>
-<main>
+<div class="f-layout">
+<main class="f-main">
   {sections}
   <div class="f-note">
     <strong>掲載内容について（必ずお読みください）</strong><br>
@@ -250,6 +337,47 @@ h1,h2,h3,p,li{line-break:strict;text-wrap:pretty;}
     </div>
   </div>
 </main>
+<aside class="f-filter">{filter}</aside>
+</div>
+<script>
+(function(){
+  var selWard="", selConds=new Set();
+  function apply(){
+    document.querySelectorAll('.fcard').forEach(function(card){
+      var w=card.getAttribute('data-ward')||"";
+      var cond=(card.getAttribute('data-cond')||"").split(" ");
+      var okW=!selWard||w===selWard, okC=true;
+      selConds.forEach(function(c){ if(cond.indexOf(c)<0) okC=false; });
+      card.style.display=(okW&&okC)?"":"none";
+    });
+    document.querySelectorAll('.fsec').forEach(function(sec){
+      var visible=Array.prototype.filter.call(sec.querySelectorAll('.fcard'),function(c){return c.style.display!=="none";}).length;
+      sec.style.display=visible?"":"none";
+    });
+    var any=Array.prototype.some.call(document.querySelectorAll('.fsec'),function(s){return s.style.display!=="none";});
+    var emp=document.getElementById('ffEmpty'); if(emp) emp.hidden=any;
+  }
+  function reset(){
+    selWard=""; selConds.clear();
+    document.querySelectorAll('.ff-ward').forEach(function(x){x.classList.toggle('on',x.getAttribute('data-ward')==="");});
+    document.querySelectorAll('.ff-cond').forEach(function(x){x.classList.remove('on');});
+    apply();
+  }
+  document.addEventListener('click',function(e){
+    var r=e.target.closest('#ffReset'); if(r){reset();return;}
+    var b=e.target.closest('.ff-chip'); if(!b) return;
+    if(b.classList.contains('ff-ward')){
+      document.querySelectorAll('.ff-ward').forEach(function(x){x.classList.remove('on');});
+      b.classList.add('on'); selWard=b.getAttribute('data-ward')||"";
+    } else if(b.classList.contains('ff-cond')){
+      b.classList.toggle('on');
+      var c=b.getAttribute('data-cond');
+      if(b.classList.contains('on')) selConds.add(c); else selConds.delete(c);
+    }
+    apply();
+  });
+})();
+</script>
 </body>
 </html>'''
 

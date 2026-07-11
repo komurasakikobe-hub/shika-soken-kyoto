@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>月次成果レポート（サンプル）｜サンプル歯科医院</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700;900&family=Inter:wght@400;600;700;800&display=swap" rel="stylesheet">
+<style>
+:root{
+  --navy:#16324A; --navy-deep:#0D2136; --teal:#0F7B6C;
+  --green:#1D8A54; --amber:#B7791F; --red:#C24437; --blue:#4E7CF6;
+  --bg:#F4F6F9; --card:#FFFFFF; --ink:#1F2A36; --ink-soft:#5B6B7B;
+  --line:#E3E8F0; --shadow:rgba(22,50,74,.05);
+}
+*{margin:0;padding:0;box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{font-family:'Noto Sans JP',sans-serif;background:var(--bg);color:var(--ink);
+     line-height:1.85;font-feature-settings:"palt" 1;-webkit-font-smoothing:antialiased}
+.jp{word-break:keep-all;overflow-wrap:break-word}
+.wrap{max-width:1280px;margin:0 auto;padding:0 32px}
+.num{font-family:'Inter',sans-serif}
+
+/* ヘッダー */
+.hero{background:linear-gradient(150deg,var(--navy-deep) 0%,var(--navy) 70%,#1E4A6E 100%);
+      color:#fff;padding:56px 0 46px}
+.hero-top{display:flex;justify-content:space-between;align-items:flex-start;gap:24px;flex-wrap:wrap}
+.hero-badge{font-family:'Inter',sans-serif;font-weight:600;font-size:11.5px;letter-spacing:.22em;
+            color:#9DC3E8;text-transform:uppercase;margin-bottom:14px}
+.hero h1{font-weight:900;font-size:clamp(26px,4.6vw,40px);letter-spacing:.02em;line-height:1.35;margin-bottom:10px}
+.hero .sub{font-size:14.5px;color:rgba(255,255,255,.78)}
+.hero .issued{font-size:12px;color:rgba(255,255,255,.5);margin-top:4px}
+.grade{flex:none;text-align:center}
+.grade .g-circle{width:104px;height:104px;border-radius:50%;display:grid;place-items:center;
+       font-family:'Inter',sans-serif;font-weight:900;font-size:52px;margin:0 auto 8px;
+       border:3px solid rgba(255,255,255,.35)}
+.grade.a .g-circle{background:#1D8A54;border-color:#7ED6A7}
+.grade.b .g-circle{background:#B7791F;border-color:#EBC77E}
+.grade.c .g-circle{background:#C24437;border-color:#F0A99E}
+.grade .g-label{font-size:12.5px;font-weight:700;color:rgba(255,255,255,.9)}
+.grade .g-why{font-size:10.5px;color:rgba(255,255,255,.55);margin-top:3px}
+.hero-kpis{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:34px}
+.hero-kpi{background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.15);
+          border-radius:12px;padding:16px 14px;text-align:center}
+.hero-kpi .hk-val{font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(20px,3vw,28px);line-height:1.1}
+.hero-kpi .hk-label{font-size:11px;color:rgba(255,255,255,.68);margin-top:7px}
+
+/* 30秒サマリー */
+.digest{background:#fff;border-bottom:1px solid var(--line)}
+.digest-inner{max-width:1280px;margin:0 auto;padding:26px 32px;display:grid;gap:10px}
+.digest-title{font-family:'Inter',sans-serif;font-weight:700;font-size:11px;letter-spacing:.2em;
+              color:var(--teal);text-transform:uppercase}
+.digest-row{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.digest-row .d-tag{flex:none;font-size:11.5px;font-weight:700;padding:2px 10px;border-radius:20px;white-space:nowrap}
+.digest-row.ok .d-tag{color:var(--green);background:rgba(29,138,84,.1)}
+.digest-row.ng .d-tag{color:var(--amber);background:rgba(183,121,31,.12)}
+.digest-row.next .d-tag{color:var(--blue);background:rgba(78,124,246,.1)}
+.digest-row .d-text{font-size:14.5px;font-weight:600}
+
+/* セクション共通 */
+section{padding:52px 0}
+.section-alt{background:#fff}
+.sec-head{display:flex;align-items:baseline;gap:14px;margin-bottom:6px}
+.sec-no{font-family:'Inter',sans-serif;font-weight:800;font-size:13px;color:var(--teal);letter-spacing:.12em}
+h2{font-weight:900;font-size:clamp(20px,3.4vw,27px);color:var(--navy);letter-spacing:.02em;line-height:1.5}
+.section-note{font-size:13px;color:var(--ink-soft);margin-bottom:22px}
+h3{font-size:16.5px;font-weight:800;color:var(--navy);margin:34px 0 8px}
+.reveal{opacity:0;transform:translateY(20px);transition:opacity .55s ease,transform .55s ease}
+.reveal.in{opacity:1;transform:none}
+@media(prefers-reduced-motion:reduce){.reveal{opacity:1;transform:none;transition:none}}
+
+.chip{font-family:'Inter','Noto Sans JP',sans-serif;font-weight:700;font-size:12.5px;
+      padding:2px 10px;border-radius:20px;white-space:nowrap;display:inline-block}
+.chip.up{color:var(--green);background:rgba(29,138,84,.1)}
+.chip.down{color:var(--red);background:rgba(194,68,55,.1)}
+.chip.flat{color:var(--amber);background:rgba(183,121,31,.12)}
+
+/* できている / 足りない */
+.sg-cols{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.sg-col-title{font-size:14px;font-weight:800;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.sg-col-title.good{color:var(--green)} .sg-col-title.warn{color:var(--amber)}
+.sg-card{display:flex;gap:13px;background:#fff;border:1px solid var(--line);border-radius:14px;
+         padding:16px 18px;margin-bottom:10px;box-shadow:0 2px 8px var(--shadow)}
+.sg-card.good{border-left:4px solid var(--green)}
+.sg-card.warn{border-left:4px solid var(--amber)}
+.sg-mark{flex:none;width:30px;height:30px;border-radius:50%;display:grid;place-items:center;
+         font-weight:900;font-size:15px;color:#fff}
+.sg-card.good .sg-mark{background:var(--green)} .sg-card.warn .sg-mark{background:var(--amber)}
+.sg-title{font-size:14px;font-weight:800;margin-bottom:3px}
+.sg-desc{font-size:12.5px;color:var(--ink-soft);line-height:1.7}
+.sg-action{font-size:12.5px;margin-top:8px;color:var(--navy);font-weight:600}
+.sg-action span{display:inline-block;font-size:10.5px;font-weight:800;color:#fff;background:var(--teal);
+                border-radius:4px;padding:1px 7px;margin-right:8px;letter-spacing:.06em}
+
+/* 提供価値 */
+.work-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.work-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 12px;
+           text-align:center;box-shadow:0 3px 12px var(--shadow)}
+.work-ico{font-size:22px;margin-bottom:8px}
+.work-num{font-family:'Inter',sans-serif;font-weight:800;font-size:30px;color:var(--navy);line-height:1.1}
+.work-unit{font-size:12px;font-weight:600;color:var(--ink-soft);margin-left:2px}
+.work-label{font-size:12px;font-weight:700;margin-top:6px}
+.work-hour{font-size:10.5px;color:var(--ink-soft);margin-top:4px}
+.value-banner{margin-top:20px;background:linear-gradient(140deg,var(--navy-deep),var(--navy));
+              color:#fff;border-radius:16px;padding:28px 32px;display:flex;align-items:center;
+              gap:26px;flex-wrap:wrap}
+.value-banner .vb-big{font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(26px,4vw,38px);line-height:1}
+.value-banner .vb-label{font-size:12.5px;color:rgba(255,255,255,.72);margin-top:6px}
+.value-banner .vb-money{margin-left:auto;text-align:right}
+.value-banner .vb-money .m{font-family:'Inter',sans-serif;font-weight:800;font-size:clamp(20px,3vw,28px);color:#8FE3C0}
+.fineprint{font-size:11.5px;color:var(--ink-soft);margin-top:10px}
+.flow{display:flex;align-items:stretch;justify-content:center;gap:10px;flex-wrap:wrap;margin-top:26px}
+.flow-step{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 16px;
+           text-align:center;min-width:128px;box-shadow:0 3px 12px var(--shadow)}
+.flow-step.final{background:var(--teal);border-color:transparent}
+.flow-step.final .fs-num,.flow-step.final .fs-label{color:#fff}
+.fs-num{font-family:'Inter',sans-serif;font-weight:800;font-size:22px;color:var(--navy)}
+.fs-num span{font-size:12px;font-weight:600}
+.fs-label{font-size:11px;color:var(--ink-soft);line-height:1.6;margin-top:6px}
+.fs-label .est{font-size:9.5px;opacity:.8}
+.flow-arrow{align-self:center;font-size:20px;color:#B9C4D2}
+
+/* AI推薦 */
+.ai-row{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 22px 14px;
+        margin-bottom:12px;box-shadow:0 3px 12px var(--shadow)}
+.ai-head{display:flex;align-items:baseline;gap:12px;margin-bottom:10px}
+.ai-name{font-weight:800;font-size:15.5px}
+.ai-meta{font-size:11.5px;color:var(--ink-soft)}
+.ai-pct{margin-left:auto;font-family:'Inter',sans-serif;font-weight:800;font-size:22px}
+.ai-bar-wrap{position:relative;background:#EDF1F6;border-radius:7px;height:14px;overflow:hidden}
+.ai-bar{height:100%;border-radius:7px;width:0;transition:width 1.2s cubic-bezier(.4,0,.2,1)}
+.ai-ci{position:absolute;top:0;height:100%;background:rgba(22,50,74,.16);
+       border-left:2px solid rgba(22,50,74,.4);border-right:2px solid rgba(22,50,74,.4)}
+.ai-ci-label{font-size:10.5px;color:var(--ink-soft);margin-top:6px;text-align:right}
+.ai-avg{margin-top:16px;background:linear-gradient(140deg,var(--navy-deep),var(--navy));color:#fff;
+        border-radius:14px;padding:20px 26px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.ai-avg .lbl{font-size:13px;color:rgba(255,255,255,.78)}
+.ai-avg .v{font-family:'Inter',sans-serif;font-weight:800;font-size:30px}
+.ai-avg .ev{font-size:13px;font-weight:700;color:#8FE3C0;margin-left:auto}
+.method-card{margin-top:18px;background:#F0F4F8;border:1px solid var(--line);border-radius:14px;padding:22px 26px}
+.method-title{font-size:13.5px;font-weight:800;color:var(--navy);margin-bottom:12px}
+.method-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 24px;margin-bottom:12px}
+.method-grid .m-k{display:inline-block;font-size:11px;font-weight:700;color:var(--ink-soft);width:76px}
+.method-grid .m-v{font-size:12.5px;font-weight:600}
+.method-card p{font-size:12.5px;color:var(--ink-soft);line-height:1.8}
+.comp-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 24px;box-shadow:0 3px 12px var(--shadow)}
+.comp-row{display:grid;grid-template-columns:200px 1fr 52px;align-items:center;gap:14px;padding:7px 0}
+.comp-row.me .comp-name{font-weight:800;color:var(--teal)}
+.comp-name{font-size:12.5px;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.comp-bar-wrap{background:#EDF1F6;border-radius:6px;height:12px}
+.comp-bar{height:100%;border-radius:6px;background:#B9C4D2}
+.comp-row.me .comp-bar{background:var(--teal)}
+.comp-count{font-family:'Inter',sans-serif;font-size:12px;font-weight:700;text-align:right;color:var(--ink-soft)}
+
+/* KPI・テーブル */
+.kpi-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}
+.kpi-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 16px;
+          box-shadow:0 3px 12px var(--shadow);position:relative;overflow:hidden}
+.kpi-card::before{content:"";position:absolute;top:0;left:0;width:100%;height:3px;background:var(--accent)}
+.kpi-label{font-size:11.5px;color:var(--ink-soft);font-weight:700;margin-bottom:10px}
+.kpi-val{font-family:'Inter',sans-serif;font-weight:800;font-size:26px;color:var(--navy);line-height:1;margin-bottom:12px}
+.kpi-val .u{font-size:.5em;font-weight:600;color:var(--ink-soft);margin-left:2px}
+.kpi-foot{display:flex;flex-direction:column;gap:4px}
+.kpi-last{font-size:11px;color:#93A1B1}
+.kpi-trend{display:flex;align-items:center;gap:8px;margin-top:10px;padding-top:8px;border-top:1px dashed var(--line)}
+.kpi-trend span{font-size:9.5px;color:#93A1B1;line-height:1.4}
+.spark{display:block;flex:none}
+.ai-avg .spark{opacity:.9}
+.table-card{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;
+            box-shadow:0 3px 12px var(--shadow)}
+.data-table{width:100%;border-collapse:collapse}
+.data-table th{background:var(--navy);color:#fff;padding:12px 14px;font-size:11.5px;
+               font-weight:700;letter-spacing:.06em;text-align:center}
+.data-table th:first-child{text-align:left}
+.data-table td{padding:12px 14px;font-size:13px;border-bottom:1px solid var(--line)}
+.data-table tr:last-child td{border-bottom:none}
+.data-table tbody tr:nth-child(even){background:#F8FAFC}
+.kw-name,.src-name{font-weight:600}
+.kw-num{text-align:center;font-family:'Inter',sans-serif;font-weight:700;font-size:13.5px}
+.g-last{color:#93A1B1;font-weight:500}
+.kw-badge{text-align:center}
+.kw-rank{text-align:center;width:40px}
+.kw-rank .r{font-family:'Inter',sans-serif;font-weight:800;font-size:13px;color:var(--navy);
+            display:inline-grid;place-items:center;width:25px;height:25px;border-radius:7px;background:#EDF1F6}
+.kw-rank.top .r{background:var(--navy);color:#fff}
+
+/* 先月の約束と結果 */
+.promise-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:18px 22px;
+              margin-bottom:12px;box-shadow:0 2px 8px var(--shadow)}
+.promise-head{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.promise-no{font-size:11px;font-weight:800;color:#fff;background:var(--navy);border-radius:4px;
+            padding:2px 9px;letter-spacing:.06em}
+.promise-verdict{margin-left:auto;font-size:12.5px;font-weight:800}
+.promise-verdict.up{color:var(--green)} .promise-verdict.flat{color:var(--amber)} .promise-verdict.down{color:var(--red)}
+.promise-text{font-size:14px;font-weight:700;line-height:1.7}
+.promise-result{font-size:12.5px;color:var(--ink-soft);margin-top:6px;padding-left:16px;position:relative}
+.promise-result::before{content:"↳";position:absolute;left:0;color:#93A1B1}
+
+/* 来月 */
+.plan-card{display:grid;grid-template-columns:64px 1fr;background:#fff;border:1px solid var(--line);
+           border-radius:14px;overflow:hidden;box-shadow:0 3px 12px var(--shadow);margin-bottom:12px}
+.plan-num{background:var(--teal);color:#fff;display:grid;place-items:center;
+          font-family:'Inter',sans-serif;font-weight:800;font-size:22px}
+.plan-text{padding:18px 22px;font-size:14px;font-weight:600;line-height:1.75}
+.art-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:14px}
+.art-card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px 22px;
+          box-shadow:0 3px 12px var(--shadow)}
+.art-head{display:flex;align-items:center;gap:10px;margin-bottom:10px}
+.art-num{font-family:'Inter',sans-serif;font-weight:800;font-size:18px;color:#C9D3DF}
+.art-tag{font-size:11px;font-weight:700;padding:2px 9px;border-radius:20px}
+.art-title{font-size:14px;font-weight:800;margin-bottom:7px;line-height:1.6}
+.art-reason{font-size:12.5px;color:var(--ink-soft);line-height:1.8}
+.comment-box{background:#fff;border:1px solid var(--line);border-radius:14px;padding:26px 30px;
+             box-shadow:0 3px 12px var(--shadow);margin-top:24px}
+.comment-box ul{list-style:none}
+.comment-box li{font-size:13.5px;color:var(--ink-soft);line-height:1.95;padding-left:18px;position:relative}
+.comment-box li::before{content:"";position:absolute;left:0;top:13px;width:5px;height:5px;border-radius:50%;background:var(--teal)}
+.comment-box li.head{font-weight:800;color:var(--navy);padding-left:0;margin-top:10px}
+.comment-box li.head::before{display:none}
+.comment-box li.head:first-child{margin-top:0}
+
+.glossary{background:#fff;border-top:1px solid var(--line);padding:30px 0}
+.gloss-title{font-size:12px;font-weight:800;color:var(--ink-soft);letter-spacing:.08em;margin-bottom:12px}
+.gloss-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px 28px}
+.gloss-item{font-size:11.5px;color:var(--ink-soft);line-height:1.8}
+.gloss-item b{color:var(--navy)}
+
+footer{background:var(--navy-deep);color:#fff;text-align:center;padding:38px 28px}
+footer h4{font-size:16px;margin-bottom:6px;letter-spacing:.05em}
+footer p{font-size:12px;color:rgba(255,255,255,.55);line-height:1.9}
+
+@media(max-width:760px){
+  section{padding:40px 0}
+  .hero-kpis{grid-template-columns:1fr 1fr}
+  .sg-cols{grid-template-columns:1fr}
+  .work-grid{grid-template-columns:repeat(3,1fr)}
+  .kpi-grid{grid-template-columns:1fr 1fr}
+  .art-grid{grid-template-columns:1fr}
+  .comp-row{grid-template-columns:120px 1fr 46px}
+  .data-table th,.data-table td{padding:10px 8px;font-size:12px}
+  .gloss-grid{grid-template-columns:1fr}
+  .hero-top{flex-direction:column}
+  .grade{align-self:flex-start;display:flex;align-items:center;gap:14px;text-align:left}
+  .grade .g-circle{width:64px;height:64px;font-size:32px;margin:0}
+}
+@media(max-width:430px){
+  .work-grid,.kpi-grid{grid-template-columns:1fr 1fr}
+}
+
+/* 印刷（⌘+PでそのままPDF提出可） */
+@media print{
+  body{background:#fff;-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .reveal{opacity:1 !important;transform:none !important}
+  .ai-bar{width:var(--print-w) !important;transition:none}
+  section{padding:26px 0}
+  .sg-card,.ai-row,.kpi-card,.plan-card,.art-card,.work-card,.flow,.value-banner,.method-card,.comp-card,.table-card,.promise-card{page-break-inside:avoid}
+  .hero{padding:34px 0 30px}
+  .table-card,.sg-card,.value-banner,.method-card{box-shadow:none}
+}
+.mask,.method-grid .m-v,.ai-pct,.ai-ci,.ai-ci-label,.ai-meta,.kw-name,.kw-num,.art-title,.art-reason,.value-banner .vb-money .m,.digest-row.next .d-text,.plan-text,.sg-desc,.sg-action{filter:blur(6px);user-select:none;}.samp-ribbon{position:sticky;top:0;z-index:50;background:#B7791F;color:#fff;text-align:center;font-size:12.5px;font-weight:700;letter-spacing:.04em;padding:7px 12px;}</style>
+</head>
+<body>
+<div class="samp-ribbon">サンプル｜数値・院名はイメージです（一部の分析ロジックはモザイク処理・非公開）</div>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="hero-top">
+      <div>
+        <div class="hero-badge">MONTHLY REPORT ・ 2025年7月</div>
+        <h1 class="jp">月次成果レポート</h1>
+        <p class="sub jp">サンプル歯科医院　｜　京都市 歯科</p>
+        <p class="issued">発行日 2026年7月9日</p>
+      </div>
+      <div class="grade a">
+        <div class="g-circle">A</div>
+        <div class="g-label jp">今月の総合評価：好調</div>
+        <div class="g-why jp">改善 6件 ・ 後退 0件 ・ 伸びしろ 4件</div>
+      </div>
+    </div>
+    <div class="hero-kpis">
+      <div class="hero-kpi"><div class="hk-val">63</div><div class="hk-label jp">新しくサイトに来た人</div></div>
+      <div class="hero-kpi"><div class="hk-val">1,240</div><div class="hk-label jp">Googleに表示された回数</div></div>
+      <div class="hero-kpi"><div class="hk-val">63<span style='font-size:.55em'>%</span></div><div class="hk-label jp">AIが貴院を推薦した割合</div></div>
+      <div class="hero-kpi"><div class="hk-val">83<span style="font-size:.55em">時間</span></div><div class="hk-label jp">今月代行した作業量</div></div>
+    </div>
+  </div>
+</header>
+
+<div class="digest">
+  <div class="digest-inner">
+    <div class="digest-title">30秒でわかる今月</div>
+    <div class="digest-row ok"><span class="d-tag">できていること</span><span class="d-text jp">表示回数が増加</span></div>
+    <div class="digest-row ng"><span class="d-tag">足りないこと</span><span class="d-text jp">GeminiのAI推薦率が伸びしろあり</span></div>
+    <div class="digest-row next"><span class="d-tag">来月やること</span><span class="d-text jp">予防歯科関連の記事を週2本追加（現在掲載順位4.7位→3位以内を目標）</span></div>
+  </div>
+</div>
+
+<section id="scorecard">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-no">01</span><h2 class="jp">いまの立ち位置：できていること・足りないこと</h2></div>
+    <p class="section-note jp">今月のデータをもとに、順調な点と伸びしろを整理しました。「足りないこと」にはそれぞれ打ち手を添えています。</p>
+    <div class="sg-cols">
+      <div>
+        <div class="sg-col-title good">✓ できていること（6件）</div>
+        
+      <div class="sg-card good reveal">
+        <div class="sg-mark">✓</div>
+        <div><div class="sg-title jp">表示回数が増加</div><div class="sg-desc jp">1,240回（前月比＋26.5%）。Google上での露出と反響が広がっています。</div></div>
+      </div>
+      <div class="sg-card good reveal">
+        <div class="sg-mark">✓</div>
+        <div><div class="sg-title jp">クリック数が増加</div><div class="sg-desc jp">87回（前月比＋40.3%）。Google上での露出と反響が広がっています。</div></div>
+      </div>
+      <div class="sg-card good reveal">
+        <div class="sg-mark">✓</div>
+        <div><div class="sg-title jp">新規ユーザー数が増加</div><div class="sg-desc jp">63人（前月比＋31.2%）。Google上での露出と反響が広がっています。</div></div>
+      </div>
+      <div class="sg-card good reveal">
+        <div class="sg-mark">✓</div>
+        <div><div class="sg-title jp">クリック率が業界目安の約2倍</div><div class="sg-desc jp">CTR 7.0%（業界目安は3%）。検索結果で「選ばれる」表示になっています。</div></div>
+      </div>
+      <div class="sg-card good reveal">
+        <div class="sg-mark">✓</div>
+        <div><div class="sg-title jp">検索順位が1ページ目に定着</div><div class="sg-desc jp">平均掲載順位 8.2位（先月11.4位から3.2位改善）。多くの検索で1ページ目に表示されています。</div></div>
+      </div>
+      <div class="sg-card good reveal">
+        <div class="sg-mark">✓</div>
+        <div><div class="sg-title jp">2個のキーワードで検索TOP3</div><div class="sg-desc jp">「サンプル歯科医院」、「サンプル歯科 予約」が検索3位以内。地域の検索で真っ先に見つかる状態です。</div></div>
+      </div>
+      </div>
+      <div>
+        <div class="sg-col-title warn">! 足りないこと・伸びしろ（4件）</div>
+        
+      <div class="sg-card warn reveal">
+        <div class="sg-mark">!</div>
+        <div><div class="sg-title jp">GeminiのAI推薦率が伸びしろあり</div><div class="sg-desc jp">Geminiは50.0%（他AIより低め）。</div>
+        <div class="sg-action jp"><span>打ち手</span>症状別・地域別の詳しい解説記事を増やし、AIの認知を強化します。</div></div>
+      </div>
+      <div class="sg-card warn reveal">
+        <div class="sg-mark">!</div>
+        <div><div class="sg-title jp">「歯医者 京都府」が2ページ目で機会損失</div><div class="sg-desc jp">現在12.4位。あと一歩で1ページ目。</div>
+        <div class="sg-action jp"><span>打ち手</span>特化記事を追加して1ページ目に押し上げます。</div></div>
+      </div>
+      <div class="sg-card warn reveal">
+        <div class="sg-mark">!</div>
+        <div><div class="sg-title jp">「歯医者 京都府」は見られているのに選ばれていない</div><div class="sg-desc jp">表示52回に対しクリック率3.8%と低め。</div>
+        <div class="sg-action jp"><span>打ち手</span>タイトルと説明文を書き換え、クリックにつなげます。</div></div>
+      </div>
+      <div class="sg-card warn reveal">
+        <div class="sg-mark">!</div>
+        <div><div class="sg-title jp">SNSからの流入がまだ少ない</div><div class="sg-desc jp">月11人。検索以外の入口が細い状態。</div>
+        <div class="sg-action jp"><span>打ち手</span>保存・シェアされやすいセルフケア記事をSNS向けに展開します。</div></div>
+      </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section id="value" class="section-alt">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-no">02</span><h2 class="jp">今月ご提供した業務と、その価値</h2></div>
+    <p class="section-note jp">院長が施術に集中されている間に、当社が代行した業務です。</p>
+    <div class="work-grid">
+      
+      <div class="work-card reveal">
+        <div class="work-ico">🔍</div>
+        <div class="work-num">32<span class="work-unit">テーマ</span></div>
+        <div class="work-label jp">検索キーワード分析</div>
+        <div class="work-hour">人が行えば 約3時間</div>
+      </div>
+      <div class="work-card reveal">
+        <div class="work-ico">📊</div>
+        <div class="work-num">18<span class="work-unit">サイト</span></div>
+        <div class="work-label jp">競合サイト分析</div>
+        <div class="work-hour">人が行えば 約3時間</div>
+      </div>
+      <div class="work-card reveal">
+        <div class="work-ico">✍️</div>
+        <div class="work-num">31<span class="work-unit">本</span></div>
+        <div class="work-label jp">記事の執筆・公開</div>
+        <div class="work-hour">人が行えば 約62時間</div>
+      </div>
+      <div class="work-card reveal">
+        <div class="work-ico">💬</div>
+        <div class="work-num">24<span class="work-unit">件</span></div>
+        <div class="work-label jp">口コミへの返信作成</div>
+        <div class="work-hour">人が行えば 約12時間</div>
+      </div>
+      <div class="work-card reveal">
+        <div class="work-ico">💡</div>
+        <div class="work-num">8<span class="work-unit">件</span></div>
+        <div class="work-label jp">改善提案</div>
+        <div class="work-hour">人が行えば 約3時間</div>
+      </div>
+    </div>
+    <div class="value-banner reveal">
+      <div>
+        <div class="vb-big">83時間<span style="font-size:.45em;font-weight:600">/月</span></div>
+        <div class="vb-label jp">院長の時間をこれだけ空けました（人が行った場合の作業量）</div>
+      </div>
+      <div class="vb-money">
+        <div class="m">¥207,500相当</div>
+        <div class="vb-label jp">時給2,500円で外注した場合の費用換算</div>
+      </div>
+    </div>
+    
+    <div class="flow reveal">
+      <div class="flow-step"><div class="fs-num">81<span>人</span></div><div class="fs-label jp">検索からの訪問</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="fs-num">4<span>人</span></div><div class="fs-label jp">問い合わせ<br>（5%換算）</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="fs-num">2<span>人</span></div><div class="fs-label jp">ご来院<br>（70%換算）</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step final"><div class="fs-num">¥113,400</div><div class="fs-label jp">売上への貢献<span class="est">（試算）</span></div></div>
+    </div>
+    <p class="fineprint jp">※ 患者単価 ¥40,000・問い合わせ率5%・成約率70%での推定値です。実際の売上を保証するものではありません。</p>
+  </div>
+</section>
+
+<section id="ai">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-no">03</span><h2 class="jp">AIは貴院をすすめているか（AI推薦モニタリング）</h2></div>
+    <p class="section-note jp">「京都市でおすすめの歯医者は？」など患者さんが実際に聞きそうな10種類の質問をChatGPT・Claude・Geminiに繰り返し行い、貴院が回答に出た割合を計測しています。</p>
+    <div class="ai-bars">
+      
+      <div class="ai-row reveal">
+        <div class="ai-head"><span class="ai-name" style="color:#10A37F">ChatGPT</span>
+          <span class="ai-meta jp">13/20回で推薦</span>
+          
+          <span class="ai-pct" style="color:#10A37F">65%</span></div>
+        <div class="ai-bar-wrap">
+          <div class="ai-bar" style="background:#10A37F" data-pct="65"></div>
+          <div class="ai-ci" style="left:43.3%;width:38.6%" title="95%信頼区間 43.3〜81.9%"></div>
+        </div>
+        <div class="ai-ci-label">何度測ってもだいたいこの範囲：43〜82%</div>
+      </div>
+      <div class="ai-row reveal">
+        <div class="ai-head"><span class="ai-name" style="color:#C0623D">Claude</span>
+          <span class="ai-meta jp">15/20回で推薦</span>
+          
+          <span class="ai-pct" style="color:#C0623D">75%</span></div>
+        <div class="ai-bar-wrap">
+          <div class="ai-bar" style="background:#C0623D" data-pct="75"></div>
+          <div class="ai-ci" style="left:53.1%;width:35.7%" title="95%信頼区間 53.1〜88.8%"></div>
+        </div>
+        <div class="ai-ci-label">何度測ってもだいたいこの範囲：53〜89%</div>
+      </div>
+      <div class="ai-row reveal">
+        <div class="ai-head"><span class="ai-name" style="color:#4E7CF6">Gemini</span>
+          <span class="ai-meta jp">10/20回で推薦</span>
+          
+          <span class="ai-pct" style="color:#4E7CF6">50%</span></div>
+        <div class="ai-bar-wrap">
+          <div class="ai-bar" style="background:#4E7CF6" data-pct="50"></div>
+          <div class="ai-ci" style="left:29.9%;width:40.2%" title="95%信頼区間 29.9〜70.1%"></div>
+        </div>
+        <div class="ai-ci-label">何度測ってもだいたいこの範囲：30〜70%</div>
+      </div>
+    </div>
+    <div class="ai-avg reveal">
+      <span class="lbl jp">3つのAIの平均推薦率</span>
+      <span class="v">63%</span>
+      
+      <span class="ev jp">○ 良好</span>
+    </div>
+    
+    <div class="method-card reveal">
+      <div class="method-title jp">この数字の計測方法（信頼性の担保）</div>
+      <div class="method-grid">
+        <div><span class="m-k jp">計測方式</span><span class="m-v jp">手動計測（シークレットモード＋計測専用アカウント）</span></div>
+        <div><span class="m-k jp">計測回数</span><span class="m-v jp">10種類の質問 × 合計60回</span></div>
+        <div><span class="m-k jp">計測時期</span><span class="m-v jp">2025年7月</span></div>
+        <div><span class="m-k jp">誤差の目安</span><span class="m-v jp">±12ポイント</span></div>
+      </div>
+      <p class="jp">AIの回答は毎回少しずつ変わるため、±12ポイント程度の増減は誤差の範囲です（統計学の標準的な方法〈95%信頼区間〉で算出）。単月の上下ではなく、<b>3ヶ月のトレンド</b>で判断します。計測記録はモニタリングシートに保存しています。</p>
+    </div>
+    
+  </div>
+</section>
+
+<section id="search" class="section-alt">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-no">04</span><h2 class="jp">検索・サイトの反響データ</h2></div>
+    <p class="section-note jp">Google Search Console・Google Analyticsの実測値です。</p>
+    <div class="kpi-grid">
+      
+      <div class="kpi-card reveal" style="--accent:#4E7CF6">
+        <div class="kpi-label jp">表示回数</div>
+        <div class="kpi-val">1,240<span class='u'>回</span></div>
+        <div class="kpi-foot"><span class="chip up">＋26.5%</span><span class="kpi-last">先月 980回</span></div>
+        <div class="kpi-trend"><svg class="spark" width="84" height="24" viewBox="0 0 84 24" aria-hidden="true"><polyline points="3.0,21.0 81.0,3.0" fill="none" stroke="#4E7CF6" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><circle cx="81.0" cy="3.0" r="2.6" fill="#4E7CF6"/></svg><span>過去2ヶ月の推移</span></div>
+      </div>
+      <div class="kpi-card reveal" style="--accent:#0F7B6C">
+        <div class="kpi-label jp">クリック数</div>
+        <div class="kpi-val">87<span class='u'>回</span></div>
+        <div class="kpi-foot"><span class="chip up">＋40.3%</span><span class="kpi-last">先月 62回</span></div>
+        <div class="kpi-trend"><svg class="spark" width="84" height="24" viewBox="0 0 84 24" aria-hidden="true"><polyline points="3.0,21.0 81.0,3.0" fill="none" stroke="#0F7B6C" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><circle cx="81.0" cy="3.0" r="2.6" fill="#0F7B6C"/></svg><span>過去2ヶ月の推移</span></div>
+      </div>
+      <div class="kpi-card reveal" style="--accent:#B7791F">
+        <div class="kpi-label jp">クリック率（CTR）</div>
+        <div class="kpi-val">7<span class='u'>%</span></div>
+        <div class="kpi-foot"><span class="chip up">＋0.7pt</span><span class="kpi-last">先月 6.3%</span></div>
+        <div class="kpi-trend"><svg class="spark" width="84" height="24" viewBox="0 0 84 24" aria-hidden="true"><polyline points="3.0,21.0 81.0,3.0" fill="none" stroke="#B7791F" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><circle cx="81.0" cy="3.0" r="2.6" fill="#B7791F"/></svg><span>過去2ヶ月の推移</span></div>
+      </div>
+      <div class="kpi-card reveal" style="--accent:#C0623D">
+        <div class="kpi-label jp">平均掲載順位</div>
+        <div class="kpi-val">8.2<span class='u'>位</span></div>
+        <div class="kpi-foot"><span class="chip up">3.2位改善</span><span class="kpi-last">先月 11.4位</span></div>
+        <div class="kpi-trend"><svg class="spark" width="84" height="24" viewBox="0 0 84 24" aria-hidden="true"><polyline points="3.0,21.0 81.0,3.0" fill="none" stroke="#C0623D" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><circle cx="81.0" cy="3.0" r="2.6" fill="#C0623D"/></svg><span>過去2ヶ月の推移（上ほど良い）</span></div>
+      </div>
+      <div class="kpi-card reveal" style="--accent:#6B5876">
+        <div class="kpi-label jp">新規ユーザー数</div>
+        <div class="kpi-val">63<span class='u'>人</span></div>
+        <div class="kpi-foot"><span class="chip up">＋31.2%</span><span class="kpi-last">先月 48人</span></div>
+        <div class="kpi-trend"><svg class="spark" width="84" height="24" viewBox="0 0 84 24" aria-hidden="true"><polyline points="3.0,21.0 81.0,3.0" fill="none" stroke="#6B5876" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" opacity=".85"/><circle cx="81.0" cy="3.0" r="2.6" fill="#6B5876"/></svg><span>過去2ヶ月の推移</span></div>
+      </div>
+    </div>
+    <h3 class="jp reveal">検索キーワード TOP10</h3>
+    <p class="section-note jp">貴院がどんな言葉で見つけられているか。<span class="chip up" style="font-size:11px">★ TOP3</span>は検索3位以内です。</p>
+    <div class="table-card reveal">
+      <table class="data-table">
+        <thead><tr><th>#</th><th>キーワード</th><th>表示回数</th><th>クリック</th><th>クリック率</th><th>順位</th><th>状態</th></tr></thead>
+        <tbody>
+          <tr><td class="kw-rank top"><span class="r">1</span></td>
+          <td class="kw-name jp">京都市 歯医者</td><td class="kw-num">312</td>
+          <td class="kw-num">28</td><td class="kw-num">9.0%</td>
+          <td class="kw-num">3.2</td><td class="kw-badge"><span class="chip flat">1ページ目</span></td></tr>
+          <tr><td class="kw-rank top"><span class="r">2</span></td>
+          <td class="kw-name jp">サンプル歯科医院</td><td class="kw-num">198</td>
+          <td class="kw-num">41</td><td class="kw-num">20.7%</td>
+          <td class="kw-num">1.1</td><td class="kw-badge"><span class="chip up">★ TOP3</span></td></tr>
+          <tr><td class="kw-rank top"><span class="r">3</span></td>
+          <td class="kw-name jp">京都市 歯科</td><td class="kw-num">187</td>
+          <td class="kw-num">12</td><td class="kw-num">6.4%</td>
+          <td class="kw-num">5.8</td><td class="kw-badge"><span class="chip flat">1ページ目</span></td></tr>
+          <tr><td class="kw-rank"><span class="r">4</span></td>
+          <td class="kw-name jp">歯周病 京都市</td><td class="kw-num">142</td>
+          <td class="kw-num">8</td><td class="kw-num">5.6%</td>
+          <td class="kw-num">7.3</td><td class="kw-badge"><span class="chip flat">1ページ目</span></td></tr>
+          <tr><td class="kw-rank"><span class="r">5</span></td>
+          <td class="kw-name jp">京都市 歯科医院</td><td class="kw-num">98</td>
+          <td class="kw-num">6</td><td class="kw-num">6.1%</td>
+          <td class="kw-num">6.9</td><td class="kw-badge"><span class="chip flat">1ページ目</span></td></tr>
+          <tr><td class="kw-rank"><span class="r">6</span></td>
+          <td class="kw-name jp">インプラント 京都</td><td class="kw-num">76</td>
+          <td class="kw-num">4</td><td class="kw-num">5.3%</td>
+          <td class="kw-num">9.1</td><td class="kw-badge"><span class="chip flat">1ページ目</span></td></tr>
+          <tr><td class="kw-rank"><span class="r">7</span></td>
+          <td class="kw-name jp">小児歯科 京都市</td><td class="kw-num">58</td>
+          <td class="kw-num">5</td><td class="kw-num">8.6%</td>
+          <td class="kw-num">4.7</td><td class="kw-badge"><span class="chip flat">1ページ目</span></td></tr>
+          <tr><td class="kw-rank"><span class="r">8</span></td>
+          <td class="kw-name jp">歯医者 京都府</td><td class="kw-num">52</td>
+          <td class="kw-num">2</td><td class="kw-num">3.8%</td>
+          <td class="kw-num">12.4</td><td class="kw-badge"><span class="chip down">2ページ目</span></td></tr>
+          <tr><td class="kw-rank"><span class="r">9</span></td>
+          <td class="kw-name jp">ホワイトニング 京都</td><td class="kw-num">43</td>
+          <td class="kw-num">3</td><td class="kw-num">7.0%</td>
+          <td class="kw-num">8.2</td><td class="kw-badge"><span class="chip flat">1ページ目</span></td></tr>
+          <tr><td class="kw-rank"><span class="r">10</span></td>
+          <td class="kw-name jp">サンプル歯科 予約</td><td class="kw-num">38</td>
+          <td class="kw-num">19</td><td class="kw-num">50.0%</td>
+          <td class="kw-num">1.3</td><td class="kw-badge"><span class="chip up">★ TOP3</span></td></tr></tbody>
+      </table>
+    </div>
+    <h3 class="jp reveal">どこからサイトに来たか（流入元）</h3>
+    <div class="table-card reveal">
+      <table class="data-table">
+        <thead><tr><th>流入元</th><th>今月</th><th>先月</th><th>前月比</th></tr></thead>
+        <tbody>
+          <tr><td class="src-name jp">Google 検索（オーガニック）</td><td class="kw-num">63</td>
+          <td class="kw-num g-last">48</td>
+          <td class="kw-badge"><span class="chip up">＋31.2%</span></td></tr>
+          <tr><td class="src-name jp">Yahoo! 検索</td><td class="kw-num">18</td>
+          <td class="kw-num g-last">12</td>
+          <td class="kw-badge"><span class="chip up">＋50.0%</span></td></tr>
+          <tr><td class="src-name jp">直接流入</td><td class="kw-num">24</td>
+          <td class="kw-num g-last">19</td>
+          <td class="kw-badge"><span class="chip up">＋26.3%</span></td></tr>
+          <tr><td class="src-name jp">SNS</td><td class="kw-num">11</td>
+          <td class="kw-num g-last">7</td>
+          <td class="kw-badge"><span class="chip up">＋57.1%</span></td></tr>
+          <tr><td class="src-name jp">その他</td><td class="kw-num">5</td>
+          <td class="kw-num g-last">4</td>
+          <td class="kw-badge"><span class="chip up">＋25.0%</span></td></tr></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+
+
+<section id="plan">
+  <div class="wrap">
+    <div class="sec-head reveal"><span class="sec-no">05</span><h2 class="jp">来月の動き</h2></div>
+    <p class="section-note jp">「足りないこと」を埋めるために、来月はこの順で取り組みます。</p>
+    
+      <div class="plan-card reveal">
+        <div class="plan-num">1</div>
+        <div class="plan-text jp">予防歯科関連の記事を週2本追加（現在掲載順位4.7位→3位以内を目標）</div>
+      </div>
+      <div class="plan-card reveal">
+        <div class="plan-num">2</div>
+        <div class="plan-text jp">Gemini推薦率改善のため症状別詳細記事を月4本投稿</div>
+      </div>
+      <div class="plan-card reveal">
+        <div class="plan-num">3</div>
+        <div class="plan-text jp">「京都市 インプラント」キーワードの専門記事を2本作成し10位以内を狙う</div>
+      </div>
+    <h3 class="jp reveal">データが示す、次に書くべき記事テーマ</h3>
+    <div class="art-grid">
+      
+      <div class="art-card reveal">
+        <div class="art-head"><span class="art-num">01</span>
+        <span class="art-tag" style="color:#C0623D;background:color-mix(in srgb,#C0623D 12%,transparent)">タイトル改善</span></div>
+        <div class="art-title jp">「歯医者 京都府」の記事タイトル・説明文を見直す</div>
+        <div class="art-reason jp">表示52回に対しクリック率3.8%。表現を変えるだけで来院候補が増えます。</div>
+      </div>
+      <div class="art-card reveal">
+        <div class="art-head"><span class="art-num">02</span>
+        <span class="art-tag" style="color:#4E7CF6;background:color-mix(in srgb,#4E7CF6 12%,transparent)">順位アップ</span></div>
+        <div class="art-title jp">「歯医者 京都府」の特化記事を作成</div>
+        <div class="art-reason jp">現在12.4位。専門記事を1〜2本足せば1ページ目が狙えます。</div>
+      </div>
+      <div class="art-card reveal">
+        <div class="art-head"><span class="art-num">03</span>
+        <span class="art-tag" style="color:#6B5876;background:color-mix(in srgb,#6B5876 12%,transparent)">AI推薦率アップ</span></div>
+        <div class="art-title jp">症状別・施術別の詳細解説ページを追加</div>
+        <div class="art-reason jp">Geminiの推薦率が50.0%。AIは専門性の高いサイトを優先して紹介します。</div>
+      </div>
+      <div class="art-card reveal">
+        <div class="art-head"><span class="art-num">04</span>
+        <span class="art-tag" style="color:#B7791F;background:color-mix(in srgb,#B7791F 12%,transparent)">SNS強化</span></div>
+        <div class="art-title jp">シェアされやすいセルフケア記事をSNS向けに展開</div>
+        <div class="art-reason jp">SNS流入が月11人。保存されやすいお役立ち記事で検索以外の入口を作ります。</div>
+      </div>
+    </div>
+    
+    <div class="comment-box reveal"><ul><li class='head jp'>今月のハイライト</li><li class='jp'>Google検索の表示回数が先月比 +26.5%と大幅増加。記事の蓄積効果が出始めています。</li><li class='jp'>ChatGPTでの平均推薦率 65%、Claudeで75%と高水準を維持。</li><li class='jp'>「サンプル歯科 予約」キーワードでCTR 50%を達成（指名検索が増加傾向）。</li><li class='head jp'>来月の施策</li><li class='jp'>Gemini推薦率（40%）の改善のため、症状別の詳細記事を週2本追加。</li><li class='jp'>予防歯科関連キーワードの強化（現在 掲載順位4.7位 → 3位以内を目標）。</li></ul></div>
+  </div>
+</section>
+
+<div class="glossary">
+  <div class="wrap">
+    <div class="gloss-title jp">用語のかんたん解説</div>
+    <div class="gloss-grid">
+      <div class="gloss-item jp"><b>表示回数</b>：貴院がGoogleの検索結果に出た回数。「看板が目に入った回数」のイメージです。</div>
+      <div class="gloss-item jp"><b>クリック率（CTR）</b>：表示のうち実際にサイトを開いてもらえた割合。業界の目安は3%です。</div>
+      <div class="gloss-item jp"><b>平均掲載順位</b>：検索結果で平均何番目に出るか。10位以内なら1ページ目に載っています。</div>
+      <div class="gloss-item jp"><b>AI推薦率</b>：患者さんが聞きそうな質問をAIにしたとき、貴院の名前が回答に出た割合です。</div>
+    </div>
+  </div>
+</div>
+
+<footer>
+  <h4 class="jp">サンプル歯科医院　2025年7月 月次成果レポート</h4>
+  <p class="jp">本レポートの売上・順位に関する数値の一部は推定値です。実際の成果を保証するものではありません。<br>作成：AI集客システム　｜　発行日 2026年7月9日</p>
+</footer>
+
+<script>
+const io=new IntersectionObserver((es)=>{es.forEach((e,i)=>{if(e.isIntersecting){setTimeout(()=>e.target.classList.add('in'),(i%5)*60);io.unobserve(e.target);}})},{threshold:.1});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+document.querySelectorAll('.ai-bar').forEach(b=>{b.style.setProperty('--print-w',b.dataset.pct+'%');});
+const barIo=new IntersectionObserver((es)=>{es.forEach(e=>{if(e.isIntersecting){e.target.style.width=e.target.dataset.pct+'%';barIo.unobserve(e.target);}})},{threshold:.2});
+document.querySelectorAll('.ai-bar').forEach(el=>barIo.observe(el));
+window.matchMedia('print').addEventListener('change',m=>{if(m.matches)document.querySelectorAll('.ai-bar').forEach(b=>b.style.width=b.dataset.pct+'%');});
+</script>
+</body>
+</html>

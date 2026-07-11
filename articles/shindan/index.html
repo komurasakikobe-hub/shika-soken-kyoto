@@ -9,11 +9,12 @@
 <meta property="og:site_name" content="京都歯科総研">
 <meta property="og:title" content="京都市 歯科医院データランキング | 京都歯科総研">
 <meta property="og:description" content="条件を選ぶたび、あなたに合う順番へ。京都市内の歯科医院を地域・症状・希望条件から並び替えられるデータランキングです。">
-<meta property="og:url" content="https://kyoto.shikasoken.com/articles/shindan/">
+<meta property="og:url" content="https://shikasoken.com/articles/shindan/">
 <meta name="twitter:card" content="summary">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Shippori+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../../assets/odr-ds.css">
 <link rel="stylesheet" href="shindan.css">
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
@@ -23,15 +24,15 @@
 <!-- ════════════════════════════════════════════════════════
      共通ヘッダー（サイト全体で統一）
 ════════════════════════════════════════════════════════ -->
-<header class="site-header">
-  <a class="logo" href="../../index.html">
-    京都歯科総研
-    <small>KYOTO DENTAL RESEARCH</small>
+<header class="odr-brandbar">
+  <a class="odr-sig" href="../../index.html">
+    <span class="odr-sig-mark">ODR</span>
+    <span class="odr-sig-name">京都歯科総研<small>Kyoto Dental Research Institute</small></span>
   </a>
-  <nav class="shindan-header-nav">
-    <a href="../../index.html">トップ</a>
-    <a href="../index.html">コラム</a>
+  <nav>
+    <a href="../shindan/index.html">ランキング・AI診断</a>
     <a href="../features/index.html">特徴から探す</a>
+    <a href="../index.html">コラム</a>
     <a href="../../network.html">展開エリア</a>
     <a href="../../shikumi.html">医院・開業医の方へ</a>
   </nav>
@@ -64,7 +65,7 @@
 </section>
 
 <!-- ════════════════════════════════════════════════════════
-     フィルタータブ
+     症状から探す（フリーテキスト → AI読み取り）
 ════════════════════════════════════════════════════════ -->
 <section class="rk-symptom" aria-label="症状から探す">
   <p class="rk-filter-label">SYMPTOM SEARCH — 症状の言葉から探す（β）</p>
@@ -75,6 +76,9 @@
   <div class="rk-symptom-result" id="symptomResult" hidden></div>
 </section>
 
+<!-- ════════════════════════════════════════════════════════
+     フィルタータブ
+════════════════════════════════════════════════════════ -->
 <section class="rk-filters" aria-label="絞り込み条件">
   <div class="rk-filter-group">
     <p class="rk-filter-label">地域</p>
@@ -98,16 +102,16 @@
     <summary>順位の見方</summary>
     <div class="rk-methodology-body">
       <p>順位は以下の公開情報をもとに算出しています。</p>
-      <ul>
-        <li>Google口コミの評価と件数</li>
-        <li>口コミ内容の傾向</li>
-        <li>公式サイトの情報量</li>
-        <li>診療内容</li>
-        <li>通いやすさ</li>
-        <li>設備情報</li>
-        <li>患者対応に関する公開情報</li>
-        <li>選択した条件との一致度</li>
-      </ul>
+      <div class="rk-mth-list">
+        <details class="rk-mth-item"><summary>Google口コミの評価と件数</summary><p class="rk-mth-d">Googleに投稿された評価（★）とその件数を見ます。件数が多いほど、評価が安定した目安になりやすいと考えています。</p></details>
+        <details class="rk-mth-item"><summary>口コミ内容の傾向</summary><p class="rk-mth-d">口コミ本文をAIで分類し、「説明が丁寧」「スタッフ対応」などどんな声が多いかの傾向を見ます。内容の良し悪しを断定するものではありません。</p></details>
+        <details class="rk-mth-item"><summary>公式サイトの情報量</summary><p class="rk-mth-d">公式サイトで診療内容・料金・設備などがどれだけ公開されているかを見ます。情報公開に積極的な医院ほど、判断材料が多くなります。</p></details>
+        <details class="rk-mth-item"><summary>診療内容</summary><p class="rk-mth-d">公式情報から確認できる対応治療・専門領域を見ます（例：インプラント、矯正、小児など）。</p></details>
+        <details class="rk-mth-item"><summary>通いやすさ</summary><p class="rk-mth-d">最寄駅からの距離、診療時間（土日・夜間の有無）、駐車場の有無など、通院のしやすさに関わる条件を見ます。</p></details>
+        <details class="rk-mth-item"><summary>設備情報</summary><p class="rk-mth-d">CT・マイクロスコープ・口腔内スキャナーなどの導入が、公開情報で確認できるかを見ます。</p></details>
+        <details class="rk-mth-item"><summary>患者対応に関する公開情報</summary><p class="rk-mth-d">バリアフリー・個室・子ども連れへの配慮など、患者対応に関する記載があるかを見ます。</p></details>
+        <details class="rk-mth-item"><summary>選択した条件との一致度</summary><p class="rk-mth-d">選んだ地域・悩み・希望条件に、その医院がどれだけ合致するかを見ます。条件を変えると順位も変わります。</p></details>
+      </div>
       <p>医院の技術や治療結果を断定するものではありません。</p>
       <a class="rk-methodology-link" href="../../shikumi.html">分析方法を見る →</a>
     </div>
@@ -174,8 +178,17 @@
 <!-- スマホ用固定ボタン -->
 <button type="button" class="rk-mobile-cta" id="mobileFilterBtn">条件を変更</button>
 
+
+<section style="max-width:1240px;margin:0 auto 48px;padding:0 clamp(16px,4vw,40px);">
+  <p style="font-family:'Roboto Mono',monospace;font-size:.7rem;letter-spacing:.14em;color:#8a9ba8;margin:0 0 10px;">AREA PAGES — 区別の分析ページ</p>
+  <div style="display:flex;flex-wrap:wrap;gap:8px;font-size:.82rem;">
+    <a href="../area/kita.html">北区</a><a href="../area/chuo.html">中央区</a><a href="../area/nishi.html">西区</a><a href="../area/fukushima.html">福島区</a><a href="../area/tennoji.html">天王寺区</a><a href="../area/abeno.html">阿倍野区</a><a href="../area/naniwa.html">浪速区</a><a href="../area/yodogawa.html">淀川区</a><a href="../area/higashiyodogawa.html">東淀川区</a><a href="../area/miyakojima.html">都島区</a><a href="../area/konohana.html">此花区</a><a href="../area/minato.html">港区</a><a href="../area/taisho.html">大正区</a><a href="../area/nishiyodogawa.html">西淀川区</a><a href="../area/higashinari.html">東成区</a><a href="../area/ikuno.html">生野区</a><a href="../area/asahi.html">旭区</a><a href="../area/joto.html">城東区</a><a href="../area/tsurumi.html">鶴見区</a><a href="../area/suminoe.html">住之江区</a><a href="../area/sumiyoshi.html">住吉区</a><a href="../area/higashisumiyoshi.html">東住吉区</a><a href="../area/hirano.html">平野区</a><a href="../area/nishinari.html">西成区</a>
+  </div>
+  <style>section a{background:#fff;border:1px solid #e2e8e6;border-radius:999px;padding:6px 14px;color:#4a5568;text-decoration:none;}section a:hover{border-color:#2b6c61;color:#2b6c61;}</style>
+</section>
 <footer class="rk-footer">
   <p>当サイトの情報は歯医者選びの一般的な参考情報です。診断や治療方針の決定を目的としたものではありません。</p>
+  <p>京都の歯科医院を口コミデータから分析した<a href="../research/index.html">データ研究レポート</a>も公開しています。</p>
   <p>掲載情報の修正をご希望の医院様は<a href="../../teisei.html">こちら（医院情報の修正について）</a>からご連絡ください。免責事項の詳細は<a href="../../policy.html">運営ポリシー</a>をご覧ください。</p>
   <p>© 京都歯科総研 KYOTO DENTAL RESEARCH</p>
 </footer>

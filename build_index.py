@@ -6,6 +6,11 @@ articles/index.html（歯科コラム）と各カテゴリー全記事ページ 
 写真は articles/img/<記事ファイル名>.jpg 等があれば自動反映（無ければ淡いプレースホルダ）。
 """
 import os, re, html, json
+from urllib.parse import quote
+
+def urlq(p):
+    """記事ファイル名に含まれる % や ｜ 等をURLエンコードしてリンク切れ・画像非表示を防ぐ。"""
+    return quote(p, safe="/")
 
 ART = os.path.join(os.path.dirname(__file__), "articles")
 
@@ -18,6 +23,15 @@ try:
         ARTICLE_DATES = json.load(_f)
 except FileNotFoundError:
     ARTICLE_DATES = {}
+
+# ホバー時に出す「え、なんだろう」フック文言（記事ファイル名→短い一言）。
+# 新開発室（ChatGPT＋Gemini）で作成。無ければオーバーレイは出さない。
+_HOOKS_PATH = os.path.join(os.path.dirname(__file__), "article_hooks.json")
+try:
+    with open(_HOOKS_PATH, encoding="utf-8") as _f:
+        ARTICLE_HOOKS = json.load(_f)
+except FileNotFoundError:
+    ARTICLE_HOOKS = {}
 
 CAT_KW = {
     "痛み・急なトラブル": ["痛い","痛み","取れた","グラグラ","腫れ","しみる","知覚過敏","顎","親知らず","すぐ"],
@@ -34,6 +48,16 @@ CAT_COLOR = {
     "予防・こども":      "#2E9E86",
     "歯科医院の選び方":  "#2E7D5B",
     "歯科ガイド":        "#2E9E86",
+}
+
+# カードのメタは「○分で読める」ではなく、患者目線で読む意味が伝わる一言に（カテゴリ別）
+CAT_HOOK = {
+    "痛み・急なトラブル": "痛いとき、どう動くか",
+    "矯正・審美":        "費用と選び方の目安",
+    "インプラント":      "決める前に知りたいこと",
+    "予防・こども":      "毎日のケアと予防に",
+    "歯科医院の選び方":  "後悔しない選び方",
+    "歯科ガイド":        "受診前に知っておきたい",
 }
 
 # ===== 京都歯科総研 ビジュアルシステム（SVG / 5色＋オレンジ・実写禁止）=====
@@ -150,18 +174,20 @@ ARROW_LEFT = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke
 ARROW_RIGHT_BIG = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><polyline points="9 18 15 12 9 6"/></svg>'
 
 def cover(a):
+    hook = ARTICLE_HOOKS.get(a["f"], "")
+    hk = f'<span class="c-hook">{esc(hook)}</span>' if hook else ""
     if a.get("img"):
-        return f'<span class="c-cover" style="background-image:url({esc(a["img"])})"></span>'
-    return '<span class="c-cover c-cover-ph"></span>'
+        return f'<span class="c-cover" style="background-image:url({urlq(a["img"])})">{hk}</span>'
+    return f'<span class="c-cover c-cover-ph">{hk}</span>'
 
 def card(a):
     col = CAT_COLOR.get(a["cat"], "#2E7D5B")
-    return f'''      <a class="card" href="{esc(a['f'])}">
+    return f'''      <a class="card" href="{urlq(a['f'])}">
         {cover(a)}
         <span class="c-body">
           <span class="c-cat" style="color:{col}">{esc(a['cat'])}</span>
           <span class="c-title">{esc(a['title'])}</span>
-          <span class="c-meta"><span class="c-rt">{CLOCK}{a['rt']}分で読める</span><span class="c-date">{esc(a['date'])}</span></span>
+          <span class="c-meta"><span class="c-rt">{esc(CAT_HOOK.get(a['cat'], "受診前に知っておきたい"))}</span><span class="c-date">{esc(a['date'])}</span></span>
         </span>
       </a>'''
 
@@ -182,7 +208,8 @@ def section(title, sub, shown, href, new=False, pad=None, n=20):
         cards += ("\n" if cards else "") + "\n".join(soon_card(t) for t in pad[:n - len(shown[:n])])
     badge = '<span class="new-badge">NEW</span>' if new else ""
     subhtml = f'<p class="sec-sub">{esc(sub)}</p>' if sub else ""
-    return f'''  <section class="sec">
+    sec_id = href.replace("cat-", "sec-").replace(".html", "")
+    return f'''  <section class="sec" id="{sec_id}">
     <div class="sec-head">
       <div class="sec-head-l"><h2>{esc(title)}{badge}</h2>{subhtml}</div>
     </div>
@@ -221,10 +248,11 @@ def build():
 
     trend = pick(["京都のインプラント費用", "歯周病治療の専門性", "京都ホワイトニング",
                   "子どもの虫歯予防", "歯のクリーニング"])
+    # キュレーション分を先頭に、残りを新着順で後ろに足して棚を満たす。
+    # これで他の行（新着・急な痛み等）と同じように横スクロール＆右端が見切れる。
+    _seen = {a["f"] for a in trend}
+    trend += [a for a in rows if a["f"] not in _seen]
     select_all = by.get("歯科医院の選び方", []) + by.get("歯科ガイド", [])
-    area_soon = ["梅田・難波エリアの歯科医院の探し方",
-                 "住宅街エリア・ファミリー向けの歯医者の特徴",
-                 "オフィス街エリアで昼休みに通える歯医者"]
 
     specs = [
         ("新着記事", "", rows, "latest", rows, True, None),
@@ -234,7 +262,6 @@ def build():
         ("矯正・審美", "", by.get("矯正・審美", []), "cosmetic", by.get("矯正・審美", []), False, None),
         ("予防・こどものケア", "", by.get("予防・こども", []), "prevention", by.get("予防・こども", []), False, None),
         ("歯科医院の選び方", "", select_all, "select", select_all, False, None),
-        ("エリアから探す", "", [], "area", [], False, area_soon),
     ]
 
     sections = ""
@@ -244,40 +271,32 @@ def build():
         open(os.path.join(ART, href), "w", encoding="utf-8").write(
             build_cat_page(title, sub if sub else title, full, pad=pad))
 
-    return TEMPLATE.replace("{sections}", sections)
+    # 新着記事の上に置くジャンプ用タブ（各セクションへスムーススクロール）
+    tabs = ('  <nav class="col-tabs" aria-label="カテゴリ">\n'
+            + "\n".join(f'    <a href="#sec-{slug}">{esc(title)}</a>'
+                        for title, sub, shown, slug, full, new, pad in specs)
+            + '\n  </nav>')
+
+    return TEMPLATE.replace("{sections}", tabs + "\n" + sections)
 
 # ================= CSS =================
 STYLE = '''<link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Noto+Sans+JP:wght@400;500;700&family=Shippori+Mincho:wght@600;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../assets/odr-ds.css">
 <style>
 :root{--ink:#1d1d1f;--ink-2:#565d5a;--ink-3:#8b928e;--line:#ECECEC;--paper:#fff;
-  --pine:#123f33;--pine-2:#1F5D4C;--accent:#E5794C;}
+  --pine:#1f4b3f;--pine-2:#2e6a58;--accent:#E5794C;}  /* ODR-DSと統一 */
 *{box-sizing:border-box;}
 body{margin:0;font-family:'Inter','Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;
   color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;}
 a{text-decoration:none;color:inherit;}
-.wrap-x{max-width:1440px;margin:0 auto;padding:0 clamp(24px,4vw,56px);}
+.wrap-x{max-width:1440px;margin:0 auto;padding:0 clamp(14px,2.2vw,34px);}
 
-/* ---- Nav ---- */
-.topnav{background:var(--pine);color:#fff;}
-.topnav-in{display:flex;align-items:center;justify-content:space-between;gap:24px;height:74px;}
-.brand{display:flex;flex-direction:column;line-height:1.2;}
-.brand b{font-weight:700;font-size:1.15rem;letter-spacing:.02em;}
-.brand span{font-family:'Inter';font-size:.6rem;letter-spacing:.18em;color:#9ab9ac;margin-top:2px;}
-.nav-r{display:flex;align-items:center;gap:26px;}
-.nav-links{display:flex;align-items:center;gap:24px;}
-.nav-links a{font-size:.84rem;color:#cfe0d8;font-weight:500;transition:color .15s;}
-.nav-links a:hover,.nav-links a.on{color:#fff;}
-.nav-links a.on{position:relative;}
-.nav-links a.on::after{content:"";position:absolute;left:0;right:0;bottom:-24px;height:2px;background:#fff;}
-.nav-cta{background:var(--accent);color:#fff;font-weight:600;font-size:.84rem;padding:9px 18px;border-radius:999px;
-  display:inline-flex;align-items:center;gap:7px;transition:filter .15s;}
-.nav-cta:hover{filter:brightness(1.06);}
-@media(max-width:900px){.nav-links{display:none;}}
+/* ---- Nav：全ページ共通のodr-brandbar（assets/odr-ds.css）を使用。ページ固有CSSは持たない ---- */
 
 /* ---- Hero ---- */
-.hero{position:relative;overflow:hidden;color:#fff;
+.hero{position:relative;overflow:hidden;color:#fff;zoom:1.05;
   background:
     radial-gradient(72% 105% at 82% 44%,rgba(62,139,113,.30) 0%,rgba(36,102,84,.16) 42%,transparent 72%),
     radial-gradient(54% 86% at 12% 36%,rgba(0,22,18,.26) 0%,transparent 72%),
@@ -399,10 +418,18 @@ a{text-decoration:none;color:inherit;}
 }
 
 /* ---- Sections ---- */
-main.wrap-x{padding-top:clamp(64px,7vw,96px);padding-bottom:90px;}
-.sec{margin:0 0 clamp(44px,5vw,64px);}
-.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 22px;}
-.sec-head h2{font-size:1.32rem;font-weight:700;margin:0;letter-spacing:.01em;display:inline-flex;align-items:center;gap:10px;}
+html{scroll-behavior:smooth;}
+main.wrap-x{padding-top:clamp(15px,2.1vw,23px);padding-bottom:90px;}
+/* 新着記事の上のジャンプ用タブ */
+.col-tabs{display:flex;gap:8px;overflow-x:auto;margin:0 0 clamp(15px,2.25vw,24px);padding-bottom:6px;scrollbar-width:none;}
+.col-tabs::-webkit-scrollbar{display:none;}
+.col-tabs a{flex:0 0 auto;font-size:.84rem;font-weight:600;color:var(--ink-2);background:#FDF4EE;
+  padding:8px 15px;border:1px solid var(--accent);border-radius:999px;white-space:nowrap;
+  transition:background .15s,color .15s,border-color .15s;}
+.col-tabs a:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+.sec{margin:0 0 clamp(10px,1.5vw,16px);scroll-margin-top:84px;}
+.sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 8px;}
+.sec-head h2{font-size:1.16rem;font-weight:700;margin:0;letter-spacing:.01em;display:inline-flex;align-items:center;gap:10px;}
 .new-badge{font-family:'Inter';font-size:.62rem;font-weight:700;letter-spacing:.05em;color:var(--accent);
   border:1px solid #f0c6b2;border-radius:5px;padding:2px 6px;}
 .sec-sub{font-size:.84rem;color:var(--ink-3);margin:6px 0 0;}
@@ -411,12 +438,12 @@ main.wrap-x{padding-top:clamp(64px,7vw,96px);padding-bottom:90px;}
 
 /* Netflix風の横スクロール棚（全画面幅で共通） */
 .row{
-  display:flex;gap:24px;overflow-x:auto;scroll-snap-type:x proximity;
-  padding-bottom:10px;margin:0 calc(-1*clamp(24px,4vw,56px));
-  padding-left:clamp(24px,4vw,56px);padding-right:clamp(24px,4vw,56px);
+  display:flex;justify-content:flex-start;gap:14px;overflow-x:auto;scroll-snap-type:x proximity;
+  padding-top:12px;padding-bottom:16px;margin:-12px calc(-1*clamp(14px,2.2vw,34px)) 0 0;
+  padding-left:0;padding-right:clamp(14px,2.2vw,34px);
   scrollbar-width:thin;
 }
-.row>*{flex:0 0 auto;width:min(240px,78vw);scroll-snap-align:start;}
+.row>*{flex:0 0 auto;width:min(250px,80vw);scroll-snap-align:start;}
 .row::-webkit-scrollbar{height:6px;}
 .row::-webkit-scrollbar-thumb{background:var(--line);border-radius:3px;}
 .row::-webkit-scrollbar-thumb:hover{background:var(--ink-3);}
@@ -441,17 +468,24 @@ main.wrap-x{padding-top:clamp(64px,7vw,96px);padding-bottom:90px;}
 .cat-all-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:24px;margin-top:2rem;}
 
 /* ---- Card ---- */
-.card{display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:14px;
+.card{position:relative;display:flex;flex-direction:column;background:#fff;border:1px solid var(--line);border-radius:14px;
   overflow:hidden;transition:border-color .2s,box-shadow .2s,transform .2s;}
-.card:hover{border-color:#e0e0dd;box-shadow:0 10px 30px rgba(20,20,25,.06);transform:translateY(-3px);}
-.c-cover{display:block;aspect-ratio:16/11;background-size:cover;background-position:center;background-color:#eef1ef;}
+.card:hover{border-color:#e0e0dd;box-shadow:0 16px 38px rgba(20,20,25,.14);transform:translateY(-4px) scale(1.045);z-index:4;}
+.c-cover{position:relative;display:block;aspect-ratio:16/9;background-size:cover;background-position:center;background-color:#eef1ef;overflow:hidden;border-radius:14px 14px 0 0;}
 .c-cover-ph{background:linear-gradient(135deg,#eef2f0,#e3e9e6);}
-.c-body{padding:18px 18px 18px;display:flex;flex-direction:column;gap:11px;flex:1;}
-.c-cat{font-size:.72rem;font-weight:700;letter-spacing:.02em;}
-.c-title{font-size:1rem;font-weight:500;line-height:1.58;color:var(--ink);letter-spacing:.005em;
+/* ホバーで出る「え、なんだろう」フック（カバー下部にふわっと） */
+.c-hook{position:absolute;left:0;right:0;bottom:0;padding:14px 12px 10px;
+  background:linear-gradient(to top,rgba(12,28,22,.9) 12%,rgba(12,28,22,.55) 55%,transparent);
+  color:#fff;font-size:.8rem;font-weight:600;line-height:1.5;letter-spacing:.01em;
+  opacity:0;transform:translateY(8px);transition:opacity .22s ease,transform .22s ease;pointer-events:none;}
+.card:hover .c-hook{opacity:1;transform:translateY(0);}
+@media(hover:none){.c-hook{display:none;}}
+.c-body{padding:12px 14px 13px;display:flex;flex-direction:column;gap:7px;flex:1;}
+.c-cat{font-size:.68rem;font-weight:700;letter-spacing:.02em;}
+.c-title{font-size:.92rem;font-weight:500;line-height:1.5;color:var(--ink);letter-spacing:.005em;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .c-meta{margin-top:auto;padding-top:4px;display:flex;align-items:center;justify-content:space-between;
-  font-family:'Inter';font-size:.74rem;color:var(--ink-3);}
+  font-family:'Inter';font-size:.7rem;color:var(--ink-3);}
 .c-rt{display:inline-flex;align-items:center;gap:5px;}
 .c-rt .ic{opacity:.75;}
 .card-soon{border-style:dashed;}
@@ -488,19 +522,18 @@ ART_SVG = '''<svg class="hero-art" viewBox="0 0 440 320" fill="none" xmlns="http
   </g>
 </svg>'''
 
-NAV = '''<header class="topnav">
-  <div class="wrap-x topnav-in">
-    <a class="brand" href="../index.html"><b>京都歯科総研</b><span>KYOTO DENTAL RESEARCH</span></a>
-    <div class="nav-r">
-      <a class="nav-cta" href="shindan/index.html"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M12 8v4l2.5 2"/></svg>AI歯科診断</a>
-      <nav class="nav-links">
-        <a href="../index.html">このサイトについて</a>
-        <a href="../index.html#criteria">選定基準</a>
-        <a class="on" href="index.html">コラム一覧</a>
-        <a href="../index.html#about">医院・開業医の方へ</a>
-      </nav>
-    </div>
-  </div>
+NAV = '''<header class="odr-brandbar odr-scope">
+  <a class="odr-sig" href="../index.html">
+    <span class="odr-sig-mark">ODR</span>
+    <span class="odr-sig-name">京都歯科総研<small>Kyoto Dental Research Institute</small></span>
+  </a>
+  <nav>
+    <a href="shindan/index.html">ランキング・AI診断</a>
+    <a href="features/index.html">特徴から探す</a>
+    <a class="on" href="index.html">コラム</a>
+    <a href="../network.html">展開エリア</a>
+    <a href="../shikumi.html">医院・開業医の方へ</a>
+  </nav>
 </header>'''
 
 FOOTER = '''<footer class="site-footer">
