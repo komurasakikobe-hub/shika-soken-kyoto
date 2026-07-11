@@ -355,9 +355,22 @@ def evidence_panel_html(c):
         facts.append("土日の診療なし")
     if parking_fact(c):
         facts.append("駐車場あり")
-    walk = station_walk_min(c)
-    if walk is not None:
-        facts.append(f"最寄駅から徒歩約{walk}分〜（直線距離からの推計）")
+    # 立地の事実（患者目線・2026-07-11）：駅が徒歩圏(1.2km)なら徒歩、超えたらバス停/IC/車の目安
+    ns_f = c.get("nearest_station") or {}
+    d_f = ns_f.get("straight_distance_m")
+    if ns_f.get("name") and d_f is not None and d_f > 1200:
+        bus_f = c.get("nearest_bus_stop") or {}
+        ic_f = c.get("nearest_ic") or {}
+        if bus_f.get("name") and (bus_f.get("distance_m") or 9999) <= 500:
+            facts.append(f'バス停「{bus_f["name"]}」から徒歩約{max(1, -(-bus_f["distance_m"]//80))}分（当サイト算出の目安）')
+        elif ic_f.get("name") and (ic_f.get("distance_m") or 99999) <= 8000:
+            facts.append(f'{ic_f["name"]}から車で約{max(1, -(-ic_f["distance_m"]//500))}分（当サイト算出の目安）')
+        else:
+            facts.append(f'最寄駅から車で約{max(1, -(-d_f//500))}分（当サイト算出の目安）')
+    else:
+        walk = station_walk_min(c)
+        if walk is not None:
+            facts.append(f"最寄駅から徒歩約{walk}分〜（直線距離からの推計）")
     if facts:
         blocks.append(('診療時間・立地からの事実',
                        "".join(f'<p class="rr-ev-line">{e(f)}</p>' for f in facts)))
