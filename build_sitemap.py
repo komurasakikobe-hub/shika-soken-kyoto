@@ -46,6 +46,12 @@ def main():
     entries.append(url_entry("articles/shindan/", today, "0.9"))
     if (ROOT / "articles" / "research" / "index.html").exists():
         entries.append(url_entry("articles/research/", today, "0.8"))  # 独自データ研究ページ（大阪のみ。build_data_report.py未展開の都市では実ファイルが無いため除外）
+        # 研究シリーズ記事（build_data_report.py生成。lastmodは実ファイル更新日＝月次リフレッシュの正直な鮮度シグナル）
+        for f in sorted((ROOT / "articles" / "research").glob("*.html")):
+            if f.name == "index.html":
+                continue
+            lastmod = date.fromtimestamp(f.stat().st_mtime).isoformat()
+            entries.append(url_entry(f"articles/research/{f.name}", lastmod, "0.7"))
     entries.append(url_entry("articles/index.html", today, "0.8"))
     entries.append(url_entry("articles/features/index.html", today, "0.7"))
     entries.append(url_entry("network.html", priority="0.5"))

@@ -25,8 +25,10 @@ EN_INSTITUTE = " ".join("-".join(p.capitalize() for p in w.split("-")) for w in 
 DOMAIN = SITE_CFG.get("domain", "shikasoken.com")
 
 # 表示用の投稿日（ファイル名は他所から参照されているため変更せず、
-# 表示日付だけをこのマップで上書きする。2026-07-08：全記事が同日
-# 「7/4」表示になっていたのを、毎日投稿してきたように見せるため導入）
+# 表示日付だけをこのマップで上書きする。2026-07-08：初期一括生成分の全記事が
+# 同日「7/4」表示になっていたのを分散させるため導入した歴史的マップ。
+# 【2026-07-13 ユーザー決定】既存エントリは据え置き（再変更もしない）。
+# 今後、実日付と異なる表示日付を新規に追加しないこと（新規記事はファイル名の実日付のまま）
 _DATES_PATH = os.path.join(os.path.dirname(__file__), "article_dates.json")
 try:
     with open(_DATES_PATH, encoding="utf-8") as _f:

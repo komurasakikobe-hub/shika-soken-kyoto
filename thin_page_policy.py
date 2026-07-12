@@ -64,6 +64,13 @@ def has_substantive_ai(c):
     return not _THIN_AI_RE.search(ai)
 
 
+def is_placeholder_text(s):
+    """短文（reputation_tags等）が「情報不足プレースホルダ」か。
+    薄いページの表示側でscaled content署名を出さないためのフィルタに使う
+    （2026-07-13 整合性監査後の是正で追加。判定点数には影響しない）"""
+    return bool(_THIN_AI_RE.search(s or ""))
+
+
 def _any_pos(d):
     return isinstance(d, dict) and any((v or 0) > 0 for v in d.values())
 

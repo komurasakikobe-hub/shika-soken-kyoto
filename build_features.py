@@ -357,6 +357,11 @@ function frowScroll(btn, dir){
       <a class="odr-btn ghost" href="../../index.html">トップへ戻る</a>
     </div>
   </div>
+  <p style="margin:22px 0 0;font-size:12.5px;color:#6b7f76;">
+    <a href="../../policy.html" style="color:inherit;">運営ポリシー・免責事項</a>　｜
+    <a href="../../teisei.html" style="color:inherit;">掲載情報の訂正窓口</a>　｜
+    <a href="../../about.html" style="color:inherit;">運営者情報</a>
+  </p>
 </main>
 <aside class="f-filter">{filter}</aside>
 </div>

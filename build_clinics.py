@@ -17,7 +17,7 @@ from evidence_grounding import (
 )
 # 薄いページ（scaled content abuse）対策の判定正本（2026-07-13）。
 # 実データが閾値未満の院ページは noindex,follow＋sitemap除外（thin_page_policy.py参照）。
-from thin_page_policy import is_thin, has_substantive_ai
+from thin_page_policy import is_thin, has_substantive_ai, is_placeholder_text
 
 
 # 区別ランディングページへの内部リンク用（build_area_pages.pyのWARDSと対応）
@@ -429,6 +429,9 @@ def evidence_panel_html(c):
 
     # 1) 口コミからの根拠
     tags = c.get("reputation_tags") or []
+    # 薄いページでは「公開情報が限定的」等のプレースホルダタグを出さない（Key Findingsと同方針・2026-07-13）
+    if is_thin(c):
+        tags = [t for t in tags if not is_placeholder_text(t)]
     phrases = (c.get("phrases") or [])[:3]
     if tags or phrases:
         inner = ""
@@ -529,6 +532,8 @@ def evidence_panel_html(c):
 def build_page(c, slug=""):
     name   = c.get("name", "")
     catch  = c.get("catchphrase", "")
+    if catch and is_placeholder_text(catch):
+        catch = ""  # 「公開情報が限定的…」等の定型空文は掲出しない（A-1・validate_releaseが検出）
     addr   = c.get("address", "")
     rating = c.get("rating", 0) or 0
     reviews= c.get("total_reviews", 0) or 0
@@ -588,6 +593,10 @@ def build_page(c, slug=""):
     key = []
     key += list(c.get("reputation_tags") or [])
     key += [t for t in (c.get("specialty_tags") or []) if t not in key]
+    # 薄いページでは「公開情報が限定的」等のプレースホルダタグを表示しない
+    # （定型空文と同じscaled content署名になるため。2026-07-13 監査後の是正）
+    if is_thin(c):
+        key = [t for t in key if not is_placeholder_text(t)]
     sec_key = (f'<ul class="rr-findings">{findings(key)}</ul>{SRC_NOTE}') if key else ""
 
     ctype_html = f'<div class="rr-chips">{chips(c.get("clinic_type"))}</div>' if c.get("clinic_type") else ""
