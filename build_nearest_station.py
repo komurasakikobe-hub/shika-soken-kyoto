@@ -10,6 +10,7 @@ Haversine式で最寄駅を計算して nearest_station を構築する。
 ・座標からの推定は calculation_type: "straight_distance_estimate" として
   明記し、直線距離であることを断定しない
 """
+import importlib
 import json
 import math
 import re
@@ -17,10 +18,13 @@ import shutil
 from pathlib import Path
 from datetime import datetime
 
-from kyoto_stations import STATIONS
-
 ROOT = Path(__file__).resolve().parent
 DB_PATH = ROOT / "clinic_db.json"
+
+# 駅リストは都市ごとのモジュール（例: osaka_stations / kobe_stations）。
+# モジュール名は site_config.json の stations_module から読む（ハードコード禁止）。
+_CFG = json.loads((ROOT / "site_config.json").read_text(encoding="utf-8"))
+STATIONS = importlib.import_module(_CFG["stations_module"]).STATIONS
 
 WALK_METERS_PER_MIN = 80  # 不動産表示の慣習（分速80m）
 

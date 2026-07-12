@@ -17,6 +17,11 @@ DB = os.path.join(ROOT, "clinic_db.json")
 SITE_CFG = json.load(open(os.path.join(ROOT, "site_config.json"), encoding="utf-8"))
 CITY_SHORT = SITE_CFG.get("city_short", SITE_CFG.get("city", ""))
 N_PUBLISHED = SITE_CFG.get("stats", {}).get("clinics_published", 0)
+CITY = SITE_CFG.get("city", "")                # 例: 大阪市 / 神戸市 / 北播磨エリア
+SITE_NAME = SITE_CFG.get("site_name", "")      # 例: 大阪歯科総研
+EN_UPPER = SITE_CFG.get("site_name_en", "")    # 例: OSAKA DENTAL RESEARCH
+# 例: Osaka Dental Research Institute（site_name_enから機械導出。ハイフン語は各パートを大文字化）
+EN_INSTITUTE = " ".join("-".join(p.capitalize() for p in w.split("-")) for w in EN_UPPER.split()) + " Institute"
 OUT = os.path.join(ROOT, "articles", "features")
 CAP = 48          # 1カテゴリの表示上限（Netflix行）。地域・条件で絞り込むため母数を多めに
 # コラム棚と同じホバー矢印（左右チェブロン）
@@ -29,16 +34,16 @@ with open(SLUG_MAP_PATH, encoding="utf-8") as _f:
 
 def esc(s): return html.escape(str(s), quote=True)
 def nowrap_pipe(escaped_title):
-    """タイトルと副題がきれいに分かれるよう、｜の直前、または？／！の直後(京都の前)で改行する"""
+    """タイトルと副題がきれいに分かれるよう、｜の直前、または？／！の直後(都市名の前)で改行する"""
     import re as _re
     if "｜" in escaped_title:
         return escaped_title.replace("｜", "<br>｜", 1)
-    return _re.sub(r"([？！])京都", r"\1<br>京都", escaped_title, count=1)
+    return _re.sub("([？！])" + CITY_SHORT, "\\1<br>" + CITY_SHORT, escaped_title, count=1)
 def slugify(name): return re.sub(r'[\\/:*?"<>|　\s・。、]', '_', name)[:60]
 
 def ward(addr):
-    m = re.search(r'京都市\s*([^\s0-9０-９区]{1,3}区)', addr or "")
-    if m: return "京都市" + m.group(1)
+    m = re.search(CITY + r'\s*([^\s0-9０-９区]{1,3}区)', addr or "")
+    if m: return CITY + m.group(1)
     m = re.search(r'([^\s0-9０-９区]{1,3}区)', addr or "")
     return m.group(1) if m else ""
 
@@ -80,20 +85,20 @@ CATEGORIES = [
 # 2026-07-10 コラム全都市共通化：記事は地名除去のうえ存置（URL＝ファイル名は旧のまま）。
 # タイトル表示は地名除去後のものを使う。内容が実際に合致するカテゴリのみ登録（無理に全カテゴリを埋めない）。
 CATEGORY_ARTICLES = {
-    "ct":       [("2026-07-04_CTとマイクロスコープがある京都の歯科を選ぶ理由.html", "CTとマイクロスコープがある歯科が重要な理由"),
-                 ("2026-07-04_根管治療が上手い京都の歯科医院を見分ける方法.html", "根管治療が上手い歯科の見分け方｜専門医の選び方")],
-    "micro":    [("2026-07-04_CTとマイクロスコープがある京都の歯科を選ぶ理由.html", "CTとマイクロスコープがある歯科が重要な理由"),
-                 ("2026-07-04_根管治療が上手い京都の歯科医院を見分ける方法.html", "根管治療が上手い歯科の見分け方｜専門医の選び方")],
-    "implant":  [("2026-07-04_京都のインプラント費用とリスクを正しく理解する.html", "インプラント｜費用相場とリスクを正しく理解する")],
-    "ortho":    [("2026-07-04_京都で矯正は何歳から？選び方を徹底解説.html", "矯正は何歳から？マウスピース・ワイヤーの選び方"),
-                 ("2026-07-04_歯並びが気になったら｜京都で矯正相談すべきタイミング.html", "歯並びが気になる方へ｜矯正相談するベストタイミング")],
-    "kids":     [("2026-07-04_子どもの虫歯予防｜京都の小児歯科はいつから？.html", "子どもの虫歯予防｜小児歯科にいつから通うべきか"),
-                 ("2026-07-04_京都で矯正は何歳から？選び方を徹底解説.html", "矯正は何歳から？マウスピース・ワイヤーの選び方")],
-    "prevent":  [("2026-07-04_予防歯科クリーニングの頻度とメリット｜京都市版.html", "予防歯科のクリーニング頻度とメリット"),
-                 ("2026-07-04_子どもの虫歯予防｜京都の小児歯科はいつから？.html", "子どもの虫歯予防｜小児歯科にいつから通うべきか")],
-    "esthetic": [("2026-07-04_京都ホワイトニング｜種類・費用・選び方を徹底比較.html", "ホワイトニング｜種類・選び方・費用比較ガイド"),
-                 ("2026-07-04_銀歯を白くしたい！京都でセラミック治療の費用と方法.html", "銀歯を白くしたい方へ｜セラミック費用と方法を解説")],
-    "kids_fit": [("2026-07-04_子どもの虫歯予防｜京都の小児歯科はいつから？.html", "子どもの虫歯予防｜小児歯科にいつから通うべきか")],
+    "ct":       [(f"2026-07-04_CTとマイクロスコープがある{CITY_SHORT}の歯科を選ぶ理由.html", "CTとマイクロスコープがある歯科が重要な理由"),
+                 (f"2026-07-04_根管治療が上手い{CITY_SHORT}の歯科医院を見分ける方法.html", "根管治療が上手い歯科の見分け方｜専門医の選び方")],
+    "micro":    [(f"2026-07-04_CTとマイクロスコープがある{CITY_SHORT}の歯科を選ぶ理由.html", "CTとマイクロスコープがある歯科が重要な理由"),
+                 (f"2026-07-04_根管治療が上手い{CITY_SHORT}の歯科医院を見分ける方法.html", "根管治療が上手い歯科の見分け方｜専門医の選び方")],
+    "implant":  [(f"2026-07-04_{CITY_SHORT}のインプラント費用とリスクを正しく理解する.html", "インプラント｜費用相場とリスクを正しく理解する")],
+    "ortho":    [(f"2026-07-04_{CITY_SHORT}で矯正は何歳から？選び方を徹底解説.html", "矯正は何歳から？マウスピース・ワイヤーの選び方"),
+                 (f"2026-07-04_歯並びが気になったら｜{CITY_SHORT}で矯正相談すべきタイミング.html", "歯並びが気になる方へ｜矯正相談するベストタイミング")],
+    "kids":     [(f"2026-07-04_子どもの虫歯予防｜{CITY_SHORT}の小児歯科はいつから？.html", "子どもの虫歯予防｜小児歯科にいつから通うべきか"),
+                 (f"2026-07-04_{CITY_SHORT}で矯正は何歳から？選び方を徹底解説.html", "矯正は何歳から？マウスピース・ワイヤーの選び方")],
+    "prevent":  [(f"2026-07-04_予防歯科クリーニングの頻度とメリット｜{CITY}版.html", "予防歯科のクリーニング頻度とメリット"),
+                 (f"2026-07-04_子どもの虫歯予防｜{CITY_SHORT}の小児歯科はいつから？.html", "子どもの虫歯予防｜小児歯科にいつから通うべきか")],
+    "esthetic": [(f"2026-07-04_{CITY_SHORT}ホワイトニング｜種類・費用・選び方を徹底比較.html", "ホワイトニング｜種類・選び方・費用比較ガイド"),
+                 (f"2026-07-04_銀歯を白くしたい！{CITY_SHORT}でセラミック治療の費用と方法.html", "銀歯を白くしたい方へ｜セラミック費用と方法を解説")],
+    "kids_fit": [(f"2026-07-04_子どもの虫歯予防｜{CITY_SHORT}の小児歯科はいつから？.html", "子どもの虫歯予防｜小児歯科にいつから通うべきか")],
 }
 
 
@@ -105,7 +110,7 @@ def select(V, pred):
 
 def main():
     db = json.load(open(DB, encoding="utf-8"))
-    # 品質フラグで除外（京都市外・サロン・重複）
+    # 品質フラグで除外（対象エリア外・サロン・重複）
     V = [c for c in (db.values() if isinstance(db, dict) else db)
          if c.get("name") and not c.get("q_excluded")]
 
@@ -137,7 +142,7 @@ def main():
         if not xs:
             continue
         cards = "".join(card(c) for c in xs[:CAP])
-        more = f'<p class="frow-more">ほか、確認できた医院は京都市内に全{len(xs)}院あります（口コミ件数の多い順に表示）。</p>' if len(xs) > CAP else f'<p class="frow-more">京都市内で確認できた {len(xs)}院（口コミ件数の多い順）。</p>'
+        more = f'<p class="frow-more">ほか、確認できた医院は{CITY}内に全{len(xs)}院あります（口コミ件数の多い順に表示）。</p>' if len(xs) > CAP else f'<p class="frow-more">{CITY}内で確認できた {len(xs)}院（口コミ件数の多い順）。</p>'
         related = CATEGORY_ARTICLES.get(cid, [])
         related_html = ""
         if related:
@@ -161,7 +166,7 @@ def main():
             if _w:
                 _wc[_w] += 1
     ward_chips = ('<button type="button" class="ff-chip ff-ward on" data-ward="">すべて</button>'
-                  + "".join(f'<button type="button" class="ff-chip ff-ward" data-ward="{esc(w)}">{esc(w.replace("京都市", ""))}</button>'
+                  + "".join(f'<button type="button" class="ff-chip ff-ward" data-ward="{esc(w)}">{esc(w.replace(CITY, ""))}</button>'
                             for w, _ in _wc.most_common()))
     cond_chips = "".join(f'<button type="button" class="ff-chip ff-cond" data-cond="{esc(k)}">{esc(k)}</button>'
                          for k in EQUIP_KEYS)
@@ -187,6 +192,7 @@ def main():
                 .replace("{n_reviews}", f"{n_reviews:,}")
                 .replace("{updated}", updated)
                 .replace("{CANONICAL}", f"https://{SITE_CFG.get('domain','shikasoken.com')}/articles/features/index.html")
+                .replace("{SITE_NAME}", SITE_NAME).replace("{EN_INSTITUTE}", EN_INSTITUTE).replace("{CITY}", CITY)
                 .replace("{CITY_SHORT}", CITY_SHORT).replace("{N_PUBLISHED:,}", f"{N_PUBLISHED:,}"))
     open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(html_out)
     total = sum(len(xs) for _, _, _, xs in data)
@@ -197,8 +203,8 @@ TEMPLATE = '''<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>特徴から探す｜京都歯科総研</title>
-<meta name="description" content="京都市内の歯科医院を、CT設備・対応治療・子ども連れへの配慮など、確認できた特徴ごとに一覧。公開情報およびAI分析にもとづく参考情報です。">
+<title>特徴から探す｜{SITE_NAME}</title>
+<meta name="description" content="{CITY}内の歯科医院を、CT設備・対応治療・子ども連れへの配慮など、確認できた特徴ごとに一覧。公開情報およびAI分析にもとづく参考情報です。">
 <link rel="canonical" href="{CANONICAL}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Shippori+Mincho:wght@600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
@@ -286,7 +292,7 @@ function frowScroll(btn, dir){
 <header class="odr-brandbar">
   <a class="odr-sig" href="../../index.html">
     <span class="odr-sig-mark">ODR</span>
-    <span class="odr-sig-name">京都歯科総研<small>Kyoto Dental Research Institute</small></span>
+    <span class="odr-sig-name">{SITE_NAME}<small>{EN_INSTITUTE}</small></span>
   </a>
   <nav>
     <a href="../shindan/index.html">ランキング・AI診断</a>
@@ -304,8 +310,8 @@ function frowScroll(btn, dir){
 <section class="f-hero">
   <div class="f-hero-in">
     <span class="odr-kicker pill">FEATURE REPORT</span>
-    <h1>AI分析から見た、京都の歯科医院の特徴</h1>
-    <p>確認できた設備・対応治療・配慮などの特徴ごとに、京都市内の歯科医院を整理しました。順位付けはしていません。</p>
+    <h1>AI分析から見た、{CITY_SHORT}の歯科医院の特徴</h1>
+    <p>確認できた設備・対応治療・配慮などの特徴ごとに、{CITY}内の歯科医院を整理しました。順位付けはしていません。</p>
     <div class="odr-meta on-dark">
       <dl><dt>分析対象</dt><dd>{n_clinics}院</dd></dl>
       <dl><dt>分析した口コミ</dt><dd>{n_reviews}件</dd></dl>
@@ -325,7 +331,7 @@ function frowScroll(btn, dir){
     料金・診療内容・設備の詳細は各医院へ直接ご確認ください。受診の判断は必ず歯科医師にご相談ください。
   </div>
   <div class="odr-meta" style="margin:28px 0 0;border:1px solid var(--line);border-radius:var(--r-card);padding:20px 24px;background:#fff;">
-    <dl><dt>Research Note</dt><dd style="color:var(--terra);">京都歯科総研 編集部</dd></dl>
+    <dl><dt>Research Note</dt><dd style="color:var(--terra);">{SITE_NAME} 編集部</dd></dl>
     <dl><dt>分析手法</dt><dd>AI分析 ＋ 人による監修</dd></dl>
     <dl><dt>Confidence</dt><dd>確認できた事実のみ掲載</dd></dl>
     <dl><dt>Updated</dt><dd>{updated}</dd></dl>

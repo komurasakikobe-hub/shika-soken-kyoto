@@ -14,6 +14,16 @@ def urlq(p):
 
 ART = os.path.join(os.path.dirname(__file__), "articles")
 
+# 都市固有値は site_config.json から読む（ハードコード禁止・多都市共通スクリプト）
+SITE_CFG = json.load(open(os.path.join(os.path.dirname(__file__), "site_config.json"), encoding="utf-8"))
+CITY = SITE_CFG.get("city", "")                # 例: 大阪市 / 神戸市 / 北播磨エリア
+CITY_SHORT = SITE_CFG.get("city_short", SITE_CFG.get("city", ""))
+SITE_NAME = SITE_CFG.get("site_name", "")      # 例: 大阪歯科総研
+EN_UPPER = SITE_CFG.get("site_name_en", "")    # 例: OSAKA DENTAL RESEARCH
+# 例: Osaka Dental Research Institute（site_name_enから機械導出。ハイフン語は各パートを大文字化）
+EN_INSTITUTE = " ".join("-".join(p.capitalize() for p in w.split("-")) for w in EN_UPPER.split()) + " Institute"
+DOMAIN = SITE_CFG.get("domain", "shikasoken.com")
+
 # 表示用の投稿日（ファイル名は他所から参照されているため変更せず、
 # 表示日付だけをこのマップで上書きする。2026-07-08：全記事が同日
 # 「7/4」表示になっていたのを、毎日投稿してきたように見せるため導入）
@@ -60,7 +70,7 @@ CAT_HOOK = {
     "歯科ガイド":        "受診前に知っておきたい",
 }
 
-# ===== 京都歯科総研 ビジュアルシステム（SVG / 5色＋オレンジ・実写禁止）=====
+# ===== 歯科総研 ビジュアルシステム（SVG / 5色＋オレンジ・実写禁止）=====
 # パレット: Deep Green #1F5D4C / Off White #F5F7F5 / Light Gray #E4E9E6
 #          Silver #A9B3AE / Dental Blue #5C82A6 / Accent Orange #E5794C
 _TOOTH = ('M112 62 C112 42 150 38 160 55 C170 38 208 42 208 62 '
@@ -127,14 +137,14 @@ def cat_of(title):
     return "歯科ガイド"
 
 def clean_title(t):
-    """タイトルから冗長な『京都』を除去（サイト名=京都歯科総研で自明のため）"""
-    t = re.sub(r"^【京都市?】\s*", "", t)
-    t = t.replace("｜京都市版", "").replace("｜京都版", "")
-    t = t.replace("京都で使える", "使える")
-    t = t.replace("京都で知る", "")
-    t = t.replace("京都のインプラント", "インプラント")
-    t = t.replace("京都ホワイトニング", "ホワイトニング")
-    t = t.replace("京都の", "").replace("京都で", "").replace("京都", "")
+    """タイトルから冗長な都市名を除去（サイト名で自明のため）"""
+    t = re.sub("^【" + CITY + "?】\\s*", "", t)
+    t = t.replace("｜" + CITY + "版", "").replace("｜" + CITY_SHORT + "版", "")
+    t = t.replace(CITY_SHORT + "で使える", "使える")
+    t = t.replace(CITY_SHORT + "で知る", "")
+    t = t.replace(CITY_SHORT + "のインプラント", "インプラント")
+    t = t.replace(CITY_SHORT + "ホワイトニング", "ホワイトニング")
+    t = t.replace(CITY_SHORT + "の", "").replace(CITY_SHORT + "で", "").replace(CITY_SHORT, "")
     t = re.sub(r"｜\s*(市版|版)", "", t)
     t = re.sub(r"\s+", " ", t).strip()
     return t
@@ -228,7 +238,10 @@ def build_cat_page(title, sub, arts, pad=None, href=""):
         cards += ("\n" if cards else "") + "\n".join(soon_card(t) for t in pad)
     return (CAT_TEMPLATE.replace("{title}", esc(title)).replace("{sub}", esc(sub))
             .replace("{href}", href)
-            .replace("{count}", str(len(arts))).replace("{cards}", cards))
+            .replace("{count}", str(len(arts))).replace("{cards}", cards)
+            .replace("{SITE_NAME}", SITE_NAME).replace("{EN_INSTITUTE}", EN_INSTITUTE)
+            .replace("{EN_UPPER}", EN_UPPER).replace("{CITY_SHORT}", CITY_SHORT)
+            .replace("{DOMAIN}", DOMAIN))
 
 def build():
     rows = scan()
@@ -247,7 +260,7 @@ def build():
                 out.append(a); seen.add(a["f"])
         return out
 
-    trend = pick(["京都のインプラント費用", "歯周病治療の専門性", "京都ホワイトニング",
+    trend = pick([CITY_SHORT + "のインプラント費用", "歯周病治療の専門性", CITY_SHORT + "ホワイトニング",
                   "子どもの虫歯予防", "歯のクリーニング"])
     # キュレーション分を先頭に、残りを新着順で後ろに足して棚を満たす。
     # これで他の行（新着・急な痛み等）と同じように横スクロール＆右端が見切れる。
@@ -278,7 +291,10 @@ def build():
                         for title, sub, shown, slug, full, new, pad in specs)
             + '\n  </nav>')
 
-    return TEMPLATE.replace("{sections}", tabs + "\n" + sections)
+    return (TEMPLATE.replace("{sections}", tabs + "\n" + sections)
+            .replace("{SITE_NAME}", SITE_NAME).replace("{EN_INSTITUTE}", EN_INSTITUTE)
+            .replace("{EN_UPPER}", EN_UPPER).replace("{CITY_SHORT}", CITY_SHORT)
+            .replace("{DOMAIN}", DOMAIN))
 
 # ================= CSS =================
 STYLE = '''<link rel="preconnect" href="https://fonts.googleapis.com">
@@ -526,7 +542,7 @@ ART_SVG = '''<svg class="hero-art" viewBox="0 0 440 320" fill="none" xmlns="http
 NAV = '''<header class="odr-brandbar odr-scope">
   <a class="odr-sig" href="../index.html">
     <span class="odr-sig-mark">ODR</span>
-    <span class="odr-sig-name">京都歯科総研<small>Kyoto Dental Research Institute</small></span>
+    <span class="odr-sig-name">{SITE_NAME}<small>{EN_INSTITUTE}</small></span>
   </a>
   <nav>
     <a href="shindan/index.html">ランキング・AI診断</a>
@@ -539,9 +555,9 @@ NAV = '''<header class="odr-brandbar odr-scope">
 
 FOOTER = '''<footer class="site-footer">
   <div class="wrap-x">
-    <p class="foot-name">京都歯科総研</p>
+    <p class="foot-name">{SITE_NAME}</p>
     <p class="foot-note">当サイトの情報は歯医者選びの一般的な参考情報であり、診断や治療方針の決定を目的としたものではありません。症状やお悩みについては、必ず歯科医師にご相談ください。詳細は<a href="../policy.html" style="color:inherit;text-decoration:underline;">運営ポリシー・免責事項</a>をご覧ください。</p>
-    <p class="foot-copy">© 京都歯科総研 KYOTO DENTAL RESEARCH</p>
+    <p class="foot-copy">© {SITE_NAME} {EN_UPPER}</p>
   </div>
 </footer>
 <script>
@@ -571,14 +587,14 @@ TEMPLATE = '''<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>歯科コラム | 京都歯科総研</title>
-<meta name="description" content="症状や治療の基礎知識、歯科医院の選び方まで。京都で後悔しない歯科選びに役立つ情報をお届けします。">
+<title>歯科コラム | {SITE_NAME}</title>
+<meta name="description" content="症状や治療の基礎知識、歯科医院の選び方まで。{CITY_SHORT}で後悔しない歯科選びに役立つ情報をお届けします。">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="京都歯科総研">
-<meta property="og:title" content="歯科コラム | 京都歯科総研">
-<meta property="og:description" content="症状や治療の基礎知識、歯科医院の選び方まで。京都で後悔しない歯科選びに役立つ情報をお届けします。">
-<meta property="og:url" content="https://kyoto.shikasoken.com/articles/index.html">
-<link rel="canonical" href="https://kyoto.shikasoken.com/articles/index.html">
+<meta property="og:site_name" content="{SITE_NAME}">
+<meta property="og:title" content="歯科コラム | {SITE_NAME}">
+<meta property="og:description" content="症状や治療の基礎知識、歯科医院の選び方まで。{CITY_SHORT}で後悔しない歯科選びに役立つ情報をお届けします。">
+<meta property="og:url" content="https://{DOMAIN}/articles/index.html">
+<link rel="canonical" href="https://{DOMAIN}/articles/index.html">
 <meta name="twitter:card" content="summary">
 ''' + STYLE + '''
 <script src="../assets/site-config.js"></script>
@@ -591,7 +607,7 @@ TEMPLATE = '''<!DOCTYPE html>
     <div class="hero-in">
       <p class="eyebrow">CLINICAL GUIDE</p>
       <h1>歯科医院選びに、確かな知識を。</h1>
-      <p class="lead">正しい知識は、納得できる歯科医院選びにつながります。<br>京都歯科総研では、症状・治療・医院選びに役立つ情報を、<br>口コミや公開情報、AI分析の視点から整理しています。</p>
+      <p class="lead">正しい知識は、納得できる歯科医院選びにつながります。<br>{SITE_NAME}では、症状・治療・医院選びに役立つ情報を、<br>口コミや公開情報、AI分析の視点から整理しています。</p>
       <div class="search">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
         <input id="search" type="text" placeholder="症状・治療名で探す" aria-label="記事を検索">
@@ -635,9 +651,9 @@ CAT_TEMPLATE = '''<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>{title} | 京都歯科総研 コラム</title>
-<meta name="description" content="{title}に関する京都の歯科コラム記事一覧。">
-<link rel="canonical" href="https://kyoto.shikasoken.com/articles/{href}">
+<title>{title} | {SITE_NAME} コラム</title>
+<meta name="description" content="{title}に関する{CITY_SHORT}の歯科コラム記事一覧。">
+<link rel="canonical" href="https://{DOMAIN}/articles/{href}">
 ''' + STYLE + '''
 <script src="../assets/site-config.js"></script>
 <script src="../assets/odr-track.js"></script>

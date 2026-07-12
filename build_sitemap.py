@@ -6,7 +6,7 @@ sitemap.xml と robots.txt を生成する。
   - トップ・固定ページ（index.html / network.html / shikumi.html / for-clinics.html / teisei.html）
   - articles/ 直下の記事・一覧・カテゴリページ
   - articles/features/ / articles/shindan/
-  - articles/clinics/ の全医院ページ（673件超。ここが検索流入の主戦場）
+  - articles/clinics/ の全医院ページ（ここが検索流入の主戦場）
 
 ドメインは site_config.json から読む（多都市展開時に差し替えるだけで済むように）。
 新しい記事・医院ページを追加したら再実行すること（daily_post.sh にも組み込み済み）。

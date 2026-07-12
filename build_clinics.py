@@ -36,11 +36,14 @@ SITE_CFG = json.load(open(os.path.join(ROOT, "site_config.json"), encoding="utf-
 CITY_SHORT = SITE_CFG.get("city_short", SITE_CFG.get("city", ""))
 N_PUBLISHED = SITE_CFG.get("stats", {}).get("clinics_published", 0)
 DOMAIN = SITE_CFG.get("domain", "shikasoken.com")
-# 都道府県（構造化データのaddressRegion用）。site_config.jsonのprefを優先し、
-# 未設定の都市はcityから引く（新都市追加時はsite_config.jsonにprefを足すこと）
-_PREF_FALLBACK = {"京都市": "京都府", "神戸市": "兵庫県", "京都市": "京都府",
-                  "尼崎市": "兵庫県", "西宮市": "兵庫県", "芦屋市": "兵庫県"}
-PREF = SITE_CFG.get("pref") or _PREF_FALLBACK.get(SITE_CFG.get("city", ""), "")
+CITY = SITE_CFG.get("city", "")                # 例: 大阪市 / 神戸市 / 北播磨エリア
+SITE_NAME = SITE_CFG.get("site_name", "")      # 例: 大阪歯科総研
+EN_UPPER = SITE_CFG.get("site_name_en", "")    # 例: OSAKA DENTAL RESEARCH
+# 例: Osaka Dental Research Institute（site_name_enから機械導出。ハイフン語は各パートを大文字化）
+EN_INSTITUTE = " ".join("-".join(p.capitalize() for p in w.split("-")) for w in EN_UPPER.split()) + " Institute"
+# 都道府県（構造化データのaddressRegion用）。site_config.jsonのprefは必須キー
+# （新都市追加時はsite_config.jsonにprefを必ず足すこと。横展開マニュアル§4-c参照）
+PREF = SITE_CFG.get("pref", "")
 
 # schemaのtelephoneから除外する「複数院で共有されている電話番号」
 # （コールトラッキング・フランチャイズ共通窓口等。NAP一貫性を壊すためschemaに入れない。
@@ -56,11 +59,11 @@ with open(SLUG_MAP_PATH, encoding="utf-8") as _f:
     SLUG_MAP = json.load(_f)  # place_id -> 一意なslug（generate_slug_map.py参照。同姓同名の医院URL衝突対策）
 
 def nowrap_pipe(escaped_title):
-    """タイトルと副題がきれいに分かれるよう、｜の直前、または？／！の直後(京都の前)で改行する"""
+    """タイトルと副題がきれいに分かれるよう、｜の直前、または？／！の直後(都市名の前)で改行する"""
     import re as _re
     if "｜" in escaped_title:
         return escaped_title.replace("｜", "<br>｜", 1)
-    return _re.sub(r"([？！])京都", r"\1<br>京都", escaped_title, count=1)
+    return _re.sub("([？！])" + CITY_SHORT, "\\1<br>" + CITY_SHORT, escaped_title, count=1)
 
 def esc(s):
     return html.escape(str(s), quote=True)
@@ -202,10 +205,10 @@ def address_to_schema(addr):
     elif PREF and PREF in a:
         tail = a[a.index(PREF) + len(PREF):].strip()
         if len(tail) >= 6:
-            # 「〒1F 京都府京都市…」のような先頭ゴミは府県名から後ろを採用する
+            # 「〒1F 〇〇県〇〇市…」のような先頭ゴミは府県名から後ろを採用する
             a = tail
         else:
-            # 逆順住所（「…阿倍野区 京都市 京都府」）は府県名だけ除去して全体を残す
+            # 逆順住所（「…〇〇区 〇〇市 〇〇県」）は府県名だけ除去して全体を残す
             a = a.replace(PREF, "").strip()
     lm = _LOCALITY_RE.match(a)
     locality = "".join(g for g in lm.groups() if g) if lm else ""
@@ -213,7 +216,7 @@ def address_to_schema(addr):
         out["addressLocality"] = locality
         a = a[len(locality):].strip()
     else:
-        # 住所の並びが崩れているレコード（例「…阿倍野区 京都市」）から市・区だけ拾う。
+        # 住所の並びが崩れているレコード（例「…〇〇区 〇〇市」）から市・区だけ拾う。
         # streetAddressは崩れたまま全文を残す（下手に削って壊さない）
         mc = re.search(r"([一-龥ぁ-んァ-ヶ]{1,6}市)", a)
         mw = re.search(r"([一-龥ぁ-んァ-ヶ]{1,4}区)", a)
@@ -265,7 +268,7 @@ def build_jsonld(c, slug):
         specs = hours_to_schema(hours[:7])
         if specs:
             data["openingHoursSpecification"] = specs
-    site_name = SITE_CFG.get("site_name", "京都歯科総研")
+    site_name = SITE_NAME
     domain = DOMAIN
     data["publisher"] = {
         "@type": "Organization",
@@ -339,7 +342,7 @@ import re as _re
 _WARD_STATS = {}
 
 def _ward_key(addr):
-    m = _re.search(r'京都市([一-龥]+区)', addr or "")
+    m = _re.search(CITY + r'([一-龥]+区)', addr or "")
     return m.group(1) if m else None
 
 def _has_night(c):
@@ -591,7 +594,7 @@ def build_page(c, slug=""):
 
     pbars = bar_rows(c.get("patient_scores"), PATIENT_AXES, 100)
     sec_patient = (f'<div class="rr-bars">{pbars}</div>'
-                   f'<p class="rr-note">口コミ本文の文脈をAIが7軸で定量化（100点満点・京都歯科総研 独自指標）。</p>') if pbars else ""
+                   f'<p class="rr-note">口コミ本文の文脈をAIが7軸で定量化（100点満点・{SITE_NAME} 独自指標）。</p>') if pbars else ""
 
     dbars = bar_rows(c.get("doctor_stars"), DOCTOR_AXES, 5)
     sec_doctor = (f'<div class="rr-bars">{dbars}</div>{SRC_NOTE}') if dbars else ""
@@ -698,10 +701,10 @@ def build_page(c, slug=""):
                  f'<div><span class="rr-sec-en">{esc(en)}</span>'
                  f'<h2>{esc(ja)}</h2></div></div>{inner}</section>')
 
-    m_ward = re.search(r'京都市[^\d]*?区', addr or "")
-    ward_txt = m_ward.group(0) if m_ward else "京都市"
+    m_ward = re.search(CITY + r'[^\d]*?区', addr or "")
+    ward_txt = m_ward.group(0) if m_ward else CITY
     ward_paren = f"（{ward_txt}）"
-    ward_only = ward_txt.replace("京都市", "")
+    ward_only = ward_txt.replace(CITY, "")
     area_slug = WARD_SLUGS.get(ward_only)
     # 区別LPが実在するサイトでのみリンクを出す（エリアページ未作成の都市で
     # 404リンクを量産しない。2026-07-13・神戸で実在バグ確認）
@@ -736,6 +739,7 @@ def build_page(c, slug=""):
             .replace("{research_foot}",
                      '・<a href="../research/index.html" style="color:inherit;text-decoration:underline;">データ研究ページ</a>'
                      if HAS_RESEARCH else "")
+            .replace("{SITE_NAME}", SITE_NAME).replace("{EN_INSTITUTE}", EN_INSTITUTE).replace("{EN_UPPER}", EN_UPPER)
             .replace("{CITY_SHORT}", CITY_SHORT).replace("{N_PUBLISHED:,}", f"{N_PUBLISHED:,}"))
 
 TEMPLATE = '''<!DOCTYPE html>
@@ -743,12 +747,12 @@ TEMPLATE = '''<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>{name}の口コミ・評判・AI分析{ward_paren}｜京都歯科総研</title>
+<title>{name}の口コミ・評判・AI分析{ward_paren}｜{SITE_NAME}</title>
 <meta name="description" content="{desc}">
 {robots}<link rel="canonical" href="{ogurl}">
 <meta property="og:type" content="article">
-<meta property="og:site_name" content="京都歯科総研">
-<meta property="og:title" content="{name}の口コミ・評判・AI分析{ward_paren}｜京都歯科総研">
+<meta property="og:site_name" content="{SITE_NAME}">
+<meta property="og:title" content="{name}の口コミ・評判・AI分析{ward_paren}｜{SITE_NAME}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{ogurl}">
 <meta name="twitter:card" content="summary">
@@ -896,7 +900,7 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 <header class="odr-brandbar">
   <a class="odr-sig" href="../../index.html">
     <span class="odr-sig-mark">ODR</span>
-    <span class="odr-sig-name">京都歯科総研<small>Kyoto Dental Research Institute</small></span>
+    <span class="odr-sig-name">{SITE_NAME}<small>{EN_INSTITUTE}</small></span>
   </a>
   <nav>
     <a href="../shindan/index.html">ランキング・AI診断</a>
@@ -937,7 +941,7 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
   </section>
 </main>
 <footer class="rr-foot">
-  <div class="in">当レポートのAI分析（サマリー・各スコア等）は、Googleマップの口コミや各医院公式サイト等の公開情報をもとに京都歯科総研が独自に生成した参考情報です。根拠となる情報がない項目は表示していません。診断・治療方針の決定を目的としたものではなく、受診の判断は必ず歯科医師にご相談ください。掲載内容の訂正は<a href="../../teisei.html" style="color:inherit;text-decoration:underline;">こちら</a>、免責事項の詳細は<a href="../../policy.html" style="color:inherit;text-decoration:underline;">運営ポリシー</a>をご覧ください。運営者と分析手法（データ源・算出方法・限界）は<a href="../../about.html" style="color:inherit;text-decoration:underline;">運営者情報</a>{research_foot}で開示しています。<br>© 京都歯科総研 KYOTO DENTAL RESEARCH</div>
+  <div class="in">当レポートのAI分析（サマリー・各スコア等）は、Googleマップの口コミや各医院公式サイト等の公開情報をもとに{SITE_NAME}が独自に生成した参考情報です。根拠となる情報がない項目は表示していません。診断・治療方針の決定を目的としたものではなく、受診の判断は必ず歯科医師にご相談ください。掲載内容の訂正は<a href="../../teisei.html" style="color:inherit;text-decoration:underline;">こちら</a>、免責事項の詳細は<a href="../../policy.html" style="color:inherit;text-decoration:underline;">運営ポリシー</a>をご覧ください。運営者と分析手法（データ源・算出方法・限界）は<a href="../../about.html" style="color:inherit;text-decoration:underline;">運営者情報</a>{research_foot}で開示しています。<br>© {SITE_NAME} {EN_UPPER}</div>
 </footer>
 <script>
 document.addEventListener("click",function(ev){
@@ -978,7 +982,7 @@ def main():
         name = c.get("name")
         if not name:
             continue
-        if c.get("q_excluded"):   # 京都市外・サロン・重複は生成しない（品質フラグ）
+        if c.get("q_excluded"):   # 対象エリア外・サロン・重複は生成しない（品質フラグ）
             continue
         slug = SLUG_MAP.get(c.get("place_id"), slugify(name))  # 衝突対策済みの一意なslugを使用
         valid.add(slug)
