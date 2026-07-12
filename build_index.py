@@ -222,11 +222,12 @@ def section(title, sub, shown, href, new=False, pad=None, n=20):
     </div>
   </section>'''
 
-def build_cat_page(title, sub, arts, pad=None):
+def build_cat_page(title, sub, arts, pad=None, href=""):
     cards = "\n".join(card(a) for a in arts)
     if pad:
         cards += ("\n" if cards else "") + "\n".join(soon_card(t) for t in pad)
     return (CAT_TEMPLATE.replace("{title}", esc(title)).replace("{sub}", esc(sub))
+            .replace("{href}", href)
             .replace("{count}", str(len(arts))).replace("{cards}", cards))
 
 def build():
@@ -269,7 +270,7 @@ def build():
         href = f"cat-{slug}.html"
         sections += ("\n" if sections else "") + section(title, sub, shown, href, new=new, pad=pad)
         open(os.path.join(ART, href), "w", encoding="utf-8").write(
-            build_cat_page(title, sub if sub else title, full, pad=pad))
+            build_cat_page(title, sub if sub else title, full, pad=pad, href=href))
 
     # 新着記事の上に置くジャンプ用タブ（各セクションへスムーススクロール）
     tabs = ('  <nav class="col-tabs" aria-label="カテゴリ">\n'
@@ -576,7 +577,8 @@ TEMPLATE = '''<!DOCTYPE html>
 <meta property="og:site_name" content="京都歯科総研">
 <meta property="og:title" content="歯科コラム | 京都歯科総研">
 <meta property="og:description" content="症状や治療の基礎知識、歯科医院の選び方まで。京都で後悔しない歯科選びに役立つ情報をお届けします。">
-<meta property="og:url" content="https://shikasoken.com/articles/index.html">
+<meta property="og:url" content="https://kyoto.shikasoken.com/articles/index.html">
+<link rel="canonical" href="https://kyoto.shikasoken.com/articles/index.html">
 <meta name="twitter:card" content="summary">
 ''' + STYLE + '''
 <script src="../assets/site-config.js"></script>
@@ -635,6 +637,7 @@ CAT_TEMPLATE = '''<!DOCTYPE html>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>{title} | 京都歯科総研 コラム</title>
 <meta name="description" content="{title}に関する京都の歯科コラム記事一覧。">
+<link rel="canonical" href="https://kyoto.shikasoken.com/articles/{href}">
 ''' + STYLE + '''
 <script src="../assets/site-config.js"></script>
 <script src="../assets/odr-track.js"></script>

@@ -186,6 +186,7 @@ def main():
                 .replace("{n_clinics}", f"{n_clinics:,}")
                 .replace("{n_reviews}", f"{n_reviews:,}")
                 .replace("{updated}", updated)
+                .replace("{CANONICAL}", f"https://{SITE_CFG.get('domain','shikasoken.com')}/articles/features/index.html")
                 .replace("{CITY_SHORT}", CITY_SHORT).replace("{N_PUBLISHED:,}", f"{N_PUBLISHED:,}"))
     open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(html_out)
     total = sum(len(xs) for _, _, _, xs in data)
@@ -198,6 +199,7 @@ TEMPLATE = '''<!DOCTYPE html>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>特徴から探す｜京都歯科総研</title>
 <meta name="description" content="京都市内の歯科医院を、CT設備・対応治療・子ども連れへの配慮など、確認できた特徴ごとに一覧。公開情報およびAI分析にもとづく参考情報です。">
+<link rel="canonical" href="{CANONICAL}">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Shippori+Mincho:wght@600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/odr-ds.css">

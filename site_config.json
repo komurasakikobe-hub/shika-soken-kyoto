@@ -2,6 +2,7 @@
   "_comment": "都市サイト共通の設定ファイル。都市固有の値（都市名・ドメイン・区リスト・統計数字・計測ID）は必ずここに集約する。Pythonのビルドスクリプトはこのファイルを、ブラウザ側JSはassets/site-config.jsを読む。",
   "city": "京都市",
   "city_short": "京都",
+  "pref": "京都府",
   "site_name": "京都歯科総研",
   "site_name_en": "KYOTO DENTAL RESEARCH",
   "domain": "kyoto.shikasoken.com",

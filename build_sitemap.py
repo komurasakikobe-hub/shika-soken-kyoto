@@ -3,10 +3,10 @@
 sitemap.xml と robots.txt を生成する。
 
 対象：
-  - トップ・固定ページ（index.html / shikumi.html / for-clinics.html / teisei.html）
+  - トップ・固定ページ（index.html / network.html / shikumi.html / for-clinics.html / teisei.html）
   - articles/ 直下の記事・一覧・カテゴリページ
   - articles/features/ / articles/shindan/
-  - articles/clinics/ の全医院ページ（2,000件超。ここが検索流入の主戦場）
+  - articles/clinics/ の全医院ページ（673件超。ここが検索流入の主戦場）
 
 ドメインは site_config.json から読む（多都市展開時に差し替えるだけで済むように）。
 新しい記事・医院ページを追加したら再実行すること（daily_post.sh にも組み込み済み）。
@@ -44,13 +44,21 @@ def main():
     # ── 固定ページ ──
     entries.append(url_entry("", today, "1.0"))
     entries.append(url_entry("articles/shindan/", today, "0.9"))
+    entries.append(url_entry("articles/research/", today, "0.8"))  # 独自データ研究ページ（被リンク狙いの一次情報）
     entries.append(url_entry("articles/index.html", today, "0.8"))
     entries.append(url_entry("articles/features/index.html", today, "0.7"))
+    entries.append(url_entry("network.html", priority="0.5"))
     entries.append(url_entry("shikumi.html", priority="0.4"))
     entries.append(url_entry("for-clinics.html", priority="0.4"))
     entries.append(url_entry("teisei.html", priority="0.3"))
+    entries.append(url_entry("policy.html", priority="0.3"))
+    if (ROOT / "about.html").exists():
+        entries.append(url_entry("about.html", priority="0.3"))  # 運営者情報（E-E-A-T）
 
     # ── カテゴリページ ──
+    for f in sorted((ROOT / "articles" / "area").glob("*.html")):
+        entries.append(url_entry(f"articles/area/{f.name}", today, "0.8"))
+
     for f in sorted((ROOT / "articles").glob("cat-*.html")):
         entries.append(url_entry(f"articles/{f.name}", today, "0.5"))
 
@@ -63,10 +71,25 @@ def main():
         entries.append(url_entry(f"articles/{f.name}", lastmod, "0.7"))
 
     # ── 医院ページ（検索流入の主戦場） ──
+    # 薄いページ（実データが閾値未満・noindex対象）はsitemapに載せない
+    # （scaled content abuse対策。判定の正本は thin_page_policy.py。2026-07-13）
+    try:
+        from thin_page_policy import thin_slugs
+        skip = thin_slugs(str(ROOT))
+    except Exception as e:
+        print(f"⚠ thin_page_policy 読み込み失敗（全院を掲載します）: {e}")
+        skip = set()
+    n_skipped = 0
     for f in sorted((ROOT / "articles" / "clinics").glob("*.html")):
+        if f.name[:-5] in skip:
+            n_skipped += 1
+            continue
+        # lastmod=再生成日（月次リフレッシュで実データが変わるたび更新される＝正直な鮮度シグナル）
         from datetime import date as _d
         lastmod = _d.fromtimestamp(f.stat().st_mtime).isoformat()
         entries.append(url_entry(f"articles/clinics/{f.name}", lastmod, "0.6"))
+    if n_skipped:
+        print(f"   薄いページのsitemap除外: {n_skipped}件")
 
     sitemap = (
         '<?xml version="1.0" encoding="UTF-8"?>\n'

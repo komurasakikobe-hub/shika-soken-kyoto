@@ -15,6 +15,9 @@ from evidence_grounding import (
     station_walk_min, latest_closing_minutes,
     scan_summary_claims, summary_has_contradiction,
 )
+# 薄いページ（scaled content abuse）対策の判定正本（2026-07-13）。
+# 実データが閾値未満の院ページは noindex,follow＋sitemap除外（thin_page_policy.py参照）。
+from thin_page_policy import is_thin, has_substantive_ai
 
 
 # 区別ランディングページへの内部リンク用（build_area_pages.pyのWARDSと対応）
@@ -32,6 +35,21 @@ DB = os.path.join(ROOT, "clinic_db.json")
 SITE_CFG = json.load(open(os.path.join(ROOT, "site_config.json"), encoding="utf-8"))
 CITY_SHORT = SITE_CFG.get("city_short", SITE_CFG.get("city", ""))
 N_PUBLISHED = SITE_CFG.get("stats", {}).get("clinics_published", 0)
+DOMAIN = SITE_CFG.get("domain", "shikasoken.com")
+# 都道府県（構造化データのaddressRegion用）。site_config.jsonのprefを優先し、
+# 未設定の都市はcityから引く（新都市追加時はsite_config.jsonにprefを足すこと）
+_PREF_FALLBACK = {"京都市": "京都府", "神戸市": "兵庫県", "京都市": "京都府",
+                  "尼崎市": "兵庫県", "西宮市": "兵庫県", "芦屋市": "兵庫県"}
+PREF = SITE_CFG.get("pref") or _PREF_FALLBACK.get(SITE_CFG.get("city", ""), "")
+
+# schemaのtelephoneから除外する「複数院で共有されている電話番号」
+# （コールトラッキング・フランチャイズ共通窓口等。NAP一貫性を壊すためschemaに入れない。
+# 表示側の電話番号はこれまで通り出す）。main()で実DBから機械的に算出する。
+SHARED_PHONES = set()
+
+# データ研究ページ（build_data_report.py）を持つサイトでのみリンクを出す
+# （未展開の都市サイトで404リンクを量産しない。2026-07-13）
+HAS_RESEARCH = os.path.exists(os.path.join(ROOT, "articles", "research", "index.html"))
 OUT = os.path.join(ROOT, "articles", "clinics")
 SLUG_MAP_PATH = os.path.join(ROOT, "clinic_slugs.json")
 with open(SLUG_MAP_PATH, encoding="utf-8") as _f:
@@ -138,32 +156,117 @@ def li(items):
 SRC_NOTE = ('<p class="rr-note">※ 公式サイト・Google口コミなどの公開情報にもとづく'
             'AI分析です。根拠が確認できなかった設備・特徴は表示していません。</p>')
 
+# ── 構造化データ用ヘルパー（2026-07-13 MEO是正） ──
+_DAY_EN = {"月": "Monday", "火": "Tuesday", "水": "Wednesday", "木": "Thursday",
+           "金": "Friday", "土": "Saturday", "日": "Sunday"}
+_HOURS_RE = re.compile(r"(\d{1,2})時(\d{1,2})分?[～〜~](\d{1,2})時(\d{1,2})分?")
+
+def hours_to_schema(hours):
+    """Google由来の日本語診療時間（例「月曜日: 9時30分～12時30分, 14時00分～18時30分」）を
+    schema.orgのOpeningHoursSpecificationに変換する。定休日・解析不能行は出力しない
+    （誤った時刻を出すくらいなら出さない）。"""
+    specs = []
+    for line in hours or []:
+        line = str(line)
+        day = _DAY_EN.get(line[:1])
+        if not day or "定休" in line or "休診" in line:
+            continue
+        for m in _HOURS_RE.finditer(line):
+            h1, m1, h2, m2 = (int(x) for x in m.groups())
+            if not (0 <= h1 <= 23 and 0 <= h2 <= 24 and 0 <= m1 <= 59 and 0 <= m2 <= 59):
+                continue
+            specs.append({
+                "@type": "OpeningHoursSpecification",
+                "dayOfWeek": f"https://schema.org/{day}",
+                "opens": f"{h1:02d}:{m1:02d}",
+                "closes": f"{h2:02d}:{m2:02d}",
+            })
+    return specs
+
+_ZIP_RE = re.compile(r"〒?\s*(\d{3})[-‐－ー−]?(\d{4})\s*")
+_LOCALITY_RE = re.compile(r"^([一-龥ぁ-んァ-ヶA-Za-z]+?市)?([一-龥ぁ-んァ-ヶ]+?区)?([一-龥ぁ-んァ-ヶ]+?郡[一-龥ぁ-んァ-ヶ]+?[町村])?")
+
+def address_to_schema(addr):
+    """住所文字列をPostalAddressに分解する。addressLocality=市（＋区）、
+    addressRegion=都道府県、postalCode=判明分のみ（無ければ出さない＝捏造しない）。"""
+    import unicodedata
+    a = unicodedata.normalize("NFKC", (addr or "").strip())
+    a = re.sub(r"^日本[、,]\s*", "", a)  # Google由来の「日本、〒…」表記
+    out = {"@type": "PostalAddress"}
+    m = _ZIP_RE.search(a)
+    if m:
+        out["postalCode"] = f"{m.group(1)}-{m.group(2)}"
+        a = a.replace(m.group(0), "", 1).strip()
+    if PREF and a.startswith(PREF):
+        a = a[len(PREF):].strip()
+    elif PREF and PREF in a:
+        tail = a[a.index(PREF) + len(PREF):].strip()
+        if len(tail) >= 6:
+            # 「〒1F 京都府京都市…」のような先頭ゴミは府県名から後ろを採用する
+            a = tail
+        else:
+            # 逆順住所（「…阿倍野区 京都市 京都府」）は府県名だけ除去して全体を残す
+            a = a.replace(PREF, "").strip()
+    lm = _LOCALITY_RE.match(a)
+    locality = "".join(g for g in lm.groups() if g) if lm else ""
+    if locality:
+        out["addressLocality"] = locality
+        a = a[len(locality):].strip()
+    else:
+        # 住所の並びが崩れているレコード（例「…阿倍野区 京都市」）から市・区だけ拾う。
+        # streetAddressは崩れたまま全文を残す（下手に削って壊さない）
+        mc = re.search(r"([一-龥ぁ-んァ-ヶ]{1,6}市)", a)
+        mw = re.search(r"([一-龥ぁ-んァ-ヶ]{1,4}区)", a)
+        guessed = (mc.group(1) if mc else "") + (mw.group(1) if mw else "")
+        if guessed:
+            out["addressLocality"] = guessed
+    if PREF:
+        out["addressRegion"] = PREF
+    out["addressCountry"] = "JP"
+    if a:
+        out["streetAddress"] = a
+    return out
+
+def page_url_of(slug):
+    """院ページの正規URL。canonical / og:url / JSON-LD url / Breadcrumb の
+    4箇所すべてこの1本を使う（表記ゆれ＝重複URL候補の量産を防ぐ。2026-07-13統一）。
+    日本語slugはパーセントエンコードした形を正とする。"""
+    return f"https://{DOMAIN}/articles/clinics/{quote(slug)}.html"
+
 def build_jsonld(c, slug):
     """Google検索のリッチリザルト向け構造化データ（JSON-LD, schema.org/Dentist）。
     緯度経度（Nominatimで取得済み）・住所・電話・診療時間を機械可読で埋め込む。
     ※2026-07-10：aggregateRatingを撤去。Googleの規約ではLocalBusiness系の
     レビュー評価は「自サイトで直接収集したもの」に限られ、Googleマップ由来の
     評価のマークアップは規約違反（手動対策の火種）のため。表示テキストとしての
-    口コミ数値は問題ない（マークアップしないだけ）。publisherに運営者
+    口コミ数値は問題ない（マークアップしないだけ）。第一者（自社収集）の実口コミを
+    持たない限り、aggregateRating/reviewは今後も入れないこと。
+    ※2026-07-13：openingHoursを日本語文からOpeningHoursSpecification正規形に変更。
+    住所をPostalAddressに分解（locality/postalCode）。複数院で共有される電話番号
+    （トラッキング・共通窓口）はNAP汚染のためtelephoneに入れない。publisherに運営者
     (Organization)を宣言してエンティティの一貫性を出す。"""
     import json as _json
+    page_url = page_url_of(slug)
     data = {
         "@context": "https://schema.org",
         "@type": "Dentist",
         "name": c.get("name", ""),
-        "url": f"https://{SITE_CFG.get('domain','shikasoken.com')}/articles/clinics/{slug}.html",
+        "url": page_url,
     }
     if c.get("address"):
-        data["address"] = {"@type": "PostalAddress", "streetAddress": c["address"], "addressRegion": "京都府"}
+        data["address"] = address_to_schema(c["address"])
     if c.get("latitude") and c.get("longitude"):
         data["geo"] = {"@type": "GeoCoordinates", "latitude": c["latitude"], "longitude": c["longitude"]}
-    if c.get("phone"):
-        data["telephone"] = c["phone"]
+    phone = (c.get("phone") or "").strip()
+    if phone and phone not in SHARED_PHONES:
+        data["telephone"] = phone
     hours = c.get("business_hours") or []
     if isinstance(hours, list) and hours:
-        data["openingHours"] = hours[:7]
+        specs = hours_to_schema(hours[:7])
+        if specs:
+            data["openingHoursSpecification"] = specs
     site_name = SITE_CFG.get("site_name", "京都歯科総研")
-    domain = SITE_CFG.get("domain", "shikasoken.com")
+    domain = DOMAIN
     data["publisher"] = {
         "@type": "Organization",
         "name": site_name,
@@ -173,7 +276,6 @@ def build_jsonld(c, slug):
     # 2026-07-10（Google評価施策E2）：パンくず＋データ由来のFAQをJSON-LDで宣言。
     # FAQリッチリザルトは一般サイト対象外だが、AI検索の回答抽出には効く
     # （調査：FAQ形式は関連クエリでの引用率が高い）。回答はDBの事実のみ・断定しない。
-    page_url = f"https://{domain}/articles/clinics/{slug}.html"
     breadcrumb = {
         "@context": "https://schema.org", "@type": "BreadcrumbList",
         "itemListElement": [
@@ -286,12 +388,15 @@ def area_context_html(c):
         rows.append(f"<li><strong>夜間診療：案内あり。</strong>{w}で夜間対応を案内しているのは{night_rate:.0f}%と貴重な存在です</li>")
     else:
         rows.append(f"<li>夜間診療：案内は確認できませんでした。{w}では{night_rate:.0f}%の医院が夜間対応を案内しています</li>")
+    method_ref = ('集計の方法は<a href="../research/index.html">データ研究ページ</a>をご覧ください。'
+                  if HAS_RESEARCH else
+                  '集計・編集の方針は<a href="../../policy.html#editorial">運営ポリシー</a>をご覧ください。')
     return (f'<p class="rr-lead">{w}には当サイトの分析対象の歯科医院が{st["n"]}院あります。'
             f'この医院を{w}全体のデータの中に置くと、次のことが分かります。</p>'
             f'<ul class="rr-list good">{"".join(rows)}</ul>'
             f'<p class="rr-note">割合は当サイトが公式サイト・口コミから機械的に解析できた範囲の値です'
             f'（{w}の設備解析対象 {st["eq_n"]}院）。「未確認」は「無い」という意味ではありません。'
-            f'集計の方法は<a href="../research/index.html">データ研究ページ</a>をご覧ください。データは毎月更新しています。</p>')
+            f'{method_ref}データは毎月更新しています。</p>')
 
 def evidence_panel_html(c):
     """AI Analysis の「＋根拠」パネル。判断の元になった実データを開示する（2026-07-11新設）。
@@ -468,7 +573,11 @@ def build_page(c, slug=""):
         links += f'<a class="rr-btn" href="{esc(maps)}" target="_blank" rel="noopener">Googleマップ</a>'
 
     # ── 各セクションの中身を組み立て（空はNone扱いで非表示・自動連番） ──
+    # 薄いページ（実データが閾値未満）では「公開情報が限定的…」等の定型空文を
+    # 本番URLに出さない（scaled contentの署名になるため。2026-07-13）
     ai = c.get("ai_summary", "")
+    if is_thin(c) and not has_substantive_ai(c):
+        ai = ""
     sec_summary = (f'<div class="rr-ai"><span class="rr-ai-label">AI Analysis</span>'
                    f'<p>{esc(ai)}</p>{evidence_panel_html(c)}</div>') if ai else ""
 
@@ -594,18 +703,39 @@ def build_page(c, slug=""):
     ward_paren = f"（{ward_txt}）"
     ward_only = ward_txt.replace("京都市", "")
     area_slug = WARD_SLUGS.get(ward_only)
+    # 区別LPが実在するサイトでのみリンクを出す（エリアページ未作成の都市で
+    # 404リンクを量産しない。2026-07-13・神戸で実在バグ確認）
+    if area_slug and not os.path.exists(os.path.join(ROOT, "articles", "area", f"{area_slug}.html")):
+        area_slug = None
     area_link = (f'<a class="rr-cta-btn ghost" href="../area/{area_slug}.html">{ward_only}の医院一覧</a>'
                  if area_slug else "")
+
+    # meta description：文の途中で切らない（語尾切れ対策 2026-07-13）。
+    # 90字以内で最後の「。」まで採用し、句点が無ければ「…」を付ける。
+    desc_ai = (ai or "").strip()
+    if len(desc_ai) > 90:
+        cut = desc_ai[:90]
+        pos = cut.rfind("。")
+        desc_ai = cut[:pos + 1] if pos >= 20 else cut.rstrip("、,") + "…"
+    desc = f"{name}（{ward_txt}）の口コミ・評判をAIが分析。" + desc_ai
+
+    # 薄いページはnoindex,follow（インデックス対象から除外・リンクは辿らせる）
+    robots_meta = ('<meta name="robots" content="noindex,follow">\n'
+                   if is_thin(c) else "")
 
     return (TEMPLATE.replace("{name}", esc(name)).replace("{addr}", esc(addr))
             .replace("{catch}", catch_html).replace("{meta}", meta_html)
             .replace("{fact}", fact_html)
             .replace("{links}", links).replace("{body}", body)
             .replace("{jsonld}", build_jsonld(c, slug))
-            .replace("{ogurl}", f"https://{SITE_CFG.get('domain','shikasoken.com')}/articles/clinics/{quote(slug)}.html")
-            .replace("{desc}", esc(f"{name}（{ward_txt}）の口コミ・評判をAIが分析。" + (ai or "")[:90]))
+            .replace("{robots}", robots_meta)
+            .replace("{ogurl}", page_url_of(slug))
+            .replace("{desc}", esc(desc))
             .replace("{ward_paren}", esc(ward_paren))
             .replace("{area_link}", area_link)
+            .replace("{research_foot}",
+                     '・<a href="../research/index.html" style="color:inherit;text-decoration:underline;">データ研究ページ</a>'
+                     if HAS_RESEARCH else "")
             .replace("{CITY_SHORT}", CITY_SHORT).replace("{N_PUBLISHED:,}", f"{N_PUBLISHED:,}"))
 
 TEMPLATE = '''<!DOCTYPE html>
@@ -615,6 +745,7 @@ TEMPLATE = '''<!DOCTYPE html>
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
 <title>{name}の口コミ・評判・AI分析{ward_paren}｜京都歯科総研</title>
 <meta name="description" content="{desc}">
+{robots}<link rel="canonical" href="{ogurl}">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="京都歯科総研">
 <meta property="og:title" content="{name}の口コミ・評判・AI分析{ward_paren}｜京都歯科総研">
@@ -806,7 +937,7 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
   </section>
 </main>
 <footer class="rr-foot">
-  <div class="in">当レポートのAI分析（サマリー・各スコア等）は、Googleマップの口コミや各医院公式サイト等の公開情報をもとに京都歯科総研が独自に生成した参考情報です。根拠となる情報がない項目は表示していません。診断・治療方針の決定を目的としたものではなく、受診の判断は必ず歯科医師にご相談ください。掲載内容の訂正は<a href="../../teisei.html" style="color:inherit;text-decoration:underline;">こちら</a>、免責事項の詳細は<a href="../../policy.html" style="color:inherit;text-decoration:underline;">運営ポリシー</a>をご覧ください。<br>© 京都歯科総研 KYOTO DENTAL RESEARCH</div>
+  <div class="in">当レポートのAI分析（サマリー・各スコア等）は、Googleマップの口コミや各医院公式サイト等の公開情報をもとに京都歯科総研が独自に生成した参考情報です。根拠となる情報がない項目は表示していません。診断・治療方針の決定を目的としたものではなく、受診の判断は必ず歯科医師にご相談ください。掲載内容の訂正は<a href="../../teisei.html" style="color:inherit;text-decoration:underline;">こちら</a>、免責事項の詳細は<a href="../../policy.html" style="color:inherit;text-decoration:underline;">運営ポリシー</a>をご覧ください。運営者と分析手法（データ源・算出方法・限界）は<a href="../../about.html" style="color:inherit;text-decoration:underline;">運営者情報</a>{research_foot}で開示しています。<br>© 京都歯科総研 KYOTO DENTAL RESEARCH</div>
 </footer>
 <script>
 document.addEventListener("click",function(ev){
@@ -820,12 +951,28 @@ document.addEventListener("click",function(ev){
 </body>
 </html>'''
 
+def compute_shared_phones(clinics):
+    """掲載院の中で2院以上が同じ電話番号を使っているものを洗い出す
+    （フランチャイズ共通窓口・コールトラッキング番号）。schemaのtelephoneには入れない。"""
+    from collections import Counter
+    cnt = Counter()
+    for c in clinics:
+        if not c.get("name") or c.get("q_excluded"):
+            continue
+        p = (c.get("phone") or "").strip()
+        if p:
+            cnt[p] += 1
+    return {p for p, n in cnt.items() if n >= 2}
+
 def main():
     db = json.load(open(DB, encoding="utf-8"))
     clinics = list(db.values()) if isinstance(db, dict) else db
     compute_ward_stats(clinics)  # Area Context用の区別集計
+    SHARED_PHONES.clear()
+    SHARED_PHONES.update(compute_shared_phones(clinics))  # NAP：共有番号はschemaに入れない
     os.makedirs(OUT, exist_ok=True)
     n = 0
+    n_thin = 0
     valid = set()
     for c in clinics:
         name = c.get("name")
@@ -835,6 +982,8 @@ def main():
             continue
         slug = SLUG_MAP.get(c.get("place_id"), slugify(name))  # 衝突対策済みの一意なslugを使用
         valid.add(slug)
+        if is_thin(c):
+            n_thin += 1
         open(os.path.join(OUT, slug + ".html"), "w", encoding="utf-8").write(build_page(c, slug))
         n += 1
     # 現DBに対応しないオーファンページを削除
@@ -844,6 +993,7 @@ def main():
         if os.path.basename(f)[:-5] not in valid:
             os.remove(f); removed += 1
     print(f"✅ 医院AI Research Report 生成: {n}院 / オーファン削除: {removed}")
+    print(f"   うち薄いページ（noindex,follow付与・sitemap除外対象）: {n_thin}院 / 共有電話番号（schema除外）: {len(SHARED_PHONES)}種")
 
 if __name__ == "__main__":
     main()
