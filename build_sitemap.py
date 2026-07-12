@@ -44,7 +44,8 @@ def main():
     # ── 固定ページ ──
     entries.append(url_entry("", today, "1.0"))
     entries.append(url_entry("articles/shindan/", today, "0.9"))
-    entries.append(url_entry("articles/research/", today, "0.8"))  # 独自データ研究ページ（被リンク狙いの一次情報）
+    if (ROOT / "articles" / "research" / "index.html").exists():
+        entries.append(url_entry("articles/research/", today, "0.8"))  # 独自データ研究ページ（大阪のみ。build_data_report.py未展開の都市では実ファイルが無いため除外）
     entries.append(url_entry("articles/index.html", today, "0.8"))
     entries.append(url_entry("articles/features/index.html", today, "0.7"))
     entries.append(url_entry("network.html", priority="0.5"))
