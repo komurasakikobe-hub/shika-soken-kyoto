@@ -8,12 +8,14 @@
 /_thumbnail_usage.txt / 301
 /_validate_meo_fixes.py / 301
 /access_points.json / 301
+/articles/ARTICLE_MANUAL.md / 301
 /assign_thumbnails.py / 301
 /build_access_info.py / 301
 /build_clinics.py / 301
 /build_features.py / 301
 /build_index.py / 301
 /build_nearest_station.py / 301
+/build_redirects.py / 301
 /build_sitemap.py / 301
 /clinic_collector.py / 301
 /clinic_db.backup_access_20260711b.json / 301

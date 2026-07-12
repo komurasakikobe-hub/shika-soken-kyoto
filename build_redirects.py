@@ -29,8 +29,10 @@ PUBLIC_ROOT_FILES = {
     "clinic_db.json", "clinic_slugs.json",  # shindan.jsがブラウザからfetchする（遮断禁止）
     "_redirects", "_headers",
 }
-# 公開してよいディレクトリ（この下は全て公開）
+# 公開してよいディレクトリ（この下は原則公開。ただしBLOCKED_EXTSの内部ファイル種は遮断）
 PUBLIC_DIRS = {"articles", "assets"}
+# 公開ディレクトリ内でも遮断する内部ファイル種（例：articles/ARTICLE_MANUAL.md）
+BLOCKED_EXTS = (".md", ".py", ".sh", ".zip", ".log")
 
 
 def main() -> None:
@@ -46,7 +48,11 @@ def main() -> None:
     for f in files:
         top = f.split("/", 1)[0]
         if "/" in f:
-            if top in PUBLIC_DIRS or top in seen_dirs:
+            if top in PUBLIC_DIRS:
+                if f.lower().endswith(BLOCKED_EXTS):
+                    blocked_files.append(f)  # 公開ディレクトリ内の内部ファイル種は個別遮断
+                continue
+            if top in seen_dirs:
                 continue
             seen_dirs.add(top)
             blocked_dirs.append(top)
