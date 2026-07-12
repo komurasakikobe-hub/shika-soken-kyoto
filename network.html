@@ -205,19 +205,6 @@
   </div>
 </section>
 
-<div class="net-detail">
-  <div class="net-card" id="netCard">
-    <div class="t">
-      <p class="mono" id="cdEn">KYOTO</p>
-      <h2 id="cdName">京都歯科総研<span class="net-status live" id="cdStatus">公開中</span></h2>
-      <p id="cdDesc">京都市11区・673院の公開情報とAI分析を無料で公開しています。</p>
-    </div>
-    <a class="net-go" id="cdGo" href="index.html">サイトを見る</a>
-  </div>
-</div>
-
-<div class="net-list" id="netList" role="tablist" aria-label="都市を選択"></div>
-
 <p class="net-note">
   ※ 各都市の掲載データは、Googleマップの口コミ・各医院公式サイト等の公開情報をもとに独自に分析した参考情報です。順位・スコアは条件適合度であり、医院の絶対的な優劣を示すものではありません。掲載・修正のご依頼は<a href="teisei.html">こちら</a>。<br>
   地図データ：<a href="https://www.openstreetmap.org/copyright" target="_blank" rel="noopener">© OpenStreetMap contributors</a>（ODbL）・国土交通省「国土数値情報（行政区域データ）」を加工して作成。詳細は<a href="policy.html">運営ポリシー</a>をご覧ください。
@@ -323,31 +310,9 @@ const CITIES = [
   }).join("");
 })();
 
-/* チップ一覧 */
-(function(){
-  const list = document.getElementById("netList");
-  list.innerHTML = CITIES.map(c =>
-    `<button class="net-chip" data-key="${c.key}" role="tab">${c.city}<small>${c.live ? "公開中" : "準備中"}</small></button>`
-  ).join("");
-})();
-
-/* 選択の同期 */
+/* 地図エリアの選択ハイライト（カード・チップは廃止） */
 function select(key){
-  const c = CITIES.find(x => x.key === key);
-  if (!c) return;
   document.querySelectorAll(".region").forEach(el => el.classList.toggle("on", el.dataset.key === key));
-  document.querySelectorAll(".net-chip").forEach(el => el.classList.toggle("on", el.dataset.key === key));
-  document.getElementById("cdEn").textContent = c.en;
-  document.getElementById("cdName").innerHTML =
-    `${c.name}<span class="net-status ${c.live ? "live" : ""}">${c.live ? "公開中" : "準備中"}</span>`;
-  document.getElementById("cdDesc").textContent = c.desc;
-  const go = document.getElementById("cdGo");
-  if (c.live){
-    go.href = c.href; go.removeAttribute("aria-disabled"); go.textContent = "サイトを見る";
-  } else {
-    go.removeAttribute("href"); go.setAttribute("aria-disabled", "true"); go.textContent = "公開準備中";
-  }
-  if (window.odrTrack) window.odrTrack("network_select", { filter_value: c.city });
 }
 
 document.addEventListener("click", e => {
