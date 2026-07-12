@@ -1,0 +1,234 @@
+{
+ "index.html": {
+  "meta_names": [
+   "description",
+   "google-site-verification",
+   "og:description",
+   "og:site_name",
+   "og:title",
+   "og:type",
+   "og:url",
+   "twitter:card",
+   "viewport"
+  ],
+  "has_canonical": true,
+  "jsonld": [
+   {
+    "@type": "Organization",
+    "keys": [
+     "@context",
+     "@type",
+     "alternateName",
+     "description",
+     "email",
+     "name",
+     "url"
+    ]
+   },
+   {
+    "@type": "WebSite",
+    "keys": [
+     "@context",
+     "@type",
+     "name",
+     "publisher",
+     "url"
+    ]
+   }
+  ],
+  "headings": [
+   "h1",
+   "h2",
+   "h2",
+   "h2",
+   "h2"
+  ]
+ },
+ "shikumi.html": {
+  "meta_names": [
+   "viewport"
+  ],
+  "has_canonical": true,
+  "jsonld": [],
+  "headings": [
+   "h1",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2"
+  ]
+ },
+ "policy.html": {
+  "meta_names": [
+   "description",
+   "robots",
+   "viewport"
+  ],
+  "has_canonical": true,
+  "jsonld": [],
+  "headings": [
+   "h1",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2"
+  ]
+ },
+ "articles/features/index.html": {
+  "meta_names": [
+   "description",
+   "viewport"
+  ],
+  "has_canonical": true,
+  "jsonld": [],
+  "headings": [
+   "h1",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2"
+  ]
+ },
+ "articles/shindan/index.html": {
+  "meta_names": [
+   "description",
+   "og:description",
+   "og:site_name",
+   "og:title",
+   "og:type",
+   "og:url",
+   "twitter:card",
+   "viewport"
+  ],
+  "has_canonical": true,
+  "jsonld": [],
+  "headings": [
+   "h1"
+  ]
+ },
+ "articles/clinics/HIKARI_Dental_Clinic.html": {
+  "meta_names": [
+   "description",
+   "og:description",
+   "og:site_name",
+   "og:title",
+   "og:type",
+   "og:url",
+   "twitter:card",
+   "viewport"
+  ],
+  "has_canonical": true,
+  "jsonld": [
+   {
+    "@type": "BreadcrumbList",
+    "keys": [
+     "@context",
+     "@type",
+     "itemListElement"
+    ]
+   },
+   {
+    "@type": "Dentist",
+    "keys": [
+     "@context",
+     "@type",
+     "address",
+     "geo",
+     "name",
+     "openingHoursSpecification",
+     "publisher",
+     "telephone",
+     "url"
+    ]
+   },
+   {
+    "@type": "FAQPage",
+    "keys": [
+     "@context",
+     "@type",
+     "mainEntity"
+    ]
+   }
+  ],
+  "headings": [
+   "h1",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2",
+   "h2"
+  ]
+ },
+ "articles/clinics/いまむら歯科医院.html": {
+  "meta_names": [
+   "description",
+   "og:description",
+   "og:site_name",
+   "og:title",
+   "og:type",
+   "og:url",
+   "robots",
+   "twitter:card",
+   "viewport"
+  ],
+  "has_canonical": true,
+  "jsonld": [
+   {
+    "@type": "BreadcrumbList",
+    "keys": [
+     "@context",
+     "@type",
+     "itemListElement"
+    ]
+   },
+   {
+    "@type": "Dentist",
+    "keys": [
+     "@context",
+     "@type",
+     "address",
+     "geo",
+     "name",
+     "openingHoursSpecification",
+     "publisher",
+     "telephone",
+     "url"
+    ]
+   },
+   {
+    "@type": "FAQPage",
+    "keys": [
+     "@context",
+     "@type",
+     "mainEntity"
+    ]
+   }
+  ],
+  "headings": [
+   "h1",
+   "h2",
+   "h2"
+  ]
+ }
+}
