@@ -15,8 +15,8 @@
 <link rel="stylesheet" href="../../assets/odr-ds.css">
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "治療費をサイトで公開している歯科医院は11%だった", "description": "公式サイトを解析できた456院のうち、自由診療の料金を具体的に記載していたのは49院（11%）。料金不安との付き合い方を一次データから考えます。", "datePublished": "2026-07-13", "dateModified": "2026-07-13", "author": {"@type": "Organization", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/"}, "publisher": {"@type": "Organization", "name": "京都歯科総研"}, "mainEntityOfPage": "https://kyoto.shikasoken.com/articles/research/price-disclosure.html", "isAccessibleForFree": true}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "京都市の歯科医院データ分析（治療費をサイトで公開している歯科医院は11%だった）", "description": "公式サイトを解析できた456院のうち、自由診療の料金を具体的に記載していたのは49院（11%）。料金不安との付き合い方を一次データから考えます。", "creator": {"@type": "Organization", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/"}, "dateModified": "2026-07-13", "isAccessibleForFree": true, "license": "https://creativecommons.org/licenses/by/4.0/"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "治療費をサイトで公開している歯科医院は11%だった", "description": "公式サイトを解析できた456院のうち、自由診療の料金を具体的に記載していたのは49院（11%）。料金不安との付き合い方を一次データから考えます。", "datePublished": "2026-07-13", "dateModified": "2026-07-14", "author": {"@type": "Organization", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/"}, "publisher": {"@type": "Organization", "name": "京都歯科総研"}, "mainEntityOfPage": "https://kyoto.shikasoken.com/articles/research/price-disclosure.html", "isAccessibleForFree": true}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "京都市の歯科医院データ分析（治療費をサイトで公開している歯科医院は11%だった）", "description": "公式サイトを解析できた456院のうち、自由診療の料金を具体的に記載していたのは49院（11%）。料金不安との付き合い方を一次データから考えます。", "creator": {"@type": "Organization", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/"}, "dateModified": "2026-07-14", "isAccessibleForFree": true, "license": "https://creativecommons.org/licenses/by/4.0/"}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "料金を公開していない医院は避けるべきですか？", "acceptedAnswer": {"@type": "Answer", "text": "いいえ。症状によって金額が変わるため一律表示を避けている医院も多くあります。受診前に目安を質問し、説明の姿勢を見ることをおすすめします。"}}, {"@type": "Question", "name": "保険診療の料金も医院によって違いますか？", "acceptedAnswer": {"@type": "Answer", "text": "保険診療は全国共通の点数制度で、同じ処置なら自己負担は基本的にどの医院でも同水準です。医院によって大きく変わるのは自由診療（インプラント・矯正・セラミック等）です。"}}, {"@type": "Question", "name": "「料金の記載を確認」はどう判定していますか？", "acceptedAnswer": {"@type": "Answer", "text": "各医院の公式サイトをAIが解析し、具体的な金額・料金表への言及を確認できた場合に数えています。サイトの構成によっては読み取れない場合があり、実際より少なめに出る可能性があります。"}}]}</script>
 <style>
 .rp-hero{background:linear-gradient(168deg,var(--odr-pine) 0%,#173a31 60%,#122d26 100%);color:#fff;
@@ -43,6 +43,25 @@
 .rp-bar-v{font-family:var(--odr-mono);font-weight:700;color:var(--odr-pine);font-size:.95rem;white-space:nowrap;}
 .rp-bar-v small{display:block;font-weight:400;color:var(--odr-ink2);font-size:.68rem;}
 @media(max-width:560px){.rp-bar{grid-template-columns:92px 1fr auto;gap:10px;}.rp-bar-l{font-size:.8rem;}}
+.rp-table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.92rem;}
+.rp-table th{text-align:left;font-size:.72rem;letter-spacing:.03em;color:var(--odr-ink2);border-bottom:1px solid var(--odr-line);padding:9px 8px;font-weight:600;}
+.rp-table td{padding:11px 8px;border-bottom:1px solid var(--odr-line);}
+.rp-table .rp-num{font-family:var(--odr-mono);font-weight:700;color:var(--odr-pine);}
+.rp-table .rp-dim{color:var(--odr-ink2);}
+@media(max-width:560px){.rp-table{font-size:.8rem;}.rp-table th,.rp-table td{padding:8px 5px;}}
+.rp-note-inline{font-size:.82rem;color:var(--odr-ink2);margin:6px 0 4px;line-height:1.8;}
+.rp-check{list-style:none;margin:16px 0;padding:20px 22px;background:#f2f7f4;border:1px solid #cfe0d7;border-radius:var(--r-sm);}
+.rp-check li{position:relative;padding:8px 0 8px 34px;font-size:.95rem;line-height:1.8;border-bottom:1px solid rgba(31,75,63,.08);}
+.rp-check li:last-child{border-bottom:none;}
+.rp-check li::before{content:"";position:absolute;left:4px;top:12px;width:16px;height:16px;border:2px solid var(--odr-pine);border-radius:4px;}
+.rp-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;}
+.rp-compare-col{border:1px solid var(--odr-line);border-radius:var(--r-sm);padding:16px 18px;font-size:.95rem;line-height:1.9;}
+.rp-compare .rp-tag{display:block;font-family:var(--odr-mono);font-size:.62rem;letter-spacing:.1em;margin-bottom:8px;font-weight:600;}
+.rp-compare .rp-x{background:#fbf6f4;}
+.rp-compare .rp-x .rp-tag{color:var(--odr-ink2);}
+.rp-compare .rp-o{background:#f2f7f4;border-color:#cfe0d7;}
+.rp-compare .rp-o .rp-tag{color:var(--odr-pine);}
+@media(max-width:560px){.rp-compare{grid-template-columns:1fr;}}
 .rp-method{background:#f6f8f7;border-radius:var(--r-card);padding:clamp(24px,3.4vw,40px);margin:clamp(32px,4vw,52px) auto;max-width:760px;}
 .rp-method h2{font-size:1.15rem;color:var(--odr-pine);margin:0 0 6px;}
 .rp-method .rp-note{font-family:var(--odr-mono);font-size:var(--fs-mono);letter-spacing:.1em;color:var(--odr-ink2);margin:0 0 18px;}
@@ -146,7 +165,7 @@
   <details class="rp-faq"><summary>料金を公開していない医院は避けるべきですか？</summary><p>いいえ。症状によって金額が変わるため一律表示を避けている医院も多くあります。受診前に目安を質問し、説明の姿勢を見ることをおすすめします。</p></details><details class="rp-faq"><summary>保険診療の料金も医院によって違いますか？</summary><p>保険診療は全国共通の点数制度で、同じ処置なら自己負担は基本的にどの医院でも同水準です。医院によって大きく変わるのは自由診療（インプラント・矯正・セラミック等）です。</p></details><details class="rp-faq"><summary>「料金の記載を確認」はどう判定していますか？</summary><p>各医院の公式サイトをAIが解析し、具体的な金額・料金表への言及を確認できた場合に数えています。サイトの構成によっては読み取れない場合があり、実際より少なめに出る可能性があります。</p></details>
 </section>
 
-<p class="rp-updated">最終更新：2026年07月（集計日：2026-07-13／データは毎月更新しています）</p>
+<p class="rp-updated">最終更新：2026年07月（集計日：2026-07-14／データは毎月更新しています）</p>
 
 <footer class="rp-foot">
   当ページの数字は、公開情報にもとづき当サイトが独自に集計・分析した参考情報です。医療的な診断ではありません。<br>

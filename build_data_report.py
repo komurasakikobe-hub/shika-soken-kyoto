@@ -188,7 +188,8 @@ def build(series_meta=None):
     if series_meta:
         items = "".join(
             f'<a class="rp-series-item" href="{esc(m["slug"])}.html">'
-            f'<span class="rp-series-t">{esc(m["title"])}</span>'
+            + ('<span class="rp-series-badge">開業医向け</span>' if m.get("audience") == "clinic" else "")
+            + f'<span class="rp-series-t">{esc(m["title"])}</span>'
             f'<span class="rp-series-h">{esc(m["hook"])}</span></a>'
             for m in series_meta)
         series_html = f"""
@@ -262,14 +263,14 @@ def build(series_meta=None):
 {schema_html}
 <style>
 .rp-hero{{background:linear-gradient(168deg,var(--odr-pine) 0%,#173a31 60%,#122d26 100%);color:#fff;
-  padding:calc(var(--sp-sec)*.8) var(--sp-page) var(--sp-sec);}}
-.rp-hero .in{{max-width:var(--wrap);margin:0 auto;}}
-.rp-eyebrow{{font-family:var(--odr-mono);font-size:var(--fs-mono);letter-spacing:.2em;color:var(--odr-terra);margin:0 0 14px;}}
-.rp-hero h1{{font-size:var(--fs-heading);font-weight:900;line-height:1.45;margin:0 0 16px;}}
-.rp-hero p.lead{{color:rgba(255,255,255,.82);max-width:660px;margin:0;font-size:var(--fs-body);line-height:2;}}
-.rp-metrics{{display:flex;flex-wrap:wrap;gap:28px;margin-top:28px;}}
-.rp-metric b{{display:block;font-family:var(--odr-mono);font-size:1.8rem;color:#fff;line-height:1.2;}}
-.rp-metric span{{font-size:.72rem;color:rgba(255,255,255,.6);letter-spacing:.08em;}}
+  padding:clamp(30px,5vw,56px) var(--sp-page) clamp(36px,5vw,60px);}}
+.rp-hero .in{{max-width:760px;margin:0 auto;}}
+.rp-eyebrow{{font-family:var(--odr-mono);font-size:var(--fs-mono);letter-spacing:.2em;color:var(--odr-terra);margin:0 0 12px;}}
+.rp-hero h1{{font-family:'Shippori Mincho',serif;font-size:clamp(1.4rem,3vw,1.9rem);font-weight:900;line-height:1.5;margin:0 0 14px;}}
+.rp-hero p.lead{{color:rgba(255,255,255,.82);max-width:100%;margin:0;font-size:.95rem;line-height:1.9;}}
+.rp-metrics{{display:flex;flex-wrap:wrap;gap:24px;margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14);}}
+.rp-metric b{{display:block;font-family:var(--odr-mono);font-size:1.4rem;color:#fff;line-height:1.2;}}
+.rp-metric span{{font-size:.68rem;color:rgba(255,255,255,.6);letter-spacing:.08em;}}
 .rp-body{{max-width:760px;margin:0 auto;padding:0 var(--sp-page);}}
 .rp-finding{{padding:clamp(30px,4vw,52px) 0;border-bottom:1px solid var(--odr-line);}}
 .rp-kicker{{font-family:var(--odr-mono);font-size:.8rem;font-weight:600;letter-spacing:.14em;color:var(--odr-terra);margin:0 0 10px;}}
@@ -309,6 +310,7 @@ def build(series_meta=None):
 .rp-series{{display:flex;flex-direction:column;gap:14px;margin-top:20px;}}
 .rp-series-item{{display:block;text-decoration:none;border:1px solid var(--odr-line);border-radius:var(--r-card);padding:18px 22px;transition:border-color .2s;}}
 .rp-series-item:hover{{border-color:var(--odr-terra);}}
+.rp-series-badge{{display:inline-block;font-family:var(--odr-mono);font-size:.6rem;font-weight:600;letter-spacing:.1em;color:var(--odr-terra);border:1px solid var(--odr-terra);border-radius:999px;padding:2px 9px;margin-bottom:9px;}}
 .rp-series-t{{display:block;font-weight:700;color:var(--odr-pine);font-size:1.02rem;line-height:1.7;}}
 .rp-series-h{{display:block;color:var(--odr-ink2);font-size:.85rem;margin-top:6px;line-height:1.8;}}
 </style>
@@ -811,7 +813,270 @@ def _art_equipment_gap():
         ])
 
 
-_SERIES_BUILDERS = [_art_worktime, _art_price, _art_waiting, _art_reviews, _art_equipment_gap]
+# ---- 開業医向け①：設備は「持っている」より「伝わっている」か --------------
+#     読者＝院長・歯科衛生士。患者向け記事とは別読者のため eyebrow/CTA を出し分ける。
+#     数字はすべてビルド時にDBから算出（捏造ゼロ・月次で自動更新）。
+def _art_equipment_visibility():
+    act = _act()
+    deep = [c for c in act if c.get("deep_fetched")]
+    if len(deep) < 300:
+        return None
+    n_all = len(act)
+    nd = len(deep)
+
+    def _blob(c):
+        parts = [c.get("equipment_evidence"), c.get("specialty_evidence"),
+                 c.get("catchphrase"), c.get("philosophy"), c.get("ai_summary")]
+        parts += (c.get("specialty_tags") or []) + (c.get("focus_treatments") or []) \
+            + (c.get("site_features") or [])
+        return " ".join(str(x) for x in parts if x)
+
+    B = {id(c): _blob(c) for c in deep}
+
+    def has(c, pat):
+        return bool(re.search(pat, B[id(c)], re.I))
+
+    # ── 精密治療の4設備の訴求率 ──
+    PREC = [(r"CT|コーンビーム", "歯科用CT"),
+            (r"マイクロスコープ|顕微鏡", "マイクロスコープ"),
+            (r"スキャナ|iTero|アイテロ", "口腔内スキャナー"),
+            (r"ラバーダム", "ラバーダム防湿")]
+    cnt = {lab: sum(1 for c in deep if has(c, pat)) for pat, lab in PREC}
+    ct, micro, scan, rubber = (cnt["歯科用CT"], cnt["マイクロスコープ"],
+                               cnt["口腔内スキャナー"], cnt["ラバーダム防湿"])
+    ct_p, micro_p, scan_p, rubber_p = (x / nd * 100 for x in (ct, micro, scan, rubber))
+    micro_ratio = round(100 / micro_p) if micro_p else 0
+
+    # ── 訴求「個数」の分布（0〜4種を何個訴求しているか）──
+    bundle = {k: 0 for k in range(5)}
+    for c in deep:
+        bundle[sum(1 for pat, _ in PREC if has(c, pat))] += 1
+    zero_p = bundle[0] / nd * 100
+    b1_p, b2_p = bundle[1] / nd * 100, bundle[2] / nd * 100
+    b3plus = bundle[3] + bundle[4]
+    b3_p = b3plus / nd * 100
+    ctmic = sum(1 for c in deep if has(c, PREC[0][0]) and has(c, PREC[1][0]))
+    ctmic_p = ctmic / nd * 100
+
+    # ── 訴求と「評価・口コミ数」の相関（相関であって因果ではない）──
+    def _corr(pat):
+        yes = [c for c in deep if has(c, pat)]
+        no = [c for c in deep if not has(c, pat)]
+        yr = [c["rating"] for c in yes if c.get("rating")]
+        nr = [c["rating"] for c in no if c.get("rating")]
+        yv = [c["total_reviews"] for c in yes if c.get("total_reviews")]
+        nv = [c["total_reviews"] for c in no if c.get("total_reviews")]
+        return (statistics.mean(yr), statistics.mean(nr),
+                statistics.median(yv), statistics.median(nv))
+    corr_rows = [(lab, _corr(pat)) for pat, lab in PREC[:3]]  # CT・マイクロ・スキャナー
+    corr_html = "".join(
+        f'<tr><td>{esc(lab)}</td>'
+        f'<td class="rp-num">{y[0]:.2f}</td><td class="rp-dim">{y[1]:.2f}</td>'
+        f'<td class="rp-num">{y[2]:.0f}件</td><td class="rp-dim">{y[3]:.0f}件</td></tr>'
+        for lab, y in corr_rows)
+
+    # ── 入口：問い合わせフォームと「サイトそのものが無い」──
+    form = [c for c in act if c.get("contact_form_url")]
+    form_p = len(form) / n_all * 100
+    fr = [c["rating"] for c in form if c.get("rating")]
+    nfr = [c["rating"] for c in act if not c.get("contact_form_url") and c.get("rating")]
+    fv = [c["total_reviews"] for c in form if c.get("total_reviews")]
+    nfv = [c["total_reviews"] for c in act if not c.get("contact_form_url") and c.get("total_reviews")]
+    nourl = [c for c in act if not c.get("url")]
+    nourl_p = len(nourl) / n_all * 100
+    nur = [c["rating"] for c in nourl if c.get("rating")]
+    wur = [c["rating"] for c in act if c.get("url") and c.get("rating")]
+
+    # ── 訴求の地理：区ごとの「精密機器いずれか訴求」率（束指標・区別集計は25院以上）──
+    def _ward(c):
+        m = re.search(r"(大阪市[^\s0-9０-９]{1,4}区)", c.get("address", ""))
+        return m.group(1) if m else None
+    wd = {}
+    for c in deep:
+        w = _ward(c)
+        if w:
+            wd.setdefault(w, []).append(c)
+    wrates = []
+    for w, cs in wd.items():
+        if len(cs) >= 25:
+            r = sum(1 for c in cs if any(has(c, pat) for pat, _ in PREC)) / len(cs) * 100
+            wrates.append((w.replace("大阪市", ""), r, len(cs)))
+    wrates.sort(key=lambda x: -x[1])
+    ward_ok = len(wrates) >= 8
+    if ward_ok:
+        w_hi, w_lo = wrates[0], wrates[-1]
+        w_top3 = "・".join(w for w, _, _ in wrates[:3])
+        w_bot3 = "・".join(w for w, _, _ in wrates[-3:])
+        w_gap = w_hi[1] - w_lo[1]
+
+    # ── 専門標榜の訴求ポジショニング（混雑領域と空白ニッチ）──
+    SPEC = [(r"インプラント", "インプラント"), (r"矯正|インビザ", "矯正"),
+            (r"小児|こども|キッズ", "小児歯科"), (r"ホワイトニング|審美", "審美・ホワイトニング"),
+            (r"訪問", "訪問診療")]
+    srate = [(lab, sum(1 for c in deep if has(c, pat)) / nd * 100) for pat, lab in SPEC]
+    visit_p = dict(srate)["訪問診療"]
+    crowded = "・".join(lab for lab, p in srate if p >= 30)
+
+    # ── 口コミ数の実像（中央値と平均の乖離。数の勝負にしない文脈のみ）──
+    trs = [c["total_reviews"] for c in act if c.get("total_reviews")]
+    tr_med, tr_mean = statistics.median(trs), statistics.mean(trs)
+
+    ward_section = ""
+    if ward_ok:
+        ward_section = f"""
+<section class="rp-finding">
+<p class="rp-kicker">FINDING 05 ／ 訴求の地理</p>
+<h2 class="rp-find-title">「訴求の激戦区」と「空白区」が、これだけ分かれている</h2>
+<div class="rp-find-body">
+<p>精密機器（CT・マイクロ・スキャナー・ラバーダムのいずれか）をサイトで訴求している医院の割合を区ごとに見ると、最も高い<strong>{esc(w_hi[0])}で{w_hi[1]:.0f}%</strong>、最も低い<strong>{esc(w_lo[0])}で{w_lo[1]:.0f}%</strong>。区別に集計した{len(wrates)}区で、<strong>{w_gap:.0f}ポイント</strong>もの開きがありました。</p>
+{_bars([(w, r, f"{n}院") for w, r, n in wrates])}
+<p class="rp-note-inline">※各区25院以上・サイト解析できた医院が母数。自院の区がどのあたりかを探す目安にしてください。</p>
+<p>訴求率が高いのは<strong>{esc(w_top3)}</strong>といった都心・ターミナル側。ここは"見せ方の競争"がすでに始まっている激戦区で、同じ設備を並べても埋もれやすい。一方、<strong>{esc(w_bot3)}</strong>のような区は訴求そのものが手薄です。</p>
+<p>これは開業医にとって、二通りに読めます。激戦区なら<strong>「便益の翻訳」や症例で一段深く差をつける</strong>必要があり、訴求の空白区なら<strong>丁寧に1つ書くだけで抜け出せる</strong>可能性がある——自院がどちらの環境にいるかで、打ち手は変わります。</p>
+</div>
+</section>"""
+
+    spec_bars = _bars([(lab, p, f"{p:.0f}%") for lab, p in srate])
+
+    body = f"""
+<p class="rp-lede">新しいユニットを入れた。研修も受けて、自信を持って使えるようになった。——けれどその価値は、初診の前に貴院を検討している患者には、まだ届いていないかもしれません。{CITY}の歯科医院のうち公式サイトを解析できた{nd:,}院を調べると、<strong>マイクロスコープをサイトで訴求している医院は{micro}院・{micro_p:.0f}%</strong>——およそ<strong>{micro_ratio}院に1院</strong>でした。多くの医院で足りていないのは、設備そのものよりも「伝え方」なのかもしれません。この記事は、その"伝え方"を{nd:,}院分のデータで解剖したものです。<strong>①どの設備がどれだけ見せられているか　②訴求は評価・口コミとどう関係するか　③自院の区はどんな競争環境か</strong>——この3つを軸に、"伝わっているか"を一つずつ確かめます。</p>
+
+<section class="rp-finding">
+<p class="rp-kicker">FINDING 01 ／ 「持っている」と「見せている」は別の話</p>
+<h2 class="rp-find-title">精密治療の設備を、サイトで見せている医院はこれだけ</h2>
+<div class="rp-find-body">
+{_bars([("歯科用CT", ct_p, f"{ct}／{nd:,}院"),
+        ("マイクロスコープ", micro_p, f"{micro}／{nd:,}院"),
+        ("口腔内スキャナー", scan_p, f"{scan}／{nd:,}院"),
+        ("ラバーダム防湿", rubber_p, f"{rubber}／{nd:,}院")])}
+<p>先に断っておきたいのは、これは<strong>「導入率」ではなく「訴求率」</strong>だということです。サイトに書いていない＝持っていない、ではありません。実際にはCTもマイクロも、この数字よりずっと多くの医院が保有しているはずです。それでも、患者が受診前に確かめられるのは"書かれていること"だけ——だからこの訴求率が、実際の検討には効いてきます。</p>
+<p>だからこそ、この低さは裏を返せばチャンスです。<strong>設備は横並びでも、"伝えている"かどうかで差がつく</strong>。臨床が忙しい医院ほどサイトの更新は後回しになりがちで、そこに埋もれている強みがあります。とくにラバーダム防湿のような、患者が価値を知らないまま素通りしてしまう項目ほど、便益を添えて書く余地があります。</p>
+</div>
+</section>
+
+<section class="rp-finding">
+<p class="rp-kicker">FINDING 02 ／ 訴求の"厚み"</p>
+<h2 class="rp-find-title">精密機器を1つも訴求していない医院が、7割近い</h2>
+<div class="rp-find-body">
+{_bars([("1つも訴求していない", zero_p, f"{bundle[0]}／{nd:,}院"),
+        ("1種類だけ", b1_p, f"{bundle[1]}院"),
+        ("2種類", b2_p, f"{bundle[2]}院"),
+        ("3種類以上", b3_p, f"{b3plus}院")])}
+<p>4設備のうちいくつをサイトで訴求しているかを数えると、<strong>1つも書いていない医院が{zero_p:.0f}%</strong>。3種類以上を訴求している医院は<strong>{b3_p:.1f}%</strong>にとどまり、4種すべてを訴求していたのは全体で<strong>わずか{bundle[4]}院</strong>でした。CTとマイクロの両方を訴求している医院ですら{ctmic_p:.0f}%（{ctmic}院）です。</p>
+<p>つまり{CITY}では、精密治療の"フル装備感"を打ち出せている医院はごく少数。3種類以上を訴求している医院は全体の{b3_p:.1f}%にとどまるため、<strong>複数の設備を便益つきで丁寧に見せるだけでも、情報発信の厚みでは希少な位置に入れる</strong>可能性があります。ここは投資ではなく編集の勝負です。</p>
+</div>
+</section>
+
+<section class="rp-finding">
+<p class="rp-kicker">FINDING 03 ／ 訴求とアウトカムの関係</p>
+<h2 class="rp-find-title">設備を訴求している医院は、評価も口コミ数も高い傾向</h2>
+<div class="rp-find-body">
+<table class="rp-table">
+<thead><tr><th>設備（サイトで訴求）</th><th>訴求院の平均評価</th><th>非訴求院</th><th>訴求院の口コミ中央値</th><th>非訴求院</th></tr></thead>
+<tbody>{corr_html}</tbody>
+</table>
+<p>3設備とも一貫して、<strong>訴求している医院のほうが平均評価が高く、口コミ数の中央値はおよそ2倍</strong>でした。数字だけ見ると「設備を書けば評価が上がる」と読みたくなりますが、<strong>これは相関であって因果ではありません</strong>。</p>
+<p>むしろ自然な解釈は逆で、<strong>もともと説明や情報発信に力を入れている医院が、結果として設備も訴求し、評価も口コミも得ている</strong>——という共通の背景があると考えるほうが辻褄が合います。加えて、口コミが多く集まる人気院ほどサイトも作り込む余力があり、"訴求が多いから人気"なのか"人気だから訴求も厚い"のかは、このデータだけでは切り分けられません。</p>
+<p>それでも実務的な含意は残ります。<strong>情報を丁寧に出している医院群と、自院がどれだけ差があるか</strong>——この表は、その立ち位置を測る鏡になります。</p>
+</div>
+</section>
+
+<section class="rp-finding">
+<p class="rp-kicker">FINDING 04 ／ 明日、サイトで直せること</p>
+<h2 class="rp-find-title">機器名の羅列は、患者にとって"外国語"のまま</h2>
+<div class="rp-find-body">
+<p>「マイクロスコープ完備」——この6文字から、患者が自分の便益を逆算するのは困難です。機器の名前は知っていても、<strong>それが自分の何を守ってくれるのかが分からない</strong>。だから訴求率が高い医院でも、伝わり方は弱いままになりがちです。</p>
+<p>直し方はシンプルで、<strong>機器名のとなりに「どんな時に役立つか」を1行足す</strong>だけです。</p>
+<div class="rp-compare">
+<div class="rp-compare-col rp-x"><span class="rp-tag">よくある書き方</span>マイクロスコープ完備</div>
+<div class="rp-compare-col rp-o"><span class="rp-tag">便益を1行添える</span>肉眼では見えにくい根の中を拡大して確認します。「治したのにまた痛む」を減らしたい方へ。</div>
+</div>
+<p>根拠は単純です。患者は機器のスペックではなく、<strong>「自分の困りごとが解決するか」</strong>で医院を選びます。同じ設備でも、便益に翻訳された1行があるかどうかで、検討リストに残るかどうかが変わります。設備投資に比べれば、この修正のコストはほぼゼロです。</p>
+</div>
+</section>
+{ward_section}
+<section class="rp-finding">
+<p class="rp-kicker">FINDING 06 ／ その前に、入口はあるか</p>
+<h2 class="rp-find-title">設備を見せる前に——入口が無い医院が、まだこれだけある</h2>
+<div class="rp-find-body">
+{_bars([("問い合わせフォームあり", form_p, f"{len(form)}／{n_all:,}院"),
+        ("公式サイトそのものが無い", nourl_p, f"{len(nourl)}／{n_all:,}院")])}
+<p>設備をどれだけ丁寧に見せても、<strong>受け止める入口が無ければ問い合わせは電話一本に絞られます</strong>。掲載院のうちWeb上の問い合わせフォームを確認できたのは{form_p:.0f}%。さらに<strong>公式サイトそのものが見当たらない医院が{nourl_p:.0f}%</strong>ありました。</p>
+<p>ここでも同じ傾向が出ます。フォームがある医院の平均評価は<strong>{statistics.mean(fr):.2f}</strong>・口コミ中央値<strong>{statistics.median(fv):.0f}件</strong>に対し、無い医院は<strong>{statistics.mean(nfr):.2f}・{statistics.median(nfv):.0f}件</strong>。サイトが無い医院の平均評価は{statistics.mean(nur):.2f}（サイトあり{statistics.mean(wur):.2f}）でした。もちろんこれも因果ではありませんが、<strong>デジタルの入口を整えている医院ほど、患者との接点も評価も積み上がっている</strong>という関係は一貫しています。</p>
+<p>電話が苦手な層、日中に電話しづらい働き手ほど、フォームの有無が最初の分かれ道になります。予約システムまで入れなくても、<strong>簡単な問い合わせフォームを一つ置くだけ</strong>で、取りこぼしていた接点が拾えます。</p>
+</div>
+</section>
+
+<section class="rp-finding">
+<p class="rp-kicker">FINDING 07 ／ 空いているニッチ</p>
+<h2 class="rp-find-title">みんなが同じ棚に並ぶなか、訪問診療の棚は空いている</h2>
+<div class="rp-find-body">
+{spec_bars}
+<p>標榜内容の訴求を見ると、<strong>{esc(crowded)}</strong>はいずれも約4割の医院が打ち出しており、"同じ棚"に多くの医院が並んでいます。差別化の難易度は高い領域です。</p>
+<p>対して<strong>訪問診療の訴求は{visit_p:.0f}%</strong>と手薄。高齢化で需要が確実に伸びる領域にもかかわらず、サイトで明確に打ち出している医院は多くありません。混雑した棚で消耗するより、<strong>自院の体制で無理なく担える"空いている棚"を1つ選んで深く訴求する</strong>——ポジショニングの観点では、そのほうが効く場面があります。</p>
+</div>
+</section>
+
+<section class="rp-finding">
+<p class="rp-kicker">NOTE ／ 数の勝負にしないために</p>
+<div class="rp-find-body">
+<p>ひとつ、添えておきます。{CITY}の掲載院の口コミ件数は<strong>中央値{tr_med:.0f}件</strong>（平均{tr_mean:.0f}件）でした。平均が中央値を大きく上回るのは、一部の大型院が数字を押し上げているからです。<strong>自院の口コミが2桁でも、それはこの街では「普通」</strong>です。数を追って消耗するより、いま来ている患者に設備や治療の価値がきちんと伝わっているか——ここまで見てきた"伝え方"の一手のほうが、費用対効果は高いはずです。</p>
+</div>
+</section>
+
+<section class="rp-finding">
+<p class="rp-kicker">SELF-CHECK ／ 自院サイトで確かめる</p>
+<h2 class="rp-find-title">自院のページを開いて、5つを見てみてください</h2>
+<div class="rp-find-body">
+<p>ここまでのデータを、自院に当てはめてみます。公式サイトを開いて、当てはまるものを数えてみてください。</p>
+<ul class="rp-check">
+<li>設備名のとなりに「どんな治療のときに役立つか」が患者向けに書かれている</li>
+<li>実際の治療の流れや症例へのリンクがある</li>
+<li>対象となる症状・治療（誰のための設備か）が書かれている</li>
+<li>料金の目安や「何で費用が変わるか」に触れている</li>
+<li>電話以外の相談・予約の入口（フォーム等）がある</li>
+</ul>
+<p>当てはまるものが<strong>0〜1個なら、設備名だけで便益が伝わっていない</strong>可能性があります。<strong>2〜3個なら基本はあるが説明に伸びしろ</strong>、<strong>4〜5個なら比較的伝わりやすい構成</strong>です。この記事の数字は{CITY}{nd:,}院の平均像なので、自院の位置を重ねる目安にしてください。</p>
+</div>
+</section>"""
+
+    faq = [
+        ("設備を持っているのに「訴求率」が低いのはなぜですか？",
+         "本記事の数字は所有率ではなく、公式サイト上で設備を確認できた割合（訴求率）だからです。臨床が忙しい医院ほどサイト更新が後回しになりやすく、持っていても書かれていないケースが多いと考えられます。"),
+        ("設備をサイトに書けば、評価や集患は上がりますか？",
+         "上がると断定はできません（相関と因果は別です）。訴求している医院ほど評価・口コミが高い傾向はありますが、もともと情報発信に力を入れる医院がどちらも得ている、あるいは人気院ほどサイトを作り込める、という逆向きの関係も考えられます。効果を保証するものではありません。"),
+        ("なぜ訴求している医院ほど口コミ数が多いのですか？",
+         "断定はできません。人気で来院が多い医院はサイトを作り込む余力があり、結果として訴求も厚くなる、という『人気が先』の可能性も十分にあります。本記事は訴求と口コミ数の相関を示すもので、どちらが原因かを特定するものではありません。"),
+        ("区ごとの『訴求の激戦区』はどう見ればよいですか？",
+         "精密機器のいずれかをサイトで訴求している医院の割合を区別に集計したものです（各区25院以上を対象）。割合が高い区ほど見せ方の競争が進んでおり、低い区は訴求そのものが手薄という読み方ができます。設備の実際の保有状況を示すものではありません。"),
+        ("この『訴求率』はどうやって数えていますか？",
+         "各医院の公式サイトをAIが解析した公開情報のテキストから、設備名・標榜内容の記載を機械的に判定して割合を出しています。サイトの構成によっては読み取れないことがあり、実際の保有率はこの数字より高い可能性があります。"),
+    ]
+    return dict(
+        slug="equipment-visibility",
+        audience="clinic",
+        eyebrow=f"FOR CLINICS ／ 開業医のためのデータ ／ {date.today().year}",
+        title=f"マイクロスコープを“サイトで見せている”歯科は、{CITY}で約{micro_ratio}院に1院だった",
+        hook=(f"設備の差より、“伝え方”の差かもしれません。精密機器を1つも訴求していない医院が{zero_p:.0f}%、"
+              f"訴求院ほど評価も口コミも高い傾向——{nd:,}院のデータで解剖しました。"),
+        desc=(f"{CITY}で公式サイトを解析できた{nd:,}院を集計。精密機器を1つも訴求しない医院が{zero_p:.0f}%、"
+              f"マイクロ訴求率{micro_p:.0f}%。訴求と評価・口コミの相関、区ごとの訴求格差、空いているニッチまで、"
+              "所有率ではなく“訴求率”から見た開業医のためのデータ研究。"),
+        cta=("../../shikumi.html",
+             "自院の“見え方”を、同じ区のデータと照らして見直す →",
+             "設備の便益説明・症例への導線・料金や院長情報の充実度が、同じ区の医院と比べてどうか。大阪歯科総研は公開情報をもとに分析しています。医院・開業医の方へのご案内はこちら。"),
+        body=body, faq=faq,
+        method=[
+            ("データの出どころ", f"各医院の公式サイトの公開情報をAIが解析した結果です。{CITY}の掲載院{n_all:,}院のうち、サイトを解析できた{nd:,}院を訴求率の母数としています（フォーム・サイト有無の集計は掲載院{n_all:,}院全体が母数）。"),
+            ("数字の作り方", "サイト解析テキストに設備名・標榜内容の記載が含まれる医院を機械的に数え、割合を算出しました。所有の有無ではなく、サイト上で確認できたか（訴求できているか）を測っています。区別集計は各区25院以上を対象としました。"),
+            ("相関の扱い", "評価・口コミ数との関係はすべて相関であり、因果ではありません。訴求が評価を上げるとは限らず、情報発信に熱心な医院や人気院がどちらも得ている、という逆・共通要因の可能性を排除できません。"),
+            ("集計の前提", "平均評価はGoogle評価を確認できた医院のみを対象にしています。口コミ数の中央値は口コミが1件以上ある医院で算出し、0件・未取得の医院は含めていません。本分析では統計的な有意差検定は行っておらず、記述統計上の傾向として示しています。"),
+            ("この分析の限界", "サイトに記載のない設備は「未確認」であり「無い」ではありません。実際の保有率はこの数字より高いはずです。設備・標榜の有無は医院の優劣を示すものではありません。"),
+        ])
+
+
+_SERIES_BUILDERS = [_art_worktime, _art_price, _art_waiting, _art_reviews, _art_equipment_gap,
+                    _art_equipment_visibility]
 
 # ── 記事末尾の回遊導線（2026-07-13 検索流入改善・内部リンク施策） ─────────
 # 「あわせて読む」：患者の疑問の流れで意味的につながる2本ずつ相互リンク
@@ -894,6 +1159,25 @@ _ARTICLE_CSS = """
 .rp-bar-v{font-family:var(--odr-mono);font-weight:700;color:var(--odr-pine);font-size:.95rem;white-space:nowrap;}
 .rp-bar-v small{display:block;font-weight:400;color:var(--odr-ink2);font-size:.68rem;}
 @media(max-width:560px){.rp-bar{grid-template-columns:92px 1fr auto;gap:10px;}.rp-bar-l{font-size:.8rem;}}
+.rp-table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.92rem;}
+.rp-table th{text-align:left;font-size:.72rem;letter-spacing:.03em;color:var(--odr-ink2);border-bottom:1px solid var(--odr-line);padding:9px 8px;font-weight:600;}
+.rp-table td{padding:11px 8px;border-bottom:1px solid var(--odr-line);}
+.rp-table .rp-num{font-family:var(--odr-mono);font-weight:700;color:var(--odr-pine);}
+.rp-table .rp-dim{color:var(--odr-ink2);}
+@media(max-width:560px){.rp-table{font-size:.8rem;}.rp-table th,.rp-table td{padding:8px 5px;}}
+.rp-note-inline{font-size:.82rem;color:var(--odr-ink2);margin:6px 0 4px;line-height:1.8;}
+.rp-check{list-style:none;margin:16px 0;padding:20px 22px;background:#f2f7f4;border:1px solid #cfe0d7;border-radius:var(--r-sm);}
+.rp-check li{position:relative;padding:8px 0 8px 34px;font-size:.95rem;line-height:1.8;border-bottom:1px solid rgba(31,75,63,.08);}
+.rp-check li:last-child{border-bottom:none;}
+.rp-check li::before{content:"";position:absolute;left:4px;top:12px;width:16px;height:16px;border:2px solid var(--odr-pine);border-radius:4px;}
+.rp-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;}
+.rp-compare-col{border:1px solid var(--odr-line);border-radius:var(--r-sm);padding:16px 18px;font-size:.95rem;line-height:1.9;}
+.rp-compare .rp-tag{display:block;font-family:var(--odr-mono);font-size:.62rem;letter-spacing:.1em;margin-bottom:8px;font-weight:600;}
+.rp-compare .rp-x{background:#fbf6f4;}
+.rp-compare .rp-x .rp-tag{color:var(--odr-ink2);}
+.rp-compare .rp-o{background:#f2f7f4;border-color:#cfe0d7;}
+.rp-compare .rp-o .rp-tag{color:var(--odr-pine);}
+@media(max-width:560px){.rp-compare{grid-template-columns:1fr;}}
 .rp-method{background:#f6f8f7;border-radius:var(--r-card);padding:clamp(24px,3.4vw,40px);margin:clamp(32px,4vw,52px) auto;max-width:760px;}
 .rp-method h2{font-size:1.15rem;color:var(--odr-pine);margin:0 0 6px;}
 .rp-method .rp-note{font-family:var(--odr-mono);font-size:var(--fs-mono);letter-spacing:.1em;color:var(--odr-ink2);margin:0 0 18px;}
@@ -1010,7 +1294,7 @@ def build_article(a, titles=None):
 
 <section class="rp-hero">
   <div class="in">
-    <p class="rp-eyebrow">DATA RESEARCH SERIES ／ {date.today().year}</p>
+    <p class="rp-eyebrow">{esc(a.get('eyebrow') or f'DATA RESEARCH SERIES ／ {date.today().year}')}</p>
     <h1>{esc(a['title'])}</h1>
   </div>
 </section>
@@ -1023,7 +1307,7 @@ def build_article(a, titles=None):
 </main>
 
 <div class="rp-cta-box">
-  <a href="../shindan/index.html">条件に合う医院を探す →<small>診療時間・設備・口コミ傾向から、あなたの条件で絞り込めます（無料・登録不要）</small></a>
+  {(lambda c: f'<a href="{esc(c[0])}">{esc(c[1])}<small>{esc(c[2])}</small></a>' if c else '<a href="../shindan/index.html">条件に合う医院を探す →<small>診療時間・設備・口コミ傾向から、あなたの条件で絞り込めます（無料・登録不要）</small></a>')(a.get('cta'))}
 </div>
 
 <section class="rp-method">
@@ -1079,7 +1363,7 @@ def build_series():
     meta = []
     for a in arts:
         p = build_article(a, titles)
-        meta.append(dict(slug=a["slug"], title=a["title"], hook=a["hook"]))
+        meta.append(dict(slug=a["slug"], title=a["title"], hook=a["hook"], audience=a.get("audience")))
         print(f"✅ 研究記事: {p.name} — {a['title']}")
     return meta
 

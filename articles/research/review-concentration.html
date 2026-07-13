@@ -15,8 +15,8 @@
 <link rel="stylesheet" href="../../assets/odr-ds.css">
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "口コミの59%は、1割の医院に集まっている", "description": "歯科医院673院・口コミ14,919件を集計。上位10%の医院が全体の59%を保有し、半数の医院は8件以下。件数に頼らない口コミの読み方を一次データから提案します。", "datePublished": "2026-07-13", "dateModified": "2026-07-13", "author": {"@type": "Organization", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/"}, "publisher": {"@type": "Organization", "name": "京都歯科総研"}, "mainEntityOfPage": "https://kyoto.shikasoken.com/articles/research/review-concentration.html", "isAccessibleForFree": true}</script>
-<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "京都市の歯科医院データ分析（口コミの59%は、1割の医院に集まっている）", "description": "歯科医院673院・口コミ14,919件を集計。上位10%の医院が全体の59%を保有し、半数の医院は8件以下。件数に頼らない口コミの読み方を一次データから提案します。", "creator": {"@type": "Organization", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/"}, "dateModified": "2026-07-13", "isAccessibleForFree": true, "license": "https://creativecommons.org/licenses/by/4.0/"}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Article", "headline": "口コミの59%は、1割の医院に集まっている", "description": "歯科医院673院・口コミ14,919件を集計。上位10%の医院が全体の59%を保有し、半数の医院は8件以下。件数に頼らない口コミの読み方を一次データから提案します。", "datePublished": "2026-07-13", "dateModified": "2026-07-14", "author": {"@type": "Organization", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/"}, "publisher": {"@type": "Organization", "name": "京都歯科総研"}, "mainEntityOfPage": "https://kyoto.shikasoken.com/articles/research/review-concentration.html", "isAccessibleForFree": true}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "Dataset", "name": "京都市の歯科医院データ分析（口コミの59%は、1割の医院に集まっている）", "description": "歯科医院673院・口コミ14,919件を集計。上位10%の医院が全体の59%を保有し、半数の医院は8件以下。件数に頼らない口コミの読み方を一次データから提案します。", "creator": {"@type": "Organization", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/"}, "dateModified": "2026-07-14", "isAccessibleForFree": true, "license": "https://creativecommons.org/licenses/by/4.0/"}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "口コミが多い医院のほうが安心ではないですか？", "acceptedAnswer": {"@type": "Answer", "text": "件数は立地・開業年数・依頼の働きかけの影響が大きく、多い＝良い医院とは限りません。件数より、具体的な体験が書かれているかどうかを見ることをおすすめします。"}}, {"@type": "Question", "name": "口コミが0件の医院は掲載する意味がありますか？", "acceptedAnswer": {"@type": "Answer", "text": "当サイトは口コミ以外に公式サイトの公開情報（診療内容・設備・院長の経歴など）も分析しています。口コミ0件の89院にも、選ぶ材料は残されています。"}}, {"@type": "Question", "name": "この集計はいつ時点のものですか？", "acceptedAnswer": {"@type": "Answer", "text": "本ページ下部の最終更新時点のデータです。口コミ件数は毎月更新しており、数字は変動します。"}}]}</script>
 <style>
 .rp-hero{background:linear-gradient(168deg,var(--odr-pine) 0%,#173a31 60%,#122d26 100%);color:#fff;
@@ -43,6 +43,25 @@
 .rp-bar-v{font-family:var(--odr-mono);font-weight:700;color:var(--odr-pine);font-size:.95rem;white-space:nowrap;}
 .rp-bar-v small{display:block;font-weight:400;color:var(--odr-ink2);font-size:.68rem;}
 @media(max-width:560px){.rp-bar{grid-template-columns:92px 1fr auto;gap:10px;}.rp-bar-l{font-size:.8rem;}}
+.rp-table{width:100%;border-collapse:collapse;margin:18px 0;font-size:.92rem;}
+.rp-table th{text-align:left;font-size:.72rem;letter-spacing:.03em;color:var(--odr-ink2);border-bottom:1px solid var(--odr-line);padding:9px 8px;font-weight:600;}
+.rp-table td{padding:11px 8px;border-bottom:1px solid var(--odr-line);}
+.rp-table .rp-num{font-family:var(--odr-mono);font-weight:700;color:var(--odr-pine);}
+.rp-table .rp-dim{color:var(--odr-ink2);}
+@media(max-width:560px){.rp-table{font-size:.8rem;}.rp-table th,.rp-table td{padding:8px 5px;}}
+.rp-note-inline{font-size:.82rem;color:var(--odr-ink2);margin:6px 0 4px;line-height:1.8;}
+.rp-check{list-style:none;margin:16px 0;padding:20px 22px;background:#f2f7f4;border:1px solid #cfe0d7;border-radius:var(--r-sm);}
+.rp-check li{position:relative;padding:8px 0 8px 34px;font-size:.95rem;line-height:1.8;border-bottom:1px solid rgba(31,75,63,.08);}
+.rp-check li:last-child{border-bottom:none;}
+.rp-check li::before{content:"";position:absolute;left:4px;top:12px;width:16px;height:16px;border:2px solid var(--odr-pine);border-radius:4px;}
+.rp-compare{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin:18px 0;}
+.rp-compare-col{border:1px solid var(--odr-line);border-radius:var(--r-sm);padding:16px 18px;font-size:.95rem;line-height:1.9;}
+.rp-compare .rp-tag{display:block;font-family:var(--odr-mono);font-size:.62rem;letter-spacing:.1em;margin-bottom:8px;font-weight:600;}
+.rp-compare .rp-x{background:#fbf6f4;}
+.rp-compare .rp-x .rp-tag{color:var(--odr-ink2);}
+.rp-compare .rp-o{background:#f2f7f4;border-color:#cfe0d7;}
+.rp-compare .rp-o .rp-tag{color:var(--odr-pine);}
+@media(max-width:560px){.rp-compare{grid-template-columns:1fr;}}
 .rp-method{background:#f6f8f7;border-radius:var(--r-card);padding:clamp(24px,3.4vw,40px);margin:clamp(32px,4vw,52px) auto;max-width:760px;}
 .rp-method h2{font-size:1.15rem;color:var(--odr-pine);margin:0 0 6px;}
 .rp-method .rp-note{font-family:var(--odr-mono);font-size:var(--fs-mono);letter-spacing:.1em;color:var(--odr-ink2);margin:0 0 18px;}
@@ -147,7 +166,7 @@
   <details class="rp-faq"><summary>口コミが多い医院のほうが安心ではないですか？</summary><p>件数は立地・開業年数・依頼の働きかけの影響が大きく、多い＝良い医院とは限りません。件数より、具体的な体験が書かれているかどうかを見ることをおすすめします。</p></details><details class="rp-faq"><summary>口コミが0件の医院は掲載する意味がありますか？</summary><p>当サイトは口コミ以外に公式サイトの公開情報（診療内容・設備・院長の経歴など）も分析しています。口コミ0件の89院にも、選ぶ材料は残されています。</p></details><details class="rp-faq"><summary>この集計はいつ時点のものですか？</summary><p>本ページ下部の最終更新時点のデータです。口コミ件数は毎月更新しており、数字は変動します。</p></details>
 </section>
 
-<p class="rp-updated">最終更新：2026年07月（集計日：2026-07-13／データは毎月更新しています）</p>
+<p class="rp-updated">最終更新：2026年07月（集計日：2026-07-14／データは毎月更新しています）</p>
 
 <footer class="rp-foot">
   当ページの数字は、公開情報にもとづき当サイトが独自に集計・分析した参考情報です。医療的な診断ではありません。<br>
