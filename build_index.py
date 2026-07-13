@@ -60,6 +60,7 @@ CAT_COLOR = {
     "予防・こども":      "#2E9E86",
     "歯科医院の選び方":  "#2E7D5B",
     "歯科ガイド":        "#2E9E86",
+    "データ研究":        "#1f4b3f",
 }
 
 # カードのメタは「○分で読める」ではなく、患者目線で読む意味が伝わる一言に（カテゴリ別）
@@ -70,6 +71,7 @@ CAT_HOOK = {
     "予防・こども":      "毎日のケアと予防に",
     "歯科医院の選び方":  "後悔しない選び方",
     "歯科ガイド":        "受診前に知っておきたい",
+    "データ研究":        "数字で見る歯科のいま",
 }
 
 # ===== 歯科総研 ビジュアルシステム（SVG / 5色＋オレンジ・実写禁止）=====
@@ -154,6 +156,38 @@ def clean_title(t):
 def nowrap_pipe(escaped_title):
     """esc()済みのタイトルに対して、｜直後で改行され孤立しないようnowrapを挿入"""
     return re.sub(r"(.)｜(.)", r'\1<span style="white-space:nowrap">｜\2</span>', escaped_title, count=1)
+
+def scan_research():
+    """articles/research/ の研究シリーズ記事をglobで自動検出して棚用の行にする。
+    0件（ディレクトリ無し含む）なら空リスト＝棚ごと出さないフェイルセーフ。
+    タイトル・日付は生成済みHTMLのJSON-LD/<title>から機械抽出（都市名ハードコードなし）。"""
+    rdir = os.path.join(ART, "research")
+    if not os.path.isdir(rdir):
+        return []
+    rows = []
+    for f in sorted(os.listdir(rdir)):
+        if not f.endswith(".html"):
+            continue
+        t = open(os.path.join(rdir, f), encoding="utf-8").read()
+        m = re.search(r'"headline":\s*"([^"]+)"', t)
+        if not m:
+            m = re.search(r"<title>([^<｜|]+)", t)
+        title = m.group(1).strip() if m else f[:-5]
+        dm = re.search(r'"datePublished":\s*"(\d{4})-(\d{2})-(\d{2})"', t)
+        row = {"f": "research/" + f, "title": title, "raw": title, "cat": "データ研究",
+               "date": f"{dm.group(1)}.{dm.group(2)}.{dm.group(3)}" if dm else "",
+               "sort_date": "-".join(dm.groups()) if dm else "", "rt": 0, "img": None}
+        if f == "index.html":
+            row["title"] = "データ研究トップ｜独自集計でみる歯科のいま"
+            row["raw"] = row["title"]
+            rows.insert(0, row)  # 研究トップは棚の先頭
+        else:
+            rows.append(row)
+    top = [r for r in rows if r["f"].endswith("/index.html")]
+    arts = sorted((r for r in rows if not r["f"].endswith("/index.html")),
+                  key=lambda a: a["sort_date"], reverse=True)
+    return top + arts
+
 
 def scan():
     rows = []
@@ -287,10 +321,19 @@ def build():
         open(os.path.join(ART, href), "w", encoding="utf-8").write(
             build_cat_page(title, sub if sub else title, full, pad=pad, href=href))
 
+    # 研究シリーズの棚（articles/research/ の実ファイルを自動検出。0件なら棚ごと出さない）
+    research = scan_research()
+    research_tab = ""
+    if research:
+        sections += "\n" + section("研究シリーズ", "独自データの集計から見えた発見", research,
+                                   "cat-research.html")
+        research_tab = '\n    <a href="#sec-research">研究シリーズ</a>'
+
     # 新着記事の上に置くジャンプ用タブ（各セクションへスムーススクロール）
     tabs = ('  <nav class="col-tabs" aria-label="カテゴリ">\n'
             + "\n".join(f'    <a href="#sec-{slug}">{esc(title)}</a>'
                         for title, sub, shown, slug, full, new, pad in specs)
+            + research_tab
             + '\n  </nav>')
 
     return (TEMPLATE.replace("{sections}", tabs + "\n" + sections)
@@ -342,31 +385,6 @@ a{text-decoration:none;color:inherit;}
 /* ===== Clinical Guide hero: gradient only ===== */
 .hero::after{display:none!important;}
 .hero-art{display:none!important;}
-
-/* ===== Universal globe mark ===== */
-.hero-universal-mark{
-  position:absolute;
-  right:clamp(96px,8vw,150px);
-  top:50%;
-  transform:translateY(-48%);
-  width:min(42vw,560px);
-  max-height:86%;
-  object-fit:contain;
-  opacity:.76;
-  filter:drop-shadow(0 0 22px rgba(231,190,118,.16));
-  pointer-events:none;
-  user-select:none;
-  z-index:1;
-}
-@media(max-width:1200px){
-  .hero-universal-mark{right:clamp(42px,5vw,78px);width:min(44vw,500px);}
-}
-@media(max-width:980px){
-  .hero-universal-mark{right:12px;width:min(46vw,420px);opacity:.56;}
-}
-@media(max-width:820px){
-  .hero-universal-mark{display:none;}
-}
 
 /* ===== Globe star field ===== */
 .hero-globe-stars{
@@ -420,16 +438,6 @@ a{text-decoration:none;color:inherit;}
 @media (min-width: 981px){
   .hero-in{
     margin-left:clamp(34px,3.4vw,58px);
-  }
-  .hero-universal-mark{
-    opacity:.92;
-    filter:
-      brightness(1.20)
-      contrast(1.12)
-      saturate(1.08)
-      drop-shadow(0 0 10px rgba(255,224,160,.28))
-      drop-shadow(0 0 24px rgba(231,190,118,.34))
-      drop-shadow(0 0 46px rgba(103,214,176,.20));
   }
 }
 @media (min-width: 821px) and (max-width: 980px){
@@ -638,7 +646,6 @@ TEMPLATE = '''<!DOCTYPE html>
     <span class="dot" style="--x:38%;--y:45%;--s:2px;--o:.44"></span>
     <span style="--x:83%;--y:39%;--s:3px;--o:.68"></span>
   </div>
-  <img class="hero-universal-mark" src="img/universal-globe-mark.png" alt="" aria-hidden="true">
 </section>
 
 <main class="wrap-x">

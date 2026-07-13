@@ -181,23 +181,6 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);letter-spacing:.02
   background:radial-gradient(ellipse 70% 82% at 50% 50%, transparent 0 64%, rgba(5,24,21,.10) 100%);
   z-index:0;
 }
-.shindan-cta .taiyo-tower-visual{
-  position:absolute;
-  right:0%;
-  top:0%;
-  width:min(50vw,760px);
-  height:100%;
-  background:url("assets/taiyo-tower-city-stars.png") right center / contain no-repeat;
-  mix-blend-mode:screen;
-  opacity:.74;
-  pointer-events:none;
-  z-index:1;
-  filter:saturate(.94) brightness(1.02);
-  -webkit-mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.28) 10%,#000 28%,#000 100%),linear-gradient(180deg,#000 0%,#000 88%,transparent 100%);
-  -webkit-mask-composite:source-in;
-  mask-image:linear-gradient(90deg,transparent 0%,rgba(0,0,0,.28) 10%,#000 28%,#000 100%),linear-gradient(180deg,#000 0%,#000 88%,transparent 100%);
-  mask-composite:intersect;
-}
 .shindan-cta-inner{
   max-width:var(--container);margin:0 auto;
   display:grid;grid-template-columns:1fr 1fr;gap:44px;
@@ -262,7 +245,6 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);letter-spacing:.02
 @media(max-width:760px){
   .shindan-cta-inner{grid-template-columns:1fr}
   .shindan-cta-right{display:none}
-  .shindan-cta .taiyo-tower-visual{display:none}
 }
 
 /* ── SECTION COMMON ── */
@@ -744,7 +726,6 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
 .feat-explore-all:hover{color:#163a30;}
 </style>
 <section class="shindan-cta" id="top">
-  <div class="taiyo-tower-visual" aria-hidden="true"></div>
   <div class="shindan-cta-inner">
     <div class="shindan-cta-left">
       <p class="shindan-cta-eyebrow">AI Matching</p>
