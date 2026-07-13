@@ -12,6 +12,7 @@
 /assign_thumbnails.py / 301
 /build_access_info.py / 301
 /build_clinics.py / 301
+/build_data_report.py / 301
 /build_features.py / 301
 /build_index.py / 301
 /build_nearest_station.py / 301

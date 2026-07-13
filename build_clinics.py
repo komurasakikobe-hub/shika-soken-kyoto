@@ -36,10 +36,10 @@ SITE_CFG = json.load(open(os.path.join(ROOT, "site_config.json"), encoding="utf-
 CITY_SHORT = SITE_CFG.get("city_short", SITE_CFG.get("city", ""))
 N_PUBLISHED = SITE_CFG.get("stats", {}).get("clinics_published", 0)
 DOMAIN = SITE_CFG.get("domain", "shikasoken.com")
-CITY = SITE_CFG.get("city", "")                # 例: 大阪市 / 神戸市 / 北播磨エリア
-SITE_NAME = SITE_CFG.get("site_name", "")      # 例: 大阪歯科総研
-EN_UPPER = SITE_CFG.get("site_name_en", "")    # 例: OSAKA DENTAL RESEARCH
-# 例: Osaka Dental Research Institute（site_name_enから機械導出。ハイフン語は各パートを大文字化）
+CITY = SITE_CFG.get("city", "")                # 例: 京都市 / 神戸市 / 北播磨エリア
+SITE_NAME = SITE_CFG.get("site_name", "")      # 例: 京都歯科総研
+EN_UPPER = SITE_CFG.get("site_name_en", "")    # 例: KYOTO DENTAL RESEARCH
+# 例: Kyoto Dental Research Institute（site_name_enから機械導出。ハイフン語は各パートを大文字化）
 EN_INSTITUTE = " ".join("-".join(p.capitalize() for p in w.split("-")) for w in EN_UPPER.split()) + " Institute"
 # 都道府県（構造化データのaddressRegion用）。site_config.jsonのprefは必須キー
 # （新都市追加時はsite_config.jsonにprefを必ず足すこと。横展開マニュアル§4-c参照）
@@ -394,9 +394,19 @@ def area_context_html(c):
     method_ref = ('集計の方法は<a href="../research/index.html">データ研究ページ</a>をご覧ください。'
                   if HAS_RESEARCH else
                   '集計・編集の方針は<a href="../../policy.html#editorial">運営ポリシー</a>をご覧ください。')
+    # 研究記事への文脈リンク（1本だけ）。設備比較の行があれば設備の研究記事、
+    # なければ診療時間の研究記事へ。リンク先が実在するサイトでのみ出す
+    # （研究記事は現状京都のみ＝他都市では自動的に出ない。都市分岐はしない）
+    research_link = ""
+    r_slug = "equipment-gap" if st["eq_n"] else "worktime-access"
+    if os.path.exists(os.path.join(ROOT, "articles", "research", f"{r_slug}.html")):
+        r_label = "設備の傾向" if st["eq_n"] else "診療時間の傾向"
+        research_link = (f'<p class="rr-lead">→ {CITY}全体での{r_label}は'
+                         f'<a href="../research/{r_slug}.html">こちらの研究記事</a>で確認できます。</p>')
     return (f'<p class="rr-lead">{w}には当サイトの分析対象の歯科医院が{st["n"]}院あります。'
             f'この医院を{w}全体のデータの中に置くと、次のことが分かります。</p>'
             f'<ul class="rr-list good">{"".join(rows)}</ul>'
+            f'{research_link}'
             f'<p class="rr-note">割合は当サイトが公式サイト・口コミから機械的に解析できた範囲の値です'
             f'（{w}の設備解析対象 {st["eq_n"]}院）。「未確認」は「無い」という意味ではありません。'
             f'{method_ref}データは毎月更新しています。</p>')

@@ -16,11 +16,11 @@ ART = os.path.join(os.path.dirname(__file__), "articles")
 
 # 都市固有値は site_config.json から読む（ハードコード禁止・多都市共通スクリプト）
 SITE_CFG = json.load(open(os.path.join(os.path.dirname(__file__), "site_config.json"), encoding="utf-8"))
-CITY = SITE_CFG.get("city", "")                # 例: 大阪市 / 神戸市 / 北播磨エリア
+CITY = SITE_CFG.get("city", "")                # 例: 京都市 / 神戸市 / 北播磨エリア
 CITY_SHORT = SITE_CFG.get("city_short", SITE_CFG.get("city", ""))
-SITE_NAME = SITE_CFG.get("site_name", "")      # 例: 大阪歯科総研
-EN_UPPER = SITE_CFG.get("site_name_en", "")    # 例: OSAKA DENTAL RESEARCH
-# 例: Osaka Dental Research Institute（site_name_enから機械導出。ハイフン語は各パートを大文字化）
+SITE_NAME = SITE_CFG.get("site_name", "")      # 例: 京都歯科総研
+EN_UPPER = SITE_CFG.get("site_name_en", "")    # 例: KYOTO DENTAL RESEARCH
+# 例: Kyoto Dental Research Institute（site_name_enから機械導出。ハイフン語は各パートを大文字化）
 EN_INSTITUTE = " ".join("-".join(p.capitalize() for p in w.split("-")) for w in EN_UPPER.split()) + " Institute"
 DOMAIN = SITE_CFG.get("domain", "shikasoken.com")
 
@@ -174,12 +174,21 @@ def scan_research():
             m = re.search(r"<title>([^<｜|]+)", t)
         title = m.group(1).strip() if m else f[:-5]
         dm = re.search(r'"datePublished":\s*"(\d{4})-(\d{2})-(\d{2})"', t)
-        row = {"f": "research/" + f, "title": title, "raw": title, "cat": "データ研究",
+        # 読者ラベル（記事ヒーローの rp-audience バッジから判定。患者向け/開業医向けを棚でも明示）
+        aud = "cl" if "rp-audience cl" in t else ("pt" if "rp-audience pt" in t else None)
+        # サムネイル（articles/img/research/<slug>.png。assign_thumbnails.py が配置。無ければプレースホルダ）
+        slug = f[:-5]
+        img = None
+        for ext in (".png", ".jpg", ".jpeg", ".webp"):
+            if os.path.exists(os.path.join(ART, "img", "research", slug + ext)):
+                img = "img/research/" + slug + ext; break
+        row = {"f": "research/" + f, "title": title, "raw": title, "cat": "データ研究", "aud": aud,
                "date": f"{dm.group(1)}.{dm.group(2)}.{dm.group(3)}" if dm else "",
-               "sort_date": "-".join(dm.groups()) if dm else "", "rt": 0, "img": None}
+               "sort_date": "-".join(dm.groups()) if dm else "", "rt": 0, "img": img}
         if f == "index.html":
             row["title"] = "データ研究トップ｜独自集計でみる歯科のいま"
             row["raw"] = row["title"]
+            row["aud"] = None  # トップは患者向け・開業医向けの両方を束ねる索引のためラベルなし
             rows.insert(0, row)  # 研究トップは棚の先頭
         else:
             rows.append(row)
@@ -231,7 +240,7 @@ def card(a):
     return f'''      <a class="card" href="{urlq(a['f'])}">
         {cover(a)}
         <span class="c-body">
-          <span class="c-cat" style="color:{col}">{esc(a['cat'])}</span>
+          <span class="c-cat" style="color:{col}">{esc(a['cat'])}{(lambda u: f' <span class="c-aud {u}">{"開業医向け" if u=="cl" else "患者向け"}</span>' if u else "")(a.get('aud'))}</span>
           <span class="c-title">{esc(a['title'])}</span>
           <span class="c-meta"><span class="c-rt">{esc(CAT_HOOK.get(a['cat'], "受診前に知っておきたい"))}</span><span class="c-date">{esc(a['date'])}</span></span>
         </span>
@@ -509,6 +518,9 @@ main.wrap-x{padding-top:clamp(15px,2.1vw,23px);padding-bottom:90px;}
 @media(hover:none){.c-hook{display:none;}}
 .c-body{padding:12px 14px 13px;display:flex;flex-direction:column;gap:7px;flex:1;}
 .c-cat{font-size:.68rem;font-weight:700;letter-spacing:.02em;}
+.c-aud{display:inline-block;margin-left:6px;font-size:.6rem;font-weight:700;letter-spacing:.03em;padding:1px 7px;border-radius:999px;vertical-align:middle;}
+.c-aud.pt{background:#e7f0ec;color:#1f4b3f;}
+.c-aud.cl{background:#f4e2d8;color:#b8562f;}
 .c-title{font-size:.92rem;font-weight:500;line-height:1.5;color:var(--ink);letter-spacing:.005em;
   display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
 .c-meta{margin-top:auto;padding-top:4px;display:flex;align-items:center;justify-content:space-between;

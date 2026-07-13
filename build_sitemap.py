@@ -45,7 +45,7 @@ def main():
     entries.append(url_entry("", today, "1.0"))
     entries.append(url_entry("articles/shindan/", today, "0.9"))
     if (ROOT / "articles" / "research" / "index.html").exists():
-        entries.append(url_entry("articles/research/", today, "0.8"))  # 独自データ研究ページ（大阪のみ。build_data_report.py未展開の都市では実ファイルが無いため除外）
+        entries.append(url_entry("articles/research/", today, "0.8"))  # 独自データ研究ページ（京都のみ。build_data_report.py未展開の都市では実ファイルが無いため除外）
         # 研究シリーズ記事（build_data_report.py生成。lastmodは実ファイル更新日＝月次リフレッシュの正直な鮮度シグナル）
         for f in sorted((ROOT / "articles" / "research").glob("*.html")):
             if f.name == "index.html":
