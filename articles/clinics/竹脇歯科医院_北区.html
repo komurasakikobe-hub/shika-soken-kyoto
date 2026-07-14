@@ -20,7 +20,7 @@
 <style>
 :root{--pine:#1f4b3f;--terra:#d98b5f;--paper:#f6f8f7;--ink:#1c2b25;--ink2:#5c6d66;--line:#e4ebe7;--mono:'Roboto Mono',monospace;}
 *{box-sizing:border-box;}
-body{margin:0;font-family:'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;line-height:1.8;}
+body{margin:0;font-family:'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;line-height:1.75;}
 a{color:inherit;}
 .rr-nav{background:var(--pine);color:#fff;padding:0 clamp(20px,4vw,40px);height:64px;display:flex;align-items:center;justify-content:space-between;}
 .rr-nav .logo{font-weight:700;text-decoration:none;font-family:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;font-size:.98rem;letter-spacing:.02em;}
@@ -31,34 +31,34 @@ a{color:inherit;}
 .rr-navlinks a:hover{color:#fff;}
 @media(max-width:820px){.rr-navlinks{display:none;}}
 /* ── レポートヘッダー ── */
-.rr-hero{background:var(--pine);color:#fff;padding:clamp(30px,5vw,56px) clamp(20px,4vw,40px) clamp(40px,5vw,60px);}
+.rr-hero{background:var(--pine);color:#fff;padding:clamp(22px,3.6vw,40px) clamp(20px,4vw,40px) clamp(24px,3.6vw,42px);}
 .rr-hero-in{max-width:860px;margin:0 auto;}
 .rr-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;color:var(--terra);border:1px solid rgba(217,139,95,.5);border-radius:999px;padding:5px 14px;margin-bottom:20px;}
 .rr-tag::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--terra);}
-.rr-name{font-family:'Shippori Mincho',serif;font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:700;margin:0 0 10px;line-height:1.35;}
-.rr-catch{color:#d6e6df;font-size:1.02rem;margin:0 0 14px;}
-.rr-address{color:#a9c6bb;font-size:.86rem;margin:0 0 18px;}
-.rr-hmeta{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;background:rgba(255,255,255,.14);border-radius:12px;overflow:hidden;margin-bottom:14px;}
-.rr-metric{background:rgba(255,255,255,.06);padding:14px 10px;text-align:center;}
+.rr-name{font-family:'Shippori Mincho',serif;font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:700;margin:0 0 8px;line-height:1.3;}
+.rr-catch{color:#d6e6df;font-size:1.02rem;margin:0 0 10px;}
+.rr-address{color:#a9c6bb;font-size:.86rem;margin:0 0 12px;}
+.rr-hmeta{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;background:rgba(255,255,255,.14);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+.rr-metric{background:rgba(255,255,255,.06);padding:10px 10px;text-align:center;}
 .rr-metric-v{display:block;font-family:var(--mono);font-weight:700;font-size:1.05rem;color:#fff;}
 .rr-metric-k{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:#a9c6bb;margin-top:4px;}
-.rr-fact{color:#8fae9f;font-size:.74rem;margin:0 0 22px;}
+.rr-fact{color:#8fae9f;font-size:.74rem;margin:0 0 14px;}
 .rr-links{display:flex;gap:12px;flex-wrap:wrap;}
 .rr-btn{display:inline-block;padding:11px 24px;border-radius:8px;font-size:.86rem;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,.4);color:#fff;}
 .rr-btn.primary{background:var(--terra);border-color:var(--terra);font-weight:700;}
 .rr-btn:hover{opacity:.92;}
 /* ── 本文 ── */
-main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,40px) 80px;}
-.rr-sec{margin:0 0 clamp(44px,6vw,68px);}
-.rr-sec-h{display:flex;align-items:flex-start;gap:16px;margin:0 0 22px;}
+main{max-width:860px;margin:0 auto;padding:clamp(22px,3.2vw,40px) clamp(20px,4vw,40px) 36px;}
+.rr-sec{margin:0 0 clamp(18px,2vw,24px);}
+.rr-sec-h{display:flex;align-items:flex-start;gap:16px;margin:0 0 12px;}
 .rr-sec-n{font-family:var(--mono);font-size:.9rem;color:var(--terra);font-weight:500;padding-top:3px;min-width:26px;}
 .rr-sec-en{display:block;font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;color:var(--ink2);text-transform:uppercase;}
 .rr-sec-h h2{font-size:1.24rem;font-weight:700;color:var(--pine);margin:2px 0 0;}
 /* AI要約カード（Apple Intelligence 風） */
-.rr-ai{position:relative;background:#fff;border-radius:14px;padding:24px 26px;border:1px solid var(--line);box-shadow:0 4px 24px rgba(20,50,40,.05);overflow:hidden;}
+.rr-ai{position:relative;background:#fff;border-radius:14px;padding:18px 22px;border:1px solid var(--line);box-shadow:0 4px 24px rgba(20,50,40,.05);overflow:hidden;}
 .rr-ai::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--terra),var(--pine));}
 .rr-ai-label{display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;color:var(--terra);margin-bottom:8px;}
-.rr-ai p{margin:0;font-size:1.02rem;line-height:1.9;}
+.rr-ai p{margin:0;font-size:1.02rem;line-height:1.8;}
 /* ＋根拠パネル（2026-07-11） */
 .rr-ev-toggle{margin-top:14px;background:none;border:1px solid var(--line);border-radius:999px;
   padding:7px 16px;font-size:.8rem;color:var(--pine);cursor:pointer;font-family:inherit;}
@@ -100,21 +100,21 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-bar-fill{display:block;height:100%;background:linear-gradient(90deg,var(--pine),#2e6a58);border-radius:6px;transition:width .6s ease;}
 .rr-bar-v{font-weight:700;color:var(--pine);text-align:right;font-family:var(--mono);font-size:.82rem;}
 /* チップ */
-.rr-chips{display:flex;flex-wrap:wrap;gap:9px;}
-.rr-chip{background:#eaf1ee;color:var(--pine);border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-size:.83rem;font-weight:500;}
+.rr-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.rr-chip{background:#eaf1ee;color:var(--pine);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:.83rem;font-weight:500;}
 .rr-tag-link{background:#eaf1ee;color:var(--pine);border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-size:.83rem;font-weight:500;text-decoration:none;transition:background .15s;}
 .rr-tag-link:hover{background:var(--terra);color:#fff;border-color:var(--terra);}
 .rr-related-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px;}
 .rr-related-list li{border-top:1px solid var(--line);}
 .rr-related-list li:first-child{border-top:none;}
-.rr-related-link{display:flex;align-items:center;gap:8px;padding:12px 2px;font-size:.92rem;font-weight:600;color:var(--pine);text-decoration:none;}
+.rr-related-link{display:flex;align-items:center;gap:8px;padding:9px 2px;font-size:.92rem;font-weight:600;color:var(--pine);text-decoration:none;}
 .rr-related-link:hover{text-decoration:underline;}
 .rr-related-link::before{content:"📄";flex-shrink:0;}
 /* リード・引用・リスト */
-.rr-lead{font-size:.98rem;color:var(--ink);margin:0 0 14px;}
-.rr-quote{font-size:1.08rem;color:var(--pine);font-weight:500;margin:0 0 16px;padding-left:16px;border-left:3px solid var(--terra);line-height:1.8;}
+.rr-lead{font-size:.98rem;color:var(--ink);margin:0 0 10px;}
+.rr-quote{font-size:1.08rem;color:var(--pine);font-weight:500;margin:0 0 12px;padding-left:16px;border-left:3px solid var(--terra);line-height:1.75;}
 .rr-docname{font-size:1.05rem;font-weight:700;color:var(--pine);margin:0 0 8px;}
-.rr-quals{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;}
+.rr-quals{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;}
 .rr-quals li{position:relative;padding-left:22px;font-size:.9rem;color:var(--ink2);}
 .rr-quals li::before{content:"◆";position:absolute;left:0;color:var(--terra);font-size:.7rem;top:4px;}
 .rr-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
@@ -125,29 +125,29 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-concl-label.good{color:#2e8c6a;}
 .rr-concl-label.bad{color:var(--terra);}
 .rr-concl-label:not(:first-child){margin-top:20px;}
-.rr-note{color:var(--ink2);font-size:.76rem;margin:14px 0 0;line-height:1.75;}
+.rr-note{color:var(--ink2);font-size:.76rem;margin:10px 0 0;line-height:1.7;}
 /* 基本情報テーブル */
 .rr-info{width:100%;border-collapse:collapse;font-size:.92rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-.rr-info th{text-align:left;color:var(--ink2);font-weight:500;width:110px;padding:14px 20px;vertical-align:top;border-bottom:1px solid var(--line);background:#fbfcfb;}
-.rr-info td{padding:14px 20px;border-bottom:1px solid var(--line);}
+.rr-info th{text-align:left;color:var(--ink2);font-weight:500;width:110px;padding:11px 18px;vertical-align:top;border-bottom:1px solid var(--line);background:#fbfcfb;}
+.rr-info td{padding:11px 18px;border-bottom:1px solid var(--line);}
 .rr-info tr:last-child th,.rr-info tr:last-child td{border-bottom:none;}
 /* CTA */
-.rr-cta{background:var(--pine);border-radius:18px;padding:40px 30px;text-align:center;margin:8px 0 16px;}
-.rr-cta-t{color:#fff;font-size:1.3rem;font-weight:700;margin:0 0 8px;}
-.rr-cta-s{color:#cfe0d8;font-size:.92rem;margin:0 0 22px;}
+.rr-cta{background:var(--pine);border-radius:18px;padding:28px 26px;text-align:center;margin:4px 0 0;}
+.rr-cta-t{color:#fff;font-size:1.24rem;font-weight:700;margin:0 0 6px;}
+.rr-cta-s{color:#cfe0d8;font-size:.92rem;margin:0 0 16px;}
 .rr-cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
 .rr-cta-btn{display:inline-block;background:var(--terra);color:#fff;font-weight:700;padding:14px 32px;border-radius:10px;text-decoration:none;font-size:.95rem;}
 .rr-cta-btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.5);}
 .rr-cta-btn:hover{opacity:.93;}
 /* フッター */
-.rr-foot{border-top:1px solid var(--line);padding:32px clamp(20px,4vw,40px);color:var(--ink2);font-size:.78rem;line-height:1.9;}
+.rr-foot{border-top:1px solid var(--line);padding:22px clamp(20px,4vw,40px);color:var(--ink2);font-size:.78rem;line-height:1.85;}
 .rr-foot .in{max-width:860px;margin:0 auto;}
 @media(max-width:560px){.rr-bar{grid-template-columns:92px 1fr 42px;gap:10px;}}
 /* ── 次の一歩（回遊導線・2026-07-14 指示書③） ── */
 .rr-next{margin:0;padding:0;list-style:none;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
 .rr-next li{border-bottom:1px solid var(--line);}
 .rr-next li:last-child{border-bottom:none;}
-.rr-next a{display:block;padding:14px 20px;text-decoration:none;transition:background .15s;}
+.rr-next a{display:block;padding:11px 20px;text-decoration:none;transition:background .15s;}
 .rr-next a:hover{background:rgba(31,75,63,.04);}
 .rr-next .t{display:block;font-weight:700;color:var(--pine);font-size:.95rem;}
 .rr-next .t::after{content:"→";margin-left:8px;color:var(--terra);font-weight:500;}
@@ -157,19 +157,19 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-btn-line:hover{background:var(--pine);color:#fff;}
 /* ── 患者向け再編集（2026-07-14 全面改修） ── */
 .rr-summary{color:#eaf3ee;font-size:1.06rem;font-weight:500;margin:0 0 6px;line-height:1.7;}
-.rr-summary-facts{color:#cfe0d8;font-size:.9rem;margin:0 0 18px;}
-.rr-hchips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px;}
+.rr-summary-facts{color:#cfe0d8;font-size:.9rem;margin:0 0 12px;}
+.rr-hchips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;}
 .rr-hchip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 15px;font-size:.84rem;font-weight:500;color:#fff;}
 .rr-sec-h{display:block;}
 .rr-sec-h h2{padding-left:12px;border-left:4px solid var(--pine);font-size:1.28rem;}
-.rr-panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:0 4px 20px rgba(20,50,40,.04);}
-.rr-subhead{font-size:.95rem;font-weight:700;color:var(--pine);margin:14px 0 8px;}
+.rr-panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:0 4px 20px rgba(20,50,40,.04);}
+.rr-subhead{font-size:.95rem;font-weight:700;color:var(--pine);margin:10px 0 6px;}
 .rr-list.plain{gap:0;}
-.rr-list.plain li{padding:7px 0 7px 20px;border-bottom:1px solid var(--line);}
+.rr-list.plain li{padding:6px 0 6px 20px;border-bottom:1px solid var(--line);}
 .rr-list.plain li:last-child{border-bottom:none;}
 .rr-list.plain li::before{content:"–";position:absolute;left:0;top:7px;color:var(--ink2);}
 .rr-hours{width:100%;border-collapse:collapse;font-size:.94rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-.rr-hours th,.rr-hours td{padding:12px 16px;border-bottom:1px solid var(--line);text-align:left;}
+.rr-hours th,.rr-hours td{padding:9px 16px;border-bottom:1px solid var(--line);text-align:left;}
 .rr-hours thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.82rem;}
 .rr-hours tbody th{width:96px;color:var(--ink2);font-weight:500;background:#fbfcfb;}
 .rr-hours tr:last-child th,.rr-hours tr:last-child td{border-bottom:none;}
@@ -177,18 +177,32 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-hours-note strong{color:#2c3532;}
 .rr-maplink{display:inline-block;margin-top:14px;padding:10px 20px;border:1px solid var(--pine);border-radius:8px;font-size:.86rem;font-weight:500;color:var(--pine);text-decoration:none;background:#fff;}
 .rr-maplink:hover{background:var(--pine);color:#fff;}
-.rr-review-text{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;font-size:.98rem;line-height:1.9;margin:0 0 16px;}
-.rr-trend{width:100%;border-collapse:collapse;font-size:.94rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-.rr-trend th,.rr-trend td{padding:12px 18px;border-bottom:1px solid var(--line);text-align:left;}
-.rr-trend thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.82rem;}
+.rr-review-text{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;font-size:.96rem;line-height:1.85;margin:0 0 12px;}
+.rr-trend{width:100%;border-collapse:collapse;font-size:.92rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.rr-trend th,.rr-trend td{padding:10px 18px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle;}
+.rr-trend thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.8rem;}
 .rr-trend tr:last-child th,.rr-trend tr:last-child td{border-bottom:none;}
-.rr-trend td.v{width:170px;font-weight:700;color:var(--pine);}
-.rr-trend td.v.mixed{color:var(--terra);}
+.rr-tr-topic{width:120px;font-weight:700;color:var(--pine);}
+.rr-tr-desc{color:#33403b;line-height:1.65;}
+.rr-tr-badge{width:104px;text-align:right;white-space:nowrap;}
+.rr-trend .th-badge{text-align:right;}
+/* 傾向バッジ：口コミでの言及の向きを示す（星・点数にしない＝採点と誤読させない） */
+.rr-badge{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid transparent;letter-spacing:.02em;}
+.rr-badge.pos{background:rgba(46,140,106,.1);color:#1f7a55;border-color:rgba(46,140,106,.25);}
+.rr-badge.mix{background:rgba(217,139,95,.12);color:#b7642f;border-color:rgba(217,139,95,.3);}
+.rr-badge.caution{background:#f4efe7;color:#8a6d3b;border-color:#e6dcc7;}
+.rr-badge.na{background:#f0f2f1;color:#7c8681;border-color:var(--line);}
+@media(max-width:560px){
+  .rr-trend th,.rr-trend td{padding:9px 12px;}
+  .rr-tr-topic{width:auto;}
+  .rr-tr-badge{width:auto;}
+  .rr-badge{font-size:.68rem;padding:2px 8px;}
+}
 .rr-fold{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:16px;}
-.rr-fold-btn{width:100%;text-align:left;background:none;border:none;padding:18px 22px;font-family:inherit;font-size:1rem;font-weight:700;color:var(--pine);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.rr-fold-btn{width:100%;text-align:left;background:none;border:none;padding:14px 20px;font-family:inherit;font-size:1rem;font-weight:700;color:var(--pine);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .rr-fold-btn .sub{display:block;font-size:.8rem;font-weight:400;color:var(--ink2);margin-top:4px;line-height:1.6;}
 .rr-fold-btn .mk{flex-shrink:0;color:var(--terra);font-weight:700;}
-.rr-fold-body{padding:0 22px 20px;font-size:.9rem;line-height:1.85;color:#3d4643;}
+.rr-fold-body{padding:0 20px 16px;font-size:.9rem;line-height:1.8;color:#3d4643;}
 .rr-fold-body p{margin:0 0 10px;}
 .rr-fold-body ul{margin:0 0 10px;padding-left:20px;}
 .rr-sticky{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(20,50,40,.08);padding:8px 10px;gap:8px;}
@@ -202,6 +216,26 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rf-crumb a:hover{color:var(--pine);text-decoration:underline;}
 .rf-crumb .rf-sep{color:var(--line);}
 .rf-crumb .rf-current{color:var(--terra);font-weight:700;}
+/* ── 印刷・PDF出力：空白ページの根本対策＋自然なページ分割 ── */
+@media print{
+  @page{margin:12mm;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  html,body{background:#fff !important;}
+  body{padding-bottom:0 !important;}
+  /* 固定CTAは画面下に貼り付く要素＝印刷では下部に予約領域を作り末尾に空白ページを生む主因。除去 */
+  .rr-sticky{display:none !important;}
+  .odr-brandbar,.rf-crumb{display:none !important;}   /* ナビ類は紙では省く */
+  main{padding:8px 0 0 !important;}
+  .rr-hero{padding:20px 22px !important;}
+  .rr-sec{margin:0 0 14px !important;}
+  /* カード・表・見出しはページ途中で割らない（自然な区切りにする） */
+  .rr-panel,.rr-info,.rr-hours,.rr-trend,.rr-ai,.rr-fold,.rr-next,.rr-review-text,
+  .rr-cta,.rr-hero,.rr-trend tr,.rr-info tr,.rr-hours tr,.rr-next li{break-inside:avoid;}
+  .rr-sec-h{break-after:avoid;}                       /* 見出しだけ次ページに取り残さない */
+  .rr-cta{margin:12px 0 0 !important;}
+  .rr-foot{break-inside:avoid;padding:14px 0 0;}      /* 末尾を詰めて余分な改ページを防ぐ */
+  a{text-decoration:none !important;color:inherit !important;}
+}
 </style>
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>

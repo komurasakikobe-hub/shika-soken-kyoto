@@ -19,7 +19,7 @@
 <style>
 :root{--pine:#1f4b3f;--terra:#d98b5f;--paper:#f6f8f7;--ink:#1c2b25;--ink2:#5c6d66;--line:#e4ebe7;--mono:'Roboto Mono',monospace;}
 *{box-sizing:border-box;}
-body{margin:0;font-family:'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;line-height:1.8;}
+body{margin:0;font-family:'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;line-height:1.75;}
 a{color:inherit;}
 .rr-nav{background:var(--pine);color:#fff;padding:0 clamp(20px,4vw,40px);height:64px;display:flex;align-items:center;justify-content:space-between;}
 .rr-nav .logo{font-weight:700;text-decoration:none;font-family:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;font-size:.98rem;letter-spacing:.02em;}
@@ -30,34 +30,34 @@ a{color:inherit;}
 .rr-navlinks a:hover{color:#fff;}
 @media(max-width:820px){.rr-navlinks{display:none;}}
 /* ── レポートヘッダー ── */
-.rr-hero{background:var(--pine);color:#fff;padding:clamp(30px,5vw,56px) clamp(20px,4vw,40px) clamp(40px,5vw,60px);}
+.rr-hero{background:var(--pine);color:#fff;padding:clamp(22px,3.6vw,40px) clamp(20px,4vw,40px) clamp(24px,3.6vw,42px);}
 .rr-hero-in{max-width:860px;margin:0 auto;}
 .rr-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;color:var(--terra);border:1px solid rgba(217,139,95,.5);border-radius:999px;padding:5px 14px;margin-bottom:20px;}
 .rr-tag::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--terra);}
-.rr-name{font-family:'Shippori Mincho',serif;font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:700;margin:0 0 10px;line-height:1.35;}
-.rr-catch{color:#d6e6df;font-size:1.02rem;margin:0 0 14px;}
-.rr-address{color:#a9c6bb;font-size:.86rem;margin:0 0 18px;}
-.rr-hmeta{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;background:rgba(255,255,255,.14);border-radius:12px;overflow:hidden;margin-bottom:14px;}
-.rr-metric{background:rgba(255,255,255,.06);padding:14px 10px;text-align:center;}
+.rr-name{font-family:'Shippori Mincho',serif;font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:700;margin:0 0 8px;line-height:1.3;}
+.rr-catch{color:#d6e6df;font-size:1.02rem;margin:0 0 10px;}
+.rr-address{color:#a9c6bb;font-size:.86rem;margin:0 0 12px;}
+.rr-hmeta{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;background:rgba(255,255,255,.14);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+.rr-metric{background:rgba(255,255,255,.06);padding:10px 10px;text-align:center;}
 .rr-metric-v{display:block;font-family:var(--mono);font-weight:700;font-size:1.05rem;color:#fff;}
 .rr-metric-k{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:#a9c6bb;margin-top:4px;}
-.rr-fact{color:#8fae9f;font-size:.74rem;margin:0 0 22px;}
+.rr-fact{color:#8fae9f;font-size:.74rem;margin:0 0 14px;}
 .rr-links{display:flex;gap:12px;flex-wrap:wrap;}
 .rr-btn{display:inline-block;padding:11px 24px;border-radius:8px;font-size:.86rem;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,.4);color:#fff;}
 .rr-btn.primary{background:var(--terra);border-color:var(--terra);font-weight:700;}
 .rr-btn:hover{opacity:.92;}
 /* ── 本文 ── */
-main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,40px) 80px;}
-.rr-sec{margin:0 0 clamp(44px,6vw,68px);}
-.rr-sec-h{display:flex;align-items:flex-start;gap:16px;margin:0 0 22px;}
+main{max-width:860px;margin:0 auto;padding:clamp(22px,3.2vw,40px) clamp(20px,4vw,40px) 36px;}
+.rr-sec{margin:0 0 clamp(18px,2vw,24px);}
+.rr-sec-h{display:flex;align-items:flex-start;gap:16px;margin:0 0 12px;}
 .rr-sec-n{font-family:var(--mono);font-size:.9rem;color:var(--terra);font-weight:500;padding-top:3px;min-width:26px;}
 .rr-sec-en{display:block;font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;color:var(--ink2);text-transform:uppercase;}
 .rr-sec-h h2{font-size:1.24rem;font-weight:700;color:var(--pine);margin:2px 0 0;}
 /* AI要約カード（Apple Intelligence 風） */
-.rr-ai{position:relative;background:#fff;border-radius:14px;padding:24px 26px;border:1px solid var(--line);box-shadow:0 4px 24px rgba(20,50,40,.05);overflow:hidden;}
+.rr-ai{position:relative;background:#fff;border-radius:14px;padding:18px 22px;border:1px solid var(--line);box-shadow:0 4px 24px rgba(20,50,40,.05);overflow:hidden;}
 .rr-ai::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--terra),var(--pine));}
 .rr-ai-label{display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;color:var(--terra);margin-bottom:8px;}
-.rr-ai p{margin:0;font-size:1.02rem;line-height:1.9;}
+.rr-ai p{margin:0;font-size:1.02rem;line-height:1.8;}
 /* ＋根拠パネル（2026-07-11） */
 .rr-ev-toggle{margin-top:14px;background:none;border:1px solid var(--line);border-radius:999px;
   padding:7px 16px;font-size:.8rem;color:var(--pine);cursor:pointer;font-family:inherit;}
@@ -99,21 +99,21 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-bar-fill{display:block;height:100%;background:linear-gradient(90deg,var(--pine),#2e6a58);border-radius:6px;transition:width .6s ease;}
 .rr-bar-v{font-weight:700;color:var(--pine);text-align:right;font-family:var(--mono);font-size:.82rem;}
 /* チップ */
-.rr-chips{display:flex;flex-wrap:wrap;gap:9px;}
-.rr-chip{background:#eaf1ee;color:var(--pine);border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-size:.83rem;font-weight:500;}
+.rr-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.rr-chip{background:#eaf1ee;color:var(--pine);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:.83rem;font-weight:500;}
 .rr-tag-link{background:#eaf1ee;color:var(--pine);border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-size:.83rem;font-weight:500;text-decoration:none;transition:background .15s;}
 .rr-tag-link:hover{background:var(--terra);color:#fff;border-color:var(--terra);}
 .rr-related-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px;}
 .rr-related-list li{border-top:1px solid var(--line);}
 .rr-related-list li:first-child{border-top:none;}
-.rr-related-link{display:flex;align-items:center;gap:8px;padding:12px 2px;font-size:.92rem;font-weight:600;color:var(--pine);text-decoration:none;}
+.rr-related-link{display:flex;align-items:center;gap:8px;padding:9px 2px;font-size:.92rem;font-weight:600;color:var(--pine);text-decoration:none;}
 .rr-related-link:hover{text-decoration:underline;}
 .rr-related-link::before{content:"📄";flex-shrink:0;}
 /* リード・引用・リスト */
-.rr-lead{font-size:.98rem;color:var(--ink);margin:0 0 14px;}
-.rr-quote{font-size:1.08rem;color:var(--pine);font-weight:500;margin:0 0 16px;padding-left:16px;border-left:3px solid var(--terra);line-height:1.8;}
+.rr-lead{font-size:.98rem;color:var(--ink);margin:0 0 10px;}
+.rr-quote{font-size:1.08rem;color:var(--pine);font-weight:500;margin:0 0 12px;padding-left:16px;border-left:3px solid var(--terra);line-height:1.75;}
 .rr-docname{font-size:1.05rem;font-weight:700;color:var(--pine);margin:0 0 8px;}
-.rr-quals{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;}
+.rr-quals{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;}
 .rr-quals li{position:relative;padding-left:22px;font-size:.9rem;color:var(--ink2);}
 .rr-quals li::before{content:"◆";position:absolute;left:0;color:var(--terra);font-size:.7rem;top:4px;}
 .rr-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
@@ -124,29 +124,29 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-concl-label.good{color:#2e8c6a;}
 .rr-concl-label.bad{color:var(--terra);}
 .rr-concl-label:not(:first-child){margin-top:20px;}
-.rr-note{color:var(--ink2);font-size:.76rem;margin:14px 0 0;line-height:1.75;}
+.rr-note{color:var(--ink2);font-size:.76rem;margin:10px 0 0;line-height:1.7;}
 /* 基本情報テーブル */
 .rr-info{width:100%;border-collapse:collapse;font-size:.92rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-.rr-info th{text-align:left;color:var(--ink2);font-weight:500;width:110px;padding:14px 20px;vertical-align:top;border-bottom:1px solid var(--line);background:#fbfcfb;}
-.rr-info td{padding:14px 20px;border-bottom:1px solid var(--line);}
+.rr-info th{text-align:left;color:var(--ink2);font-weight:500;width:110px;padding:11px 18px;vertical-align:top;border-bottom:1px solid var(--line);background:#fbfcfb;}
+.rr-info td{padding:11px 18px;border-bottom:1px solid var(--line);}
 .rr-info tr:last-child th,.rr-info tr:last-child td{border-bottom:none;}
 /* CTA */
-.rr-cta{background:var(--pine);border-radius:18px;padding:40px 30px;text-align:center;margin:8px 0 16px;}
-.rr-cta-t{color:#fff;font-size:1.3rem;font-weight:700;margin:0 0 8px;}
-.rr-cta-s{color:#cfe0d8;font-size:.92rem;margin:0 0 22px;}
+.rr-cta{background:var(--pine);border-radius:18px;padding:28px 26px;text-align:center;margin:4px 0 0;}
+.rr-cta-t{color:#fff;font-size:1.24rem;font-weight:700;margin:0 0 6px;}
+.rr-cta-s{color:#cfe0d8;font-size:.92rem;margin:0 0 16px;}
 .rr-cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
 .rr-cta-btn{display:inline-block;background:var(--terra);color:#fff;font-weight:700;padding:14px 32px;border-radius:10px;text-decoration:none;font-size:.95rem;}
 .rr-cta-btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.5);}
 .rr-cta-btn:hover{opacity:.93;}
 /* フッター */
-.rr-foot{border-top:1px solid var(--line);padding:32px clamp(20px,4vw,40px);color:var(--ink2);font-size:.78rem;line-height:1.9;}
+.rr-foot{border-top:1px solid var(--line);padding:22px clamp(20px,4vw,40px);color:var(--ink2);font-size:.78rem;line-height:1.85;}
 .rr-foot .in{max-width:860px;margin:0 auto;}
 @media(max-width:560px){.rr-bar{grid-template-columns:92px 1fr 42px;gap:10px;}}
 /* ── 次の一歩（回遊導線・2026-07-14 指示書③） ── */
 .rr-next{margin:0;padding:0;list-style:none;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
 .rr-next li{border-bottom:1px solid var(--line);}
 .rr-next li:last-child{border-bottom:none;}
-.rr-next a{display:block;padding:14px 20px;text-decoration:none;transition:background .15s;}
+.rr-next a{display:block;padding:11px 20px;text-decoration:none;transition:background .15s;}
 .rr-next a:hover{background:rgba(31,75,63,.04);}
 .rr-next .t{display:block;font-weight:700;color:var(--pine);font-size:.95rem;}
 .rr-next .t::after{content:"→";margin-left:8px;color:var(--terra);font-weight:500;}
@@ -156,19 +156,19 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-btn-line:hover{background:var(--pine);color:#fff;}
 /* ── 患者向け再編集（2026-07-14 全面改修） ── */
 .rr-summary{color:#eaf3ee;font-size:1.06rem;font-weight:500;margin:0 0 6px;line-height:1.7;}
-.rr-summary-facts{color:#cfe0d8;font-size:.9rem;margin:0 0 18px;}
-.rr-hchips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px;}
+.rr-summary-facts{color:#cfe0d8;font-size:.9rem;margin:0 0 12px;}
+.rr-hchips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;}
 .rr-hchip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 15px;font-size:.84rem;font-weight:500;color:#fff;}
 .rr-sec-h{display:block;}
 .rr-sec-h h2{padding-left:12px;border-left:4px solid var(--pine);font-size:1.28rem;}
-.rr-panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:0 4px 20px rgba(20,50,40,.04);}
-.rr-subhead{font-size:.95rem;font-weight:700;color:var(--pine);margin:14px 0 8px;}
+.rr-panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:0 4px 20px rgba(20,50,40,.04);}
+.rr-subhead{font-size:.95rem;font-weight:700;color:var(--pine);margin:10px 0 6px;}
 .rr-list.plain{gap:0;}
-.rr-list.plain li{padding:7px 0 7px 20px;border-bottom:1px solid var(--line);}
+.rr-list.plain li{padding:6px 0 6px 20px;border-bottom:1px solid var(--line);}
 .rr-list.plain li:last-child{border-bottom:none;}
 .rr-list.plain li::before{content:"–";position:absolute;left:0;top:7px;color:var(--ink2);}
 .rr-hours{width:100%;border-collapse:collapse;font-size:.94rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-.rr-hours th,.rr-hours td{padding:12px 16px;border-bottom:1px solid var(--line);text-align:left;}
+.rr-hours th,.rr-hours td{padding:9px 16px;border-bottom:1px solid var(--line);text-align:left;}
 .rr-hours thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.82rem;}
 .rr-hours tbody th{width:96px;color:var(--ink2);font-weight:500;background:#fbfcfb;}
 .rr-hours tr:last-child th,.rr-hours tr:last-child td{border-bottom:none;}
@@ -176,18 +176,32 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-hours-note strong{color:#2c3532;}
 .rr-maplink{display:inline-block;margin-top:14px;padding:10px 20px;border:1px solid var(--pine);border-radius:8px;font-size:.86rem;font-weight:500;color:var(--pine);text-decoration:none;background:#fff;}
 .rr-maplink:hover{background:var(--pine);color:#fff;}
-.rr-review-text{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;font-size:.98rem;line-height:1.9;margin:0 0 16px;}
-.rr-trend{width:100%;border-collapse:collapse;font-size:.94rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-.rr-trend th,.rr-trend td{padding:12px 18px;border-bottom:1px solid var(--line);text-align:left;}
-.rr-trend thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.82rem;}
+.rr-review-text{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;font-size:.96rem;line-height:1.85;margin:0 0 12px;}
+.rr-trend{width:100%;border-collapse:collapse;font-size:.92rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.rr-trend th,.rr-trend td{padding:10px 18px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle;}
+.rr-trend thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.8rem;}
 .rr-trend tr:last-child th,.rr-trend tr:last-child td{border-bottom:none;}
-.rr-trend td.v{width:170px;font-weight:700;color:var(--pine);}
-.rr-trend td.v.mixed{color:var(--terra);}
+.rr-tr-topic{width:120px;font-weight:700;color:var(--pine);}
+.rr-tr-desc{color:#33403b;line-height:1.65;}
+.rr-tr-badge{width:104px;text-align:right;white-space:nowrap;}
+.rr-trend .th-badge{text-align:right;}
+/* 傾向バッジ：口コミでの言及の向きを示す（星・点数にしない＝採点と誤読させない） */
+.rr-badge{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid transparent;letter-spacing:.02em;}
+.rr-badge.pos{background:rgba(46,140,106,.1);color:#1f7a55;border-color:rgba(46,140,106,.25);}
+.rr-badge.mix{background:rgba(217,139,95,.12);color:#b7642f;border-color:rgba(217,139,95,.3);}
+.rr-badge.caution{background:#f4efe7;color:#8a6d3b;border-color:#e6dcc7;}
+.rr-badge.na{background:#f0f2f1;color:#7c8681;border-color:var(--line);}
+@media(max-width:560px){
+  .rr-trend th,.rr-trend td{padding:9px 12px;}
+  .rr-tr-topic{width:auto;}
+  .rr-tr-badge{width:auto;}
+  .rr-badge{font-size:.68rem;padding:2px 8px;}
+}
 .rr-fold{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:16px;}
-.rr-fold-btn{width:100%;text-align:left;background:none;border:none;padding:18px 22px;font-family:inherit;font-size:1rem;font-weight:700;color:var(--pine);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.rr-fold-btn{width:100%;text-align:left;background:none;border:none;padding:14px 20px;font-family:inherit;font-size:1rem;font-weight:700;color:var(--pine);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .rr-fold-btn .sub{display:block;font-size:.8rem;font-weight:400;color:var(--ink2);margin-top:4px;line-height:1.6;}
 .rr-fold-btn .mk{flex-shrink:0;color:var(--terra);font-weight:700;}
-.rr-fold-body{padding:0 22px 20px;font-size:.9rem;line-height:1.85;color:#3d4643;}
+.rr-fold-body{padding:0 20px 16px;font-size:.9rem;line-height:1.8;color:#3d4643;}
 .rr-fold-body p{margin:0 0 10px;}
 .rr-fold-body ul{margin:0 0 10px;padding-left:20px;}
 .rr-sticky{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(20,50,40,.08);padding:8px 10px;gap:8px;}
@@ -201,6 +215,26 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rf-crumb a:hover{color:var(--pine);text-decoration:underline;}
 .rf-crumb .rf-sep{color:var(--line);}
 .rf-crumb .rf-current{color:var(--terra);font-weight:700;}
+/* ── 印刷・PDF出力：空白ページの根本対策＋自然なページ分割 ── */
+@media print{
+  @page{margin:12mm;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  html,body{background:#fff !important;}
+  body{padding-bottom:0 !important;}
+  /* 固定CTAは画面下に貼り付く要素＝印刷では下部に予約領域を作り末尾に空白ページを生む主因。除去 */
+  .rr-sticky{display:none !important;}
+  .odr-brandbar,.rf-crumb{display:none !important;}   /* ナビ類は紙では省く */
+  main{padding:8px 0 0 !important;}
+  .rr-hero{padding:20px 22px !important;}
+  .rr-sec{margin:0 0 14px !important;}
+  /* カード・表・見出しはページ途中で割らない（自然な区切りにする） */
+  .rr-panel,.rr-info,.rr-hours,.rr-trend,.rr-ai,.rr-fold,.rr-next,.rr-review-text,
+  .rr-cta,.rr-hero,.rr-trend tr,.rr-info tr,.rr-hours tr,.rr-next li{break-inside:avoid;}
+  .rr-sec-h{break-after:avoid;}                       /* 見出しだけ次ページに取り残さない */
+  .rr-cta{margin:12px 0 0 !important;}
+  .rr-foot{break-inside:avoid;padding:14px 0 0;}      /* 末尾を詰めて余分な改ページを防ぐ */
+  a{text-decoration:none !important;color:inherit !important;}
+}
 </style>
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
@@ -238,7 +272,7 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
   </div>
 </section>
 <main>
-<section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-en">At a glance</span><h2>この医院の特徴</h2></div><div class="rr-panel"><ul class="rr-list plain"><li>口コミでは「清潔」「痛みに配慮してくれる」といった内容が多く確認できます</li><li>土曜診療の表示があります（変更の可能性があるため公式サイトで要確認）</li><li>公式サイトで歯科用CT・口腔内スキャナーの記載を確認しています</li></ul></div><div class="rr-fold"><button type="button" class="rr-fold-btn" aria-expanded="false" data-fold><span>公開情報だけでは判断できない項目<span class="sub">夜間診療・設備など、受診前に医院へ確認したい項目です。</span></span><span class="mk">＋</span></button><div class="rr-fold-body" hidden><ul><li>マイクロスコープ … 公式サイト上では確認できませんでした</li></ul><p>※「確認できませんでした」は「無い」という意味ではありません。実際の対応可否は公式サイト・電話でご確認ください。</p></div></div><p class="rr-note">※ 公開情報（公式サイト・Google口コミ）から機械的に確認できた範囲です。</p></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-en">Hours &amp; Access</span><h2>診療時間・場所</h2></div><table class="rr-hours"><thead><tr><th>曜日</th><th>午前</th><th>午後</th></tr></thead><tbody><tr><th>月〜火</th><td>9:30〜12:30</td><td>14:30〜18:30</td></tr><tr><th>水</th><td colspan="2">休診</td></tr><tr><th>木〜金</th><td>9:30〜12:30</td><td>14:30〜18:30</td></tr><tr><th>土</th><td>9:30〜12:30</td><td>14:00〜16:30</td></tr><tr><th>日</th><td colspan="2">休診</td></tr></tbody></table><p class="rr-hours-note">出典：Googleビジネスプロフィール掲載の診療時間（最終確認日：2026-07-09）。<br>診療時間は変更される場合があります。<strong>受診前に必ず公式サイト・電話でご確認ください。</strong></p><table class="rr-info"><tr><th>所在地</th><td>京都市下京区中堂寺坊城町１６−３ グラン・ドムール丹波口 1階</td></tr><tr><th>最寄駅</th><td>丹波口駅（徒歩約1分〜・直線距離からの推計）</td></tr><tr><th>診療</th><td>一般歯科</td></tr><tr><th>電話</th><td>075-741-6642</td></tr></table><a class="rr-maplink" href="https://www.google.com/maps/search/?api=1&amp;query=%E3%81%84%E3%81%9B%E3%81%8D%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF&amp;query_place_id=ChIJP0SWWgAHAWARmz68S8MNEuE" target="_blank" rel="noopener" data-odr-ev="clinic_to_map" data-odr-v="地図">Googleマップで場所・口コミを見る</a></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-en">Reviews</span><h2>口コミから見える傾向</h2></div><p class="rr-review-text">口コミでは「清潔」「痛みに配慮してくれる」といった内容が多く確認できました。一方で、治療内容・説明の丁寧さについては評価が分かれています。（Google口コミ18件をAIが分析）</p><table class="rr-trend"><thead><tr><th>患者さんの口コミで見られた声</th><th>口コミでの多さ</th></tr></thead><tbody><tr><td>清潔</td><td class="v">多くの口コミで見られた</td></tr><tr><td>痛みに配慮してくれる</td><td class="v">多くの口コミで見られた</td></tr><tr><td>対応がやさしい</td><td class="v mixed">評価が分かれた</td></tr><tr><td>治療内容への評価が高い</td><td class="v mixed">評価が分かれた</td></tr><tr><td>説明が丁寧</td><td class="v mixed">評価が分かれた</td></tr><tr><td>待ち時間が短い</td><td class="v mixed">評価が分かれた</td></tr></tbody></table><p class="rr-note">※「口コミでの多さ」は、その声が口コミ本文にどれくらい登場したかをAIが分類したもので、医院の医療技術そのものを採点したものではありません。分類の目安（言及指数）は下の「この分析は何にもとづくか」で開示しています。</p></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-en">In the area</span><h2>地域の中で見る</h2></div><p class="rr-lead">下京区には当サイトの分析対象の歯科医院が66院あります。この医院を下京区全体のデータの中に置くと、次のことが分かります。</p><ul class="rr-list good"><li><strong>歯科用CT：この医院は導入を確認。</strong>下京区では18%の医院で導入を確認（当サイト解析分）。導入院はまだ少数派です</li><li>マイクロスコープ：公式サイトでは確認できませんでした（未確認）。下京区では5%の医院で導入を確認</li><li>夜間診療：案内は確認できませんでした。下京区では0%の医院が夜間対応を案内しています</li></ul><p class="rr-note">割合は当サイトが公式サイト・口コミから機械的に解析できた範囲の値です（下京区の設備解析対象 57院）。「未確認」は「無い」という意味ではありません。集計の方法は<a href="../research/index.html">データ研究ページ</a>をご覧ください。データは毎月更新しています。</p></section><section class="rr-sec"><div class="rr-sec-h"><h2>院長プロフィール</h2></div><p class="rr-docname">院長　井関 雅博</p><p class="rr-lead">鹿児島大学歯学部卒業、勤務医経歴あり</p></section><section class="rr-sec"><div class="rr-sec-h"><h2>該当する特徴</h2></div><div class="rr-chips"><a class="rr-tag-link" href="../features/index.html#ct">CT</a><a class="rr-tag-link" href="../features/index.html#implant">インプラント治療を行っている医院</a><a class="rr-tag-link" href="../features/index.html#prevent">予防歯科に力を入れている医院</a></div></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-en">Methodology</span><h2>この分析は何にもとづくか</h2></div><div class="rr-fold" style="margin-top:0;"><button type="button" class="rr-fold-btn" aria-expanded="false" data-fold><span>使用データ・確認日・分類方法・情報充実度を見る<span class="sub">Google口コミ18件・公式サイトを分析（分析日 2026-07-09）。何が事実で何がAI推定かを開示しています。</span></span><span class="mk">＋</span></button><div class="rr-fold-body" hidden><div class="rr-ev-block"><p class="rr-ev-h">この分析文が何にもとづくか</p><p class="rr-ev-summary">いせき歯科クリニックは、アクセスが良好で丁寧な治療を提供し、インプラントや根管治療、予防歯科に専門性があります。急患希望の方や夜しか通えない方には向いていない可能性があります。</p><ul class="rr-ev-list"><li><span class="rr-ev-term">「丁寧」</span><span class="rr-ev-badge ok">根拠あり</span><span class="rr-ev-basis">口コミ18件と公式サイトの記載から「丁寧」を確認しています</span></li><li><span class="rr-ev-term">「アクセス」</span><span class="rr-ev-badge ok">根拠あり</span><span class="rr-ev-basis">口コミ18件と公式サイトの記載から「アクセス」を確認しています</span></li><li><span class="rr-ev-term">「インプラント」</span><span class="rr-ev-badge ok">根拠あり</span><span class="rr-ev-basis">口コミ18件と公式サイトの記載から「インプラント」を確認しています</span></li><li><span class="rr-ev-term">「予防」</span><span class="rr-ev-badge ok">根拠あり</span><span class="rr-ev-basis">口コミ18件と公式サイトの記載から「予防」を確認しています</span></li><li><span class="rr-ev-term">「夜」</span><span class="rr-ev-badge guess">AIによる推定</span><span class="rr-ev-basis">夜間帯の診療の情報なし（AIによる推定）</span></li><li><span class="rr-ev-term">「急」</span><span class="rr-ev-badge guess">AIによる推定</span><span class="rr-ev-basis">公開情報に個別の記載はありませんが、分析全体からAIが総合的に判断した見立てです</span></li></ul></div><div class="rr-ev-block"><p class="rr-ev-h">口コミからの根拠</p><p class="rr-ev-line"><span class="rr-ev-k">口コミ分析で抽出されたタグ</span><span class="rr-ev-tag">アクセス良好</span><span class="rr-ev-tag">丁寧な治療</span></p><p class="rr-ev-k">実際の口コミからの引用</p><blockquote class="rr-ev-quote">「とっても素敵な歯医者さんに出会えました」</blockquote><blockquote class="rr-ev-quote">「入れ歯を作りました、何回も通院してやり直したり、で口に入れたら外れます」</blockquote><blockquote class="rr-ev-quote">「定期検診で通っています」</blockquote><p class="rr-ev-meta">口コミ18件を分析 ・ 解析ソース2種類 ・ 分析日 2026-07-09</p></div><div class="rr-ev-block"><p class="rr-ev-h">公式サイトからの根拠</p><p class="rr-ev-line">設備の記載: CTや口腔内スキャナーを導入。・衛生的な給水設備あり。</p></div><div class="rr-ev-block"><p class="rr-ev-h">診療時間・立地からの事実</p><p class="rr-ev-line">土日いずれかの診療あり</p><p class="rr-ev-line">最寄駅から徒歩約1分〜（直線距離からの推計）</p></div><div class="rr-ev-block"><p class="rr-ev-h">「向いている方・注意点」の判定内訳</p><ul class="rr-ev-list"><li><span class="rr-ev-kind">向いている</span>「インプラント」<span class="rr-ev-badge ok">根拠あり</span><span class="rr-ev-basis">口コミ18件と公式サイトの記載から「インプラント」を確認しています</span></li></ul></div><p class="rr-ev-note">「根拠あり」は口コミ・公式サイト・診療時間等の公開データに対応する記述が確認できたもの、「AIによる推定」は直接の記述がなくAIが総合的に推測したものです。本分析は公開情報に基づく意見・論評であり、医療上の判断や治療結果を保証するものではありません。</p><p><strong>傾向の分類方法：</strong>口コミ本文の文脈をAIが話題ごとに定量化した「言及指数」（100点満点：治療内容への肯定的な言及 70・説明の丁寧さ 65・清潔感 80・スタッフ対応の良さ 75・痛みへの配慮 80・待ち時間 65）を「多くの口コミで見られた（80以上）／ときどき見られた（76〜79）／評価が分かれた（75以下または肯定否定が混在）」に区分しています。医療技術そのものの評価ではありません。</p><p><strong>情報充実度：</strong>95/100（この医院の分析に使えた公開情報の量と一致度の指標です。分析が正しい確率ではありません）。参照データ源 5種類。</p><p><strong>限界：</strong>本分析は公開情報にもとづく意見・論評であり、医療上の判断や治療結果を保証するものではありません。根拠が確認できなかった設備・特徴は表示していません。</p></div></div></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-en">Next</span><h2>次にすること</h2></div><ul class="rr-next"><li><a href="../features/#ct" data-odr-ev="clinic_to_condition" data-odr-v="CT"><span class="t">CTのある医院を一覧で見る</span><span class="why">この医院と同じ「CT」という特徴で、他の医院と比べられます。</span></a></li><li><a href="../features/#implant" data-odr-ev="clinic_to_condition" data-odr-v="インプラント治療を行っている医院"><span class="t">インプラント治療を行っている医院を一覧で見る</span><span class="why">この医院と同じ「インプラント治療を行っている医院」という特徴で、他の医院と比べられます。</span></a></li><li><a href="../shindan/?cond=%E5%9C%9F%E6%97%A5%E8%A8%BA%E7%99%82" data-odr-ev="clinic_to_condition" data-odr-v="土日診療"><span class="t">「土日診療」の医院をランキングで比べる</span><span class="why">平日の受診が難しい方向けに、土日に診療する医院だけで比べられます。</span></a></li><li><a href="../shindan/?ward=%E4%B8%8B%E4%BA%AC%E5%8C%BA" data-odr-ev="clinic_to_shindan" data-odr-v="下京区"><span class="t">30秒のAI診断で自分に合う医院を探す</span><span class="why">下京区を選択済みの状態から、症状やご希望の条件で絞り込めます。</span></a></li></ul><div class="rr-next-final"><a class="rr-btn-line" href="https://iseki-dc.com/?utm_source=GBP&amp;utm_medium=GBP&amp;utm_term=GBP&amp;utm_content=GBP&amp;utm_campaign=GBP" target="_blank" rel="noopener" data-odr-ev="clinic_to_official" data-odr-v="公式サイト">公式サイトで診療内容を確認</a><a class="rr-btn-line" href="https://www.google.com/maps/search/?api=1&amp;query=%E3%81%84%E3%81%9B%E3%81%8D%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF&amp;query_place_id=ChIJP0SWWgAHAWARmz68S8MNEuE" target="_blank" rel="noopener" data-odr-ev="clinic_to_map" data-odr-v="地図">Googleマップで場所・口コミを見る</a><a class="rr-btn-line" href="tel:0757416642" data-odr-ev="clinic_to_tel" data-odr-v="電話">電話で問い合わせる（075-741-6642）</a></div><p class="rr-note">リンク先の一覧・比較は、当サイトが公開情報から機械的に解析できた範囲にもとづく参考情報です。</p></section>
+<section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-en">At a glance</span><h2>この医院の特徴</h2></div><div class="rr-panel"><ul class="rr-list plain"><li>口コミでは「清潔」「痛みに配慮してくれる」といった内容が多く確認できます</li><li>土曜診療の表示があります（変更の可能性があるため公式サイトで要確認）</li><li>公式サイトで歯科用CT・口腔内スキャナーの記載を確認しています</li></ul></div><div class="rr-fold"><button type="button" class="rr-fold-btn" aria-expanded="false" data-fold><span>公開情報だけでは判断できない項目<span class="sub">夜間診療・設備など、受診前に医院へ確認したい項目です。</span></span><span class="mk">＋</span></button><div class="rr-fold-body" hidden><ul><li>マイクロスコープ … 公式サイト上では確認できませんでした</li></ul><p>※「確認できませんでした」は「無い」という意味ではありません。実際の対応可否は公式サイト・電話でご確認ください。</p></div></div><p class="rr-note">※ 公開情報（公式サイト・Google口コミ）から機械的に確認できた範囲です。</p></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-en">Hours &amp; Access</span><h2>診療時間・場所</h2></div><table class="rr-hours"><thead><tr><th>曜日</th><th>午前</th><th>午後</th></tr></thead><tbody><tr><th>月〜火</th><td>9:30〜12:30</td><td>14:30〜18:30</td></tr><tr><th>水</th><td colspan="2">休診</td></tr><tr><th>木〜金</th><td>9:30〜12:30</td><td>14:30〜18:30</td></tr><tr><th>土</th><td>9:30〜12:30</td><td>14:00〜16:30</td></tr><tr><th>日</th><td colspan="2">休診</td></tr></tbody></table><p class="rr-hours-note">出典：Googleビジネスプロフィール掲載の診療時間（最終確認日：2026-07-09）。<br>診療時間は変更される場合があります。<strong>受診前に必ず公式サイト・電話でご確認ください。</strong></p><table class="rr-info"><tr><th>所在地</th><td>京都市下京区中堂寺坊城町１６−３ グラン・ドムール丹波口 1階</td></tr><tr><th>最寄駅</th><td>丹波口駅（徒歩約1分〜・直線距離からの推計）</td></tr><tr><th>診療</th><td>一般歯科</td></tr><tr><th>電話</th><td>075-741-6642</td></tr></table><a class="rr-maplink" href="https://www.google.com/maps/search/?api=1&amp;query=%E3%81%84%E3%81%9B%E3%81%8D%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF&amp;query_place_id=ChIJP0SWWgAHAWARmz68S8MNEuE" target="_blank" rel="noopener" data-odr-ev="clinic_to_map" data-odr-v="地図">Googleマップで場所・口コミを見る</a></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-en">Reviews</span><h2>口コミから見える傾向</h2></div><p class="rr-review-text">院内の清潔感や痛みへの配慮に関する肯定的な投稿が目立ちます。一方で、スタッフの対応・治療内容については、受け止めに幅のある投稿も見られました。（Google口コミ18件をAIが分析）</p><table class="rr-trend"><thead><tr><th>テーマ</th><th>口コミでの言及のされ方</th><th class="th-badge">傾向</th></tr></thead><tbody><tr><td class="rr-tr-topic">院内の清潔感</td><td class="rr-tr-desc">複数の口コミで共通して評価されています</td><td class="rr-tr-badge"><span class="rr-badge pos">肯定的</span></td></tr><tr><td class="rr-tr-topic">痛みへの配慮</td><td class="rr-tr-desc">複数の投稿で肯定的に触れられています</td><td class="rr-tr-badge"><span class="rr-badge pos">肯定的</span></td></tr><tr><td class="rr-tr-topic">スタッフの対応</td><td class="rr-tr-desc">肯定的な声が見られますが、評価にはばらつきがあります</td><td class="rr-tr-badge"><span class="rr-badge pos">肯定寄り</span></td></tr><tr><td class="rr-tr-topic">治療内容</td><td class="rr-tr-desc">肯定的な声が見られますが、評価にはばらつきがあります</td><td class="rr-tr-badge"><span class="rr-badge pos">肯定寄り</span></td></tr><tr><td class="rr-tr-topic">説明の丁寧さ</td><td class="rr-tr-desc">利用者によって受け止めが分かれています</td><td class="rr-tr-badge"><span class="rr-badge mix">意見が分かれる</span></td></tr><tr><td class="rr-tr-topic">待ち時間</td><td class="rr-tr-desc">肯定的な声と異なる意見の両方が見られます</td><td class="rr-tr-badge"><span class="rr-badge mix">意見が分かれる</span></td></tr></tbody></table><p class="rr-note">※ 各テーマは、その話題が口コミ本文にどの程度・どのように登場したかをAIが分類したものです（口コミ総数が少ない医院ほど控えめに表現しています）。医療技術そのものを採点・格付けするものではなく、「口コミ上で確認できた言及の傾向」を示します。判定の内訳は下の「この分析は何にもとづくか」で開示しています。</p></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-en">In the area</span><h2>地域の中で見る</h2></div><p class="rr-lead">下京区には当サイトの分析対象の歯科医院が66院あります。この医院を下京区全体のデータの中に置くと、次のことが分かります。</p><ul class="rr-list good"><li><strong>歯科用CT：この医院は導入を確認。</strong>下京区では18%の医院で導入を確認（当サイト解析分）。導入院はまだ少数派です</li><li>マイクロスコープ：公式サイトでは確認できませんでした（未確認）。下京区では5%の医院で導入を確認</li><li>夜間診療：案内は確認できませんでした。下京区では0%の医院が夜間対応を案内しています</li></ul><p class="rr-note">割合は当サイトが公式サイト・口コミから機械的に解析できた範囲の値です（下京区の設備解析対象 57院）。「未確認」は「無い」という意味ではありません。集計の方法は<a href="../research/index.html">データ研究ページ</a>をご覧ください。データは毎月更新しています。</p></section><section class="rr-sec"><div class="rr-sec-h"><h2>院長プロフィール</h2></div><p class="rr-docname">院長　井関 雅博</p><p class="rr-lead">鹿児島大学歯学部卒業、勤務医経歴あり</p></section><section class="rr-sec"><div class="rr-sec-h"><h2>該当する特徴</h2></div><div class="rr-chips"><a class="rr-tag-link" href="../features/index.html#ct">CT</a><a class="rr-tag-link" href="../features/index.html#implant">インプラント治療を行っている医院</a><a class="rr-tag-link" href="../features/index.html#prevent">予防歯科に力を入れている医院</a></div></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-en">Methodology</span><h2>この分析は何にもとづくか</h2></div><div class="rr-fold" style="margin-top:0;"><button type="button" class="rr-fold-btn" aria-expanded="false" data-fold><span>使用データ・確認日・分類方法・情報充実度を見る<span class="sub">Google口コミ18件・公式サイトを分析（分析日 2026-07-09）。何が事実で何がAI推定かを開示しています。</span></span><span class="mk">＋</span></button><div class="rr-fold-body" hidden><div class="rr-ev-block"><p class="rr-ev-h">この分析文が何にもとづくか</p><p class="rr-ev-summary">いせき歯科クリニックは、アクセスが良好で丁寧な治療を提供し、インプラントや根管治療、予防歯科に専門性があります。急患希望の方や夜しか通えない方には向いていない可能性があります。</p><ul class="rr-ev-list"><li><span class="rr-ev-term">「丁寧」</span><span class="rr-ev-badge ok">根拠あり</span><span class="rr-ev-basis">口コミ18件と公式サイトの記載から「丁寧」を確認しています</span></li><li><span class="rr-ev-term">「アクセス」</span><span class="rr-ev-badge ok">根拠あり</span><span class="rr-ev-basis">口コミ18件と公式サイトの記載から「アクセス」を確認しています</span></li><li><span class="rr-ev-term">「インプラント」</span><span class="rr-ev-badge ok">根拠あり</span><span class="rr-ev-basis">口コミ18件と公式サイトの記載から「インプラント」を確認しています</span></li><li><span class="rr-ev-term">「予防」</span><span class="rr-ev-badge ok">根拠あり</span><span class="rr-ev-basis">口コミ18件と公式サイトの記載から「予防」を確認しています</span></li><li><span class="rr-ev-term">「夜」</span><span class="rr-ev-badge guess">AIによる推定</span><span class="rr-ev-basis">夜間帯の診療の情報なし（AIによる推定）</span></li><li><span class="rr-ev-term">「急」</span><span class="rr-ev-badge guess">AIによる推定</span><span class="rr-ev-basis">公開情報に個別の記載はありませんが、分析全体からAIが総合的に判断した見立てです</span></li></ul></div><div class="rr-ev-block"><p class="rr-ev-h">口コミからの根拠</p><p class="rr-ev-line"><span class="rr-ev-k">口コミ分析で抽出されたタグ</span><span class="rr-ev-tag">アクセス良好</span><span class="rr-ev-tag">丁寧な治療</span></p><p class="rr-ev-k">実際の口コミからの引用</p><blockquote class="rr-ev-quote">「とっても素敵な歯医者さんに出会えました」</blockquote><blockquote class="rr-ev-quote">「入れ歯を作りました、何回も通院してやり直したり、で口に入れたら外れます」</blockquote><blockquote class="rr-ev-quote">「定期検診で通っています」</blockquote><p class="rr-ev-meta">口コミ18件を分析 ・ 解析ソース2種類 ・ 分析日 2026-07-09</p></div><div class="rr-ev-block"><p class="rr-ev-h">公式サイトからの根拠</p><p class="rr-ev-line">設備の記載: CTや口腔内スキャナーを導入。・衛生的な給水設備あり。</p></div><div class="rr-ev-block"><p class="rr-ev-h">診療時間・立地からの事実</p><p class="rr-ev-line">土日いずれかの診療あり</p><p class="rr-ev-line">最寄駅から徒歩約1分〜（直線距離からの推計）</p></div><div class="rr-ev-block"><p class="rr-ev-h">「向いている方・注意点」の判定内訳</p><ul class="rr-ev-list"><li><span class="rr-ev-kind">向いている</span>「インプラント」<span class="rr-ev-badge ok">根拠あり</span><span class="rr-ev-basis">口コミ18件と公式サイトの記載から「インプラント」を確認しています</span></li></ul></div><p class="rr-ev-note">「根拠あり」は口コミ・公式サイト・診療時間等の公開データに対応する記述が確認できたもの、「AIによる推定」は直接の記述がなくAIが総合的に推測したものです。本分析は公開情報に基づく意見・論評であり、医療上の判断や治療結果を保証するものではありません。</p><p><strong>傾向の分類方法：</strong>口コミ本文の文脈をAIが話題ごとに定量化した「言及指数」（100点満点：治療内容への肯定的な言及 70・説明の丁寧さ 65・清潔感 80・スタッフ対応の良さ 75・痛みへの配慮 80・待ち時間 65）と、その医院の口コミ総数（18件）を組み合わせて分類しています。指数の高さで<strong>向き</strong>を（肯定的／肯定寄り・幅あり／意見が分かれる／注意する声／判断保留）、口コミ総数で言える<strong>多さの上限</strong>を決めます（＝口コミが少ない医院に「多くの口コミで」とは言いません）。肯定率・否定率などの内訳は元データに存在しないため用いておらず、指数は肯定寄りに重みづけた言及の強さの推定であって、医療技術そのものの評価ではありません。</p><p><strong>情報充実度：</strong>95/100（この医院の分析に使えた公開情報の量と一致度の指標です。分析が正しい確率ではありません）。参照データ源 5種類。</p><p><strong>限界：</strong>本分析は公開情報にもとづく意見・論評であり、医療上の判断や治療結果を保証するものではありません。根拠が確認できなかった設備・特徴は表示していません。</p></div></div></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-en">Next</span><h2>次にすること</h2></div><ul class="rr-next"><li><a href="../features/#ct" data-odr-ev="clinic_to_condition" data-odr-v="CT"><span class="t">CTのある医院を一覧で見る</span><span class="why">この医院と同じ「CT」という特徴で、他の医院と比べられます。</span></a></li><li><a href="../features/#implant" data-odr-ev="clinic_to_condition" data-odr-v="インプラント治療を行っている医院"><span class="t">インプラント治療を行っている医院を一覧で見る</span><span class="why">この医院と同じ「インプラント治療を行っている医院」という特徴で、他の医院と比べられます。</span></a></li><li><a href="../shindan/?cond=%E5%9C%9F%E6%97%A5%E8%A8%BA%E7%99%82" data-odr-ev="clinic_to_condition" data-odr-v="土日診療"><span class="t">「土日診療」の医院をランキングで比べる</span><span class="why">平日の受診が難しい方向けに、土日に診療する医院だけで比べられます。</span></a></li><li><a href="../shindan/?ward=%E4%B8%8B%E4%BA%AC%E5%8C%BA" data-odr-ev="clinic_to_shindan" data-odr-v="下京区"><span class="t">30秒のAI診断で自分に合う医院を探す</span><span class="why">下京区を選択済みの状態から、症状やご希望の条件で絞り込めます。</span></a></li></ul><div class="rr-next-final"><a class="rr-btn-line" href="https://iseki-dc.com/?utm_source=GBP&amp;utm_medium=GBP&amp;utm_term=GBP&amp;utm_content=GBP&amp;utm_campaign=GBP" target="_blank" rel="noopener" data-odr-ev="clinic_to_official" data-odr-v="公式サイト">公式サイトで診療内容を確認</a><a class="rr-btn-line" href="https://www.google.com/maps/search/?api=1&amp;query=%E3%81%84%E3%81%9B%E3%81%8D%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF&amp;query_place_id=ChIJP0SWWgAHAWARmz68S8MNEuE" target="_blank" rel="noopener" data-odr-ev="clinic_to_map" data-odr-v="地図">Googleマップで場所・口コミを見る</a><a class="rr-btn-line" href="tel:0757416642" data-odr-ev="clinic_to_tel" data-odr-v="電話">電話で問い合わせる（075-741-6642）</a></div><p class="rr-note">リンク先の一覧・比較は、当サイトが公開情報から機械的に解析できた範囲にもとづく参考情報です。</p></section>
   <section class="rr-cta">
     <p class="rr-cta-t">あなたに合う歯科医院は？</p>
     <p class="rr-cta-s">症状・エリア・ご希望から、AIが京都市内 約673院を無料でマッチングします。</p>

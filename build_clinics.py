@@ -674,15 +674,133 @@ AXIS_QUOTE = {
     "優しさ": "対応がやさしい", "子ども対応": "子どもへの対応が良い",
     "痛みへの配慮": "痛みに配慮してくれる", "待ち時間": "待ち時間が短い",
 }
+# サマリー文で自然な主語にするための話題名
+AXIS_TOPIC = {
+    "技術力": "治療内容", "説明力": "説明の丁寧さ", "清潔感": "院内の清潔感",
+    "優しさ": "スタッフの対応", "子ども対応": "子どもへの対応",
+    "痛みへの配慮": "痛みへの配慮", "待ち時間": "待ち時間",
+}
+# 軸ごとの典型水準（2026-07-15・全2036院の言及指数の実分布から得た軸別中央値）。
+# 待ち時間・子ども対応は構造的に低め＝同じ「75」でも軸によって意味が違うため、
+# 強弱判定に軸内相対も加味できるよう持っておく。
+AXIS_MED = {
+    "技術力": 75, "説明力": 75, "清潔感": 75, "優しさ": 75,
+    "子ども対応": 70, "痛みへの配慮": 72, "待ち時間": 70,
+}
 
-def trend_word(v):
-    """言及指数→患者向けの傾向語。「口コミの中でどれくらい見られたか」を、
-    基準（何に対して多いのか）が患者に伝わる言い回しにする。区分の基準は分析根拠の折りたたみで開示。"""
-    if v >= 80:
-        return ("多くの口コミで見られた", "")
-    if v >= 76:
-        return ("ときどき見られた", "")
-    return ("評価が分かれた", " mixed")
+# ── 口コミ傾向の分類（2026-07-15 全面再設計） ───────────────────────────────
+# 使える実データは「言及指数（0-100・AIが口コミ本文から推定した"肯定寄りの言及強度"）」と
+# 「口コミ総数（＝その医院についてどこまで確からしく言えるかの信頼度）」だけ。
+# 肯定率/否定率/直近性などの内訳データは存在しないため捏造しない。
+# → 指数で肯定〜注意の"向き"を、口コミ総数で言える"多さ"の上限を決め、両方から段階分けする。
+def _volume_tier(reviews):
+    """口コミ総数→言及の多さをどこまで断定できるか（0-3。少ないほど控えめにしか言えない）。"""
+    if reviews >= 80: return 3
+    if reviews >= 30: return 2
+    if reviews >= 10: return 1
+    if reviews >= 3:  return 0
+    return -1  # 口コミが少なすぎて傾向を語れない
+
+def classify_review_axis(axis, score, reviews):
+    """(group, prominence) を返す。
+      group … 'pos'(肯定的に言及) / 'lean'(肯定寄りだが幅がある) / 'mixed'(意見が分かれる) /
+              'caution'(不満の声も見られる) / 'insufficient'(口コミが少なく判断できない)
+      prominence … 0-3。指数が示す強さを、口コミ総数が許す範囲まで丸めた「言及の多さ」の段階。
+    絶対件数（口コミ総数）と割合（指数の水準）の両方を使う。口コミが少ない医院に
+    多い医院と同じ"多さ"の言葉は使わない（volumeで上限を切る）。"""
+    reviews = reviews or 0
+    vt = _volume_tier(reviews)
+    if score <= 0 or vt < 0:
+        return ("insufficient", 0)
+    # 向き（指数は肯定寄りに重みづけられた言及強度＝高いほど肯定的に多く語られている）
+    if   score >= 78: group = "pos"
+    elif score >= 70: group = "lean"
+    elif score >= 60: group = "mixed"
+    else:             group = "caution"
+    # 「多さ」の段階：
+    #   pos … 指数の高さ(s_tier)を口コミ総数(vt)の上限で丸める（"多く"は総数も要る）
+    #   lean … 肯定寄りだが幅がある群。多さの表現は口コミ総数(vt)に合わせる
+    #          （指数がわずかに低いだけで「口コミ数が少ない」と誤記しないため）
+    if   score >= 88: s_tier = 3
+    elif score >= 82: s_tier = 2
+    elif score >= 76: s_tier = 1
+    else:             s_tier = 0
+    prom = min(s_tier, vt) if group == "pos" else vt
+    return (group, prom)
+
+# 分類 → 表現候補プール。同一ページ内では直前と重ならないよう「順に」選ぶ（ランダムではない）。
+# 断定・攻撃的表現は使わず、必ず「口コミ上で確認できた範囲」の言い回しにする。
+REVIEW_PHRASES = {
+    ("pos", 3):  ["特に多くの口コミで高く評価されています", "非常に多くの投稿で繰り返し言及されています", "口コミ全体でも特に目立つ強みとして挙がっています"],
+    ("pos", 2):  ["多くの口コミで肯定的に言及されています", "多くの投稿で繰り返し評価されています", "多くの利用者が良い点として挙げています"],
+    ("pos", 1):  ["複数の口コミで共通して評価されています", "複数の投稿で肯定的に触れられています", "一定数の口コミで良い点として挙がっています"],
+    ("pos", 0):  ["一部の口コミで評価する声が見られます", "少数ながら肯定的な言及が確認できます"],
+    ("lean", 3): ["肯定的な声が中心ですが、受け止めに幅があります", "おおむね好意的な言及ですが、見方が分かれる面もあります", "評価する声が多い一方で、感じ方に差のある投稿もあります"],
+    ("lean", 2): ["肯定的な声が中心ですが、一部に異なる意見もあります", "好意的な投稿が多い一方、受け止めが分かれる面もあります", "評価する声が中心ですが、見方に幅のある投稿もあります"],
+    ("lean", 1): ["肯定的な声が見られますが、評価にはばらつきがあります"],
+    ("lean", 0): ["肯定的な声が見られますが、口コミ数は多くありません"],
+    ("mixed", 0):["利用者によって受け止めが分かれています", "肯定的な声と異なる意見の両方が見られます", "評価が一定していません"],
+    # caution は口コミ量でゲート：少数(3-9件)では不満を断定せず「言及が少ない」と正直に、
+    # 十分数(10件以上)でのみ「改善を望む声」等の否定的傾向として表現する（捏造防止）。
+    ("caution", 0):["肯定的な言及は目立ちませんでした", "口コミ上では評価する声が少なめでした"],
+    ("caution", 1):["改善を望む声も見られます", "気になる点として挙げる投稿もあります", "物足りなさを指摘する声も一部にあります"],
+    ("insufficient", 0):["口コミが少なく、傾向を判断できません"],
+}
+def _phrase_key(group, prom):
+    if group in ("pos", "lean"): return (group, prom)
+    if group == "mixed":         return ("mixed", 0)
+    if group == "caution":       return ("caution", min(prom, 1))
+    return ("insufficient", 0)
+
+# 傾向バッジ（採点でなく「口コミでの言及の向き」を一目で示す・星/点数にしない）
+def review_badge(group, prom):
+    if group == "pos":  return ("肯定的", "pos")
+    if group == "lean": return ("肯定寄り", "pos")
+    if group == "mixed":return ("意見が分かれる", "mix")
+    if group == "caution":
+        return ("注意する声", "caution") if prom >= 1 else ("言及少なめ", "na")
+    return ("判断保留", "na")
+_GROUP_ORDER = {"pos": 0, "lean": 1, "mixed": 2, "caution": 3, "insufficient": 4}
+
+def review_summary(axis_cls, reviews):
+    """分類結果から、強い特徴を先頭に自然文でまとめる（項目名の単純な列挙にしない）。
+    axis_cls: [(axis, score, group, prom), ...]（肯定→注意の順で並べ替え済み）。"""
+    T = AXIS_TOPIC
+    pos     = [k for k, v, g, p in axis_cls if g == "pos"]
+    lean    = [k for k, v, g, p in axis_cls if g == "lean"]
+    mixed   = [k for k, v, g, p in axis_cls if g == "mixed"]
+    caution = [k for k, v, g, p in axis_cls if g == "caution"]
+    lowvol = reviews < 10
+    s = ""
+    if lowvol:
+        s += f"口コミはまだ{reviews}件と多くありませんが、"
+    # 肯定的な傾向を自然文で
+    if len(pos) >= 2:
+        head = f"{T[pos[0]]}や{T[pos[1]]}"
+        lead = f"{head}への肯定的な声がみられ" if lowvol else f"{head}に関する肯定的な投稿が目立ち"
+        rest = pos[2:5]
+        if rest:
+            s += lead + "、" + "・".join(T[k] for k in rest) + "についても複数の口コミで評価されています。"
+        else:
+            s += lead + "ます。"
+    elif len(pos) == 1:
+        s += f"{T[pos[0]]}に関する肯定的な投稿が" + ("見られます。" if lowvol else "目立ちます。")
+    elif lean:
+        s += f"{T[lean[0]]}などについて肯定的な声が見られます。"
+    elif not mixed and not caution:
+        s += "口コミからは、はっきりした傾向は読み取りにくい状況です。"
+    # 幅のある／意見が分かれる傾向
+    span = [k for k in (lean + mixed) if not (not pos and lean and k == lean[0])]
+    if span:
+        if span[:2] == ["待ち時間"]:
+            s += "待ち時間については、短かったという声がある一方、時間帯や混み具合によって印象が分かれる投稿も見られました。"
+        else:
+            s += "一方で、" + "・".join(T[k] for k in span[:2]) + "については、受け止めに幅のある投稿も見られました。"
+    # 注意の声（口コミが十分ある医院でのみ「気になる声」と述べる。少数院では断定しない）
+    if caution and reviews >= 10:
+        s += f"{T[caution[0]]}については、気になる点として挙げる声も確認できました。"
+    s += f"（Google口コミ{reviews}件をAIが分析）"
+    return s
 
 def hours_rows(hours):
     """Google由来の日本語診療時間を（曜日ラベル, 時間帯タプル）の行リストに変換。
@@ -925,29 +1043,46 @@ def build_page(c, slug=""):
     if h_table or info_html:
         sec_access = h_table + (hours_note_html(c, analyzed) if h_table else "") + info_html + map_link
 
-    # ── ③口コミから見える傾向（数値バー廃止→傾向表。指数は分析根拠で開示） ──
-    # 肯定的な声が多い順に並べ、左列は「患者が実際に書いた肯定の声」で示す
-    # （例：「待ち時間」だけだと"待たされる"と誤読されるため「待ち時間が短い」と明示する）
-    axis_vals = sorted(((k, ps.get(k) or 0) for k in PATIENT_AXES if (ps.get(k) or 0) > 0),
-                       key=lambda kv: -kv[1])
+    # ── ③口コミから見える傾向（2026-07-15 分類ロジック再設計） ──
+    # 各テーマを「言及指数×口コミ総数」で分類し、テーマ名＋言及傾向文＋向きバッジで示す。
+    # 表現は分類に対応した候補プールから選び、同一ページ内で直前と重ならないよう順に回す。
+    axis_cls = []
+    for k in PATIENT_AXES:
+        v = ps.get(k) or 0
+        if v > 0:
+            g, prom = classify_review_axis(k, v, reviews)
+            axis_cls.append((k, v, g, prom))
+    # 肯定→注意の順、その中では指数の高い順（強い特徴が上）に並べる
+    axis_cls.sort(key=lambda t: (_GROUP_ORDER[t[2]], -t[1]))
     trend_rows = ""
-    for k, v in axis_vals:
-        word, cls = trend_word(v)
-        trend_rows += f'<tr><td>{esc(AXIS_QUOTE[k])}</td><td class="v{cls}">{word}</td></tr>'
+    pool_used = {}      # プールごとの使用回数（重複回避のローテーション）
+    prev_txt = ""       # 直前の表現（連続同一を避ける）
+    for k, v, g, prom in axis_cls:
+        key = _phrase_key(g, prom)
+        pool = REVIEW_PHRASES[key]
+        i = pool_used.get(key, 0)
+        txt = pool[i % len(pool)]
+        if txt == prev_txt and len(pool) > 1:          # 直前と同一なら次候補へ
+            i += 1
+            txt = pool[i % len(pool)]
+        pool_used[key] = i + 1
+        prev_txt = txt
+        blab, bcls = review_badge(g, prom)
+        trend_rows += (f'<tr><td class="rr-tr-topic">{esc(AXIS_TOPIC[k])}</td>'
+                       f'<td class="rr-tr-desc">{esc(txt)}</td>'
+                       f'<td class="rr-tr-badge"><span class="rr-badge {bcls}">{esc(blab)}</span></td></tr>')
     sec_reviews = ""
     if trend_rows and reviews:
-        s = ""
-        if strong_axes:
-            s += "口コミでは「" + "」「".join(AXIS_QUOTE[k] for k in strong_axes[:3]) + "」といった内容が多く確認できました。"
-        if weak_axes:
-            s += "一方で、" + "・".join(AXIS_SHORT[k] for k in weak_axes[:2]) + "については評価が分かれています。"
-        s += f"（Google口コミ{reviews}件をAIが分析）"
-        sec_reviews = (f'<p class="rr-review-text">{esc(s)}</p>'
-                       '<table class="rr-trend"><thead><tr><th>患者さんの口コミで見られた声</th><th>口コミでの多さ</th></tr></thead>'
+        summ = review_summary(axis_cls, reviews)
+        sec_reviews = (f'<p class="rr-review-text">{esc(summ)}</p>'
+                       '<table class="rr-trend"><thead><tr>'
+                       '<th>テーマ</th><th>口コミでの言及のされ方</th><th class="th-badge">傾向</th></tr></thead>'
                        f'<tbody>{trend_rows}</tbody></table>'
-                       '<p class="rr-note">※「口コミでの多さ」は、その声が口コミ本文にどれくらい登場したかを'
-                       'AIが分類したもので、医院の医療技術そのものを採点したものではありません。'
-                       '分類の目安（言及指数）は下の「この分析は何にもとづくか」で開示しています。</p>')
+                       '<p class="rr-note">※ 各テーマは、その話題が口コミ本文にどの程度・どのように登場したかを'
+                       'AIが分類したものです（口コミ総数が少ない医院ほど控えめに表現しています）。'
+                       '医療技術そのものを採点・格付けするものではなく、'
+                       '「口コミ上で確認できた言及の傾向」を示します。判定の内訳は下の'
+                       '「この分析は何にもとづくか」で開示しています。</p>')
 
     # 診療理念・注力治療（実データのみ・従来どおり）
     care_bits = ""
@@ -1004,8 +1139,13 @@ def build_page(c, slug=""):
     idx_txt = "・".join(f"{AXIS_PATIENT_LABEL[k]} {int(ps[k])}" for k in PATIENT_AXES if (ps.get(k) or 0) > 0)
     if idx_txt:
         meth += ("<p><strong>傾向の分類方法：</strong>口コミ本文の文脈をAIが話題ごとに定量化した"
-                 f"「言及指数」（100点満点：{esc(idx_txt)}）を「多くの口コミで見られた（80以上）／"
-                 "ときどき見られた（76〜79）／評価が分かれた（75以下または肯定否定が混在）」に区分しています。"
+                 f"「言及指数」（100点満点：{esc(idx_txt)}）と、その医院の口コミ総数（{reviews}件）を"
+                 "組み合わせて分類しています。指数の高さで<strong>向き</strong>を"
+                 "（肯定的／肯定寄り・幅あり／意見が分かれる／注意する声／判断保留）、"
+                 "口コミ総数で言える<strong>多さの上限</strong>を決めます"
+                 "（＝口コミが少ない医院に「多くの口コミで」とは言いません）。"
+                 "肯定率・否定率などの内訳は元データに存在しないため用いておらず、"
+                 "指数は肯定寄りに重みづけた言及の強さの推定であって、"
                  "医療技術そのものの評価ではありません。</p>")
     meth += (f"<p><strong>情報充実度：</strong>{m['confidence']}/100"
              "（この医院の分析に使えた公開情報の量と一致度の指標です。分析が正しい確率ではありません）。"
@@ -1100,7 +1240,7 @@ TEMPLATE = '''<!DOCTYPE html>
 <style>
 :root{--pine:#1f4b3f;--terra:#d98b5f;--paper:#f6f8f7;--ink:#1c2b25;--ink2:#5c6d66;--line:#e4ebe7;--mono:'Roboto Mono',monospace;}
 *{box-sizing:border-box;}
-body{margin:0;font-family:'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;line-height:1.8;}
+body{margin:0;font-family:'Noto Sans JP','Hiragino Kaku Gothic ProN',sans-serif;color:var(--ink);background:var(--paper);-webkit-font-smoothing:antialiased;line-height:1.75;}
 a{color:inherit;}
 .rr-nav{background:var(--pine);color:#fff;padding:0 clamp(20px,4vw,40px);height:64px;display:flex;align-items:center;justify-content:space-between;}
 .rr-nav .logo{font-weight:700;text-decoration:none;font-family:'Zen Kaku Gothic New','Hiragino Kaku Gothic ProN',sans-serif;font-size:.98rem;letter-spacing:.02em;}
@@ -1111,34 +1251,34 @@ a{color:inherit;}
 .rr-navlinks a:hover{color:#fff;}
 @media(max-width:820px){.rr-navlinks{display:none;}}
 /* ── レポートヘッダー ── */
-.rr-hero{background:var(--pine);color:#fff;padding:clamp(30px,5vw,56px) clamp(20px,4vw,40px) clamp(40px,5vw,60px);}
+.rr-hero{background:var(--pine);color:#fff;padding:clamp(22px,3.6vw,40px) clamp(20px,4vw,40px) clamp(24px,3.6vw,42px);}
 .rr-hero-in{max-width:860px;margin:0 auto;}
 .rr-tag{display:inline-flex;align-items:center;gap:8px;font-family:var(--mono);font-size:.7rem;letter-spacing:.22em;color:var(--terra);border:1px solid rgba(217,139,95,.5);border-radius:999px;padding:5px 14px;margin-bottom:20px;}
 .rr-tag::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--terra);}
-.rr-name{font-family:'Shippori Mincho',serif;font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:700;margin:0 0 10px;line-height:1.35;}
-.rr-catch{color:#d6e6df;font-size:1.02rem;margin:0 0 14px;}
-.rr-address{color:#a9c6bb;font-size:.86rem;margin:0 0 18px;}
-.rr-hmeta{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;background:rgba(255,255,255,.14);border-radius:12px;overflow:hidden;margin-bottom:14px;}
-.rr-metric{background:rgba(255,255,255,.06);padding:14px 10px;text-align:center;}
+.rr-name{font-family:'Shippori Mincho',serif;font-size:clamp(1.6rem,3.4vw,2.3rem);font-weight:700;margin:0 0 8px;line-height:1.3;}
+.rr-catch{color:#d6e6df;font-size:1.02rem;margin:0 0 10px;}
+.rr-address{color:#a9c6bb;font-size:.86rem;margin:0 0 12px;}
+.rr-hmeta{display:grid;grid-template-columns:repeat(auto-fit,minmax(110px,1fr));gap:1px;background:rgba(255,255,255,.14);border-radius:12px;overflow:hidden;margin-bottom:10px;}
+.rr-metric{background:rgba(255,255,255,.06);padding:10px 10px;text-align:center;}
 .rr-metric-v{display:block;font-family:var(--mono);font-weight:700;font-size:1.05rem;color:#fff;}
 .rr-metric-k{display:block;font-family:var(--mono);font-size:.6rem;letter-spacing:.08em;text-transform:uppercase;color:#a9c6bb;margin-top:4px;}
-.rr-fact{color:#8fae9f;font-size:.74rem;margin:0 0 22px;}
+.rr-fact{color:#8fae9f;font-size:.74rem;margin:0 0 14px;}
 .rr-links{display:flex;gap:12px;flex-wrap:wrap;}
 .rr-btn{display:inline-block;padding:11px 24px;border-radius:8px;font-size:.86rem;font-weight:500;text-decoration:none;border:1px solid rgba(255,255,255,.4);color:#fff;}
 .rr-btn.primary{background:var(--terra);border-color:var(--terra);font-weight:700;}
 .rr-btn:hover{opacity:.92;}
 /* ── 本文 ── */
-main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,40px) 80px;}
-.rr-sec{margin:0 0 clamp(44px,6vw,68px);}
-.rr-sec-h{display:flex;align-items:flex-start;gap:16px;margin:0 0 22px;}
+main{max-width:860px;margin:0 auto;padding:clamp(22px,3.2vw,40px) clamp(20px,4vw,40px) 36px;}
+.rr-sec{margin:0 0 clamp(18px,2vw,24px);}
+.rr-sec-h{display:flex;align-items:flex-start;gap:16px;margin:0 0 12px;}
 .rr-sec-n{font-family:var(--mono);font-size:.9rem;color:var(--terra);font-weight:500;padding-top:3px;min-width:26px;}
 .rr-sec-en{display:block;font-family:var(--mono);font-size:.64rem;letter-spacing:.2em;color:var(--ink2);text-transform:uppercase;}
 .rr-sec-h h2{font-size:1.24rem;font-weight:700;color:var(--pine);margin:2px 0 0;}
 /* AI要約カード（Apple Intelligence 風） */
-.rr-ai{position:relative;background:#fff;border-radius:14px;padding:24px 26px;border:1px solid var(--line);box-shadow:0 4px 24px rgba(20,50,40,.05);overflow:hidden;}
+.rr-ai{position:relative;background:#fff;border-radius:14px;padding:18px 22px;border:1px solid var(--line);box-shadow:0 4px 24px rgba(20,50,40,.05);overflow:hidden;}
 .rr-ai::before{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:linear-gradient(180deg,var(--terra),var(--pine));}
 .rr-ai-label{display:inline-block;font-family:var(--mono);font-size:.62rem;letter-spacing:.2em;color:var(--terra);margin-bottom:8px;}
-.rr-ai p{margin:0;font-size:1.02rem;line-height:1.9;}
+.rr-ai p{margin:0;font-size:1.02rem;line-height:1.8;}
 /* ＋根拠パネル（2026-07-11） */
 .rr-ev-toggle{margin-top:14px;background:none;border:1px solid var(--line);border-radius:999px;
   padding:7px 16px;font-size:.8rem;color:var(--pine);cursor:pointer;font-family:inherit;}
@@ -1180,21 +1320,21 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-bar-fill{display:block;height:100%;background:linear-gradient(90deg,var(--pine),#2e6a58);border-radius:6px;transition:width .6s ease;}
 .rr-bar-v{font-weight:700;color:var(--pine);text-align:right;font-family:var(--mono);font-size:.82rem;}
 /* チップ */
-.rr-chips{display:flex;flex-wrap:wrap;gap:9px;}
-.rr-chip{background:#eaf1ee;color:var(--pine);border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-size:.83rem;font-weight:500;}
+.rr-chips{display:flex;flex-wrap:wrap;gap:7px;}
+.rr-chip{background:#eaf1ee;color:var(--pine);border:1px solid var(--line);border-radius:999px;padding:5px 14px;font-size:.83rem;font-weight:500;}
 .rr-tag-link{background:#eaf1ee;color:var(--pine);border:1px solid var(--line);border-radius:999px;padding:6px 16px;font-size:.83rem;font-weight:500;text-decoration:none;transition:background .15s;}
 .rr-tag-link:hover{background:var(--terra);color:#fff;border-color:var(--terra);}
 .rr-related-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:2px;}
 .rr-related-list li{border-top:1px solid var(--line);}
 .rr-related-list li:first-child{border-top:none;}
-.rr-related-link{display:flex;align-items:center;gap:8px;padding:12px 2px;font-size:.92rem;font-weight:600;color:var(--pine);text-decoration:none;}
+.rr-related-link{display:flex;align-items:center;gap:8px;padding:9px 2px;font-size:.92rem;font-weight:600;color:var(--pine);text-decoration:none;}
 .rr-related-link:hover{text-decoration:underline;}
 .rr-related-link::before{content:"📄";flex-shrink:0;}
 /* リード・引用・リスト */
-.rr-lead{font-size:.98rem;color:var(--ink);margin:0 0 14px;}
-.rr-quote{font-size:1.08rem;color:var(--pine);font-weight:500;margin:0 0 16px;padding-left:16px;border-left:3px solid var(--terra);line-height:1.8;}
+.rr-lead{font-size:.98rem;color:var(--ink);margin:0 0 10px;}
+.rr-quote{font-size:1.08rem;color:var(--pine);font-weight:500;margin:0 0 12px;padding-left:16px;border-left:3px solid var(--terra);line-height:1.75;}
 .rr-docname{font-size:1.05rem;font-weight:700;color:var(--pine);margin:0 0 8px;}
-.rr-quals{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;}
+.rr-quals{margin:12px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:5px;}
 .rr-quals li{position:relative;padding-left:22px;font-size:.9rem;color:var(--ink2);}
 .rr-quals li::before{content:"◆";position:absolute;left:0;color:var(--terra);font-size:.7rem;top:4px;}
 .rr-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
@@ -1205,29 +1345,29 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-concl-label.good{color:#2e8c6a;}
 .rr-concl-label.bad{color:var(--terra);}
 .rr-concl-label:not(:first-child){margin-top:20px;}
-.rr-note{color:var(--ink2);font-size:.76rem;margin:14px 0 0;line-height:1.75;}
+.rr-note{color:var(--ink2);font-size:.76rem;margin:10px 0 0;line-height:1.7;}
 /* 基本情報テーブル */
 .rr-info{width:100%;border-collapse:collapse;font-size:.92rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-.rr-info th{text-align:left;color:var(--ink2);font-weight:500;width:110px;padding:14px 20px;vertical-align:top;border-bottom:1px solid var(--line);background:#fbfcfb;}
-.rr-info td{padding:14px 20px;border-bottom:1px solid var(--line);}
+.rr-info th{text-align:left;color:var(--ink2);font-weight:500;width:110px;padding:11px 18px;vertical-align:top;border-bottom:1px solid var(--line);background:#fbfcfb;}
+.rr-info td{padding:11px 18px;border-bottom:1px solid var(--line);}
 .rr-info tr:last-child th,.rr-info tr:last-child td{border-bottom:none;}
 /* CTA */
-.rr-cta{background:var(--pine);border-radius:18px;padding:40px 30px;text-align:center;margin:8px 0 16px;}
-.rr-cta-t{color:#fff;font-size:1.3rem;font-weight:700;margin:0 0 8px;}
-.rr-cta-s{color:#cfe0d8;font-size:.92rem;margin:0 0 22px;}
+.rr-cta{background:var(--pine);border-radius:18px;padding:28px 26px;text-align:center;margin:4px 0 0;}
+.rr-cta-t{color:#fff;font-size:1.24rem;font-weight:700;margin:0 0 6px;}
+.rr-cta-s{color:#cfe0d8;font-size:.92rem;margin:0 0 16px;}
 .rr-cta-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;}
 .rr-cta-btn{display:inline-block;background:var(--terra);color:#fff;font-weight:700;padding:14px 32px;border-radius:10px;text-decoration:none;font-size:.95rem;}
 .rr-cta-btn.ghost{background:transparent;border:1px solid rgba(255,255,255,.5);}
 .rr-cta-btn:hover{opacity:.93;}
 /* フッター */
-.rr-foot{border-top:1px solid var(--line);padding:32px clamp(20px,4vw,40px);color:var(--ink2);font-size:.78rem;line-height:1.9;}
+.rr-foot{border-top:1px solid var(--line);padding:22px clamp(20px,4vw,40px);color:var(--ink2);font-size:.78rem;line-height:1.85;}
 .rr-foot .in{max-width:860px;margin:0 auto;}
 @media(max-width:560px){.rr-bar{grid-template-columns:92px 1fr 42px;gap:10px;}}
 /* ── 次の一歩（回遊導線・2026-07-14 指示書③） ── */
 .rr-next{margin:0;padding:0;list-style:none;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
 .rr-next li{border-bottom:1px solid var(--line);}
 .rr-next li:last-child{border-bottom:none;}
-.rr-next a{display:block;padding:14px 20px;text-decoration:none;transition:background .15s;}
+.rr-next a{display:block;padding:11px 20px;text-decoration:none;transition:background .15s;}
 .rr-next a:hover{background:rgba(31,75,63,.04);}
 .rr-next .t{display:block;font-weight:700;color:var(--pine);font-size:.95rem;}
 .rr-next .t::after{content:"→";margin-left:8px;color:var(--terra);font-weight:500;}
@@ -1237,19 +1377,19 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-btn-line:hover{background:var(--pine);color:#fff;}
 /* ── 患者向け再編集（2026-07-14 全面改修） ── */
 .rr-summary{color:#eaf3ee;font-size:1.06rem;font-weight:500;margin:0 0 6px;line-height:1.7;}
-.rr-summary-facts{color:#cfe0d8;font-size:.9rem;margin:0 0 18px;}
-.rr-hchips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px;}
+.rr-summary-facts{color:#cfe0d8;font-size:.9rem;margin:0 0 12px;}
+.rr-hchips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 14px;}
 .rr-hchip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 15px;font-size:.84rem;font-weight:500;color:#fff;}
 .rr-sec-h{display:block;}
 .rr-sec-h h2{padding-left:12px;border-left:4px solid var(--pine);font-size:1.28rem;}
-.rr-panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:0 4px 20px rgba(20,50,40,.04);}
-.rr-subhead{font-size:.95rem;font-weight:700;color:var(--pine);margin:14px 0 8px;}
+.rr-panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:14px 16px;box-shadow:0 4px 20px rgba(20,50,40,.04);}
+.rr-subhead{font-size:.95rem;font-weight:700;color:var(--pine);margin:10px 0 6px;}
 .rr-list.plain{gap:0;}
-.rr-list.plain li{padding:7px 0 7px 20px;border-bottom:1px solid var(--line);}
+.rr-list.plain li{padding:6px 0 6px 20px;border-bottom:1px solid var(--line);}
 .rr-list.plain li:last-child{border-bottom:none;}
 .rr-list.plain li::before{content:"–";position:absolute;left:0;top:7px;color:var(--ink2);}
 .rr-hours{width:100%;border-collapse:collapse;font-size:.94rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-.rr-hours th,.rr-hours td{padding:12px 16px;border-bottom:1px solid var(--line);text-align:left;}
+.rr-hours th,.rr-hours td{padding:9px 16px;border-bottom:1px solid var(--line);text-align:left;}
 .rr-hours thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.82rem;}
 .rr-hours tbody th{width:96px;color:var(--ink2);font-weight:500;background:#fbfcfb;}
 .rr-hours tr:last-child th,.rr-hours tr:last-child td{border-bottom:none;}
@@ -1257,18 +1397,32 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-hours-note strong{color:#2c3532;}
 .rr-maplink{display:inline-block;margin-top:14px;padding:10px 20px;border:1px solid var(--pine);border-radius:8px;font-size:.86rem;font-weight:500;color:var(--pine);text-decoration:none;background:#fff;}
 .rr-maplink:hover{background:var(--pine);color:#fff;}
-.rr-review-text{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;font-size:.98rem;line-height:1.9;margin:0 0 16px;}
-.rr-trend{width:100%;border-collapse:collapse;font-size:.94rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
-.rr-trend th,.rr-trend td{padding:12px 18px;border-bottom:1px solid var(--line);text-align:left;}
-.rr-trend thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.82rem;}
+.rr-review-text{background:#fff;border:1px solid var(--line);border-radius:14px;padding:16px 20px;font-size:.96rem;line-height:1.85;margin:0 0 12px;}
+.rr-trend{width:100%;border-collapse:collapse;font-size:.92rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.rr-trend th,.rr-trend td{padding:10px 18px;border-bottom:1px solid var(--line);text-align:left;vertical-align:middle;}
+.rr-trend thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.8rem;}
 .rr-trend tr:last-child th,.rr-trend tr:last-child td{border-bottom:none;}
-.rr-trend td.v{width:170px;font-weight:700;color:var(--pine);}
-.rr-trend td.v.mixed{color:var(--terra);}
+.rr-tr-topic{width:120px;font-weight:700;color:var(--pine);}
+.rr-tr-desc{color:#33403b;line-height:1.65;}
+.rr-tr-badge{width:104px;text-align:right;white-space:nowrap;}
+.rr-trend .th-badge{text-align:right;}
+/* 傾向バッジ：口コミでの言及の向きを示す（星・点数にしない＝採点と誤読させない） */
+.rr-badge{display:inline-block;font-size:.72rem;font-weight:700;padding:3px 10px;border-radius:999px;border:1px solid transparent;letter-spacing:.02em;}
+.rr-badge.pos{background:rgba(46,140,106,.1);color:#1f7a55;border-color:rgba(46,140,106,.25);}
+.rr-badge.mix{background:rgba(217,139,95,.12);color:#b7642f;border-color:rgba(217,139,95,.3);}
+.rr-badge.caution{background:#f4efe7;color:#8a6d3b;border-color:#e6dcc7;}
+.rr-badge.na{background:#f0f2f1;color:#7c8681;border-color:var(--line);}
+@media(max-width:560px){
+  .rr-trend th,.rr-trend td{padding:9px 12px;}
+  .rr-tr-topic{width:auto;}
+  .rr-tr-badge{width:auto;}
+  .rr-badge{font-size:.68rem;padding:2px 8px;}
+}
 .rr-fold{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:16px;}
-.rr-fold-btn{width:100%;text-align:left;background:none;border:none;padding:18px 22px;font-family:inherit;font-size:1rem;font-weight:700;color:var(--pine);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.rr-fold-btn{width:100%;text-align:left;background:none;border:none;padding:14px 20px;font-family:inherit;font-size:1rem;font-weight:700;color:var(--pine);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;}
 .rr-fold-btn .sub{display:block;font-size:.8rem;font-weight:400;color:var(--ink2);margin-top:4px;line-height:1.6;}
 .rr-fold-btn .mk{flex-shrink:0;color:var(--terra);font-weight:700;}
-.rr-fold-body{padding:0 22px 20px;font-size:.9rem;line-height:1.85;color:#3d4643;}
+.rr-fold-body{padding:0 20px 16px;font-size:.9rem;line-height:1.8;color:#3d4643;}
 .rr-fold-body p{margin:0 0 10px;}
 .rr-fold-body ul{margin:0 0 10px;padding-left:20px;}
 .rr-sticky{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(20,50,40,.08);padding:8px 10px;gap:8px;}
@@ -1282,6 +1436,26 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rf-crumb a:hover{color:var(--pine);text-decoration:underline;}
 .rf-crumb .rf-sep{color:var(--line);}
 .rf-crumb .rf-current{color:var(--terra);font-weight:700;}
+/* ── 印刷・PDF出力：空白ページの根本対策＋自然なページ分割 ── */
+@media print{
+  @page{margin:12mm;}
+  *{-webkit-print-color-adjust:exact;print-color-adjust:exact;}
+  html,body{background:#fff !important;}
+  body{padding-bottom:0 !important;}
+  /* 固定CTAは画面下に貼り付く要素＝印刷では下部に予約領域を作り末尾に空白ページを生む主因。除去 */
+  .rr-sticky{display:none !important;}
+  .odr-brandbar,.rf-crumb{display:none !important;}   /* ナビ類は紙では省く */
+  main{padding:8px 0 0 !important;}
+  .rr-hero{padding:20px 22px !important;}
+  .rr-sec{margin:0 0 14px !important;}
+  /* カード・表・見出しはページ途中で割らない（自然な区切りにする） */
+  .rr-panel,.rr-info,.rr-hours,.rr-trend,.rr-ai,.rr-fold,.rr-next,.rr-review-text,
+  .rr-cta,.rr-hero,.rr-trend tr,.rr-info tr,.rr-hours tr,.rr-next li{break-inside:avoid;}
+  .rr-sec-h{break-after:avoid;}                       /* 見出しだけ次ページに取り残さない */
+  .rr-cta{margin:12px 0 0 !important;}
+  .rr-foot{break-inside:avoid;padding:14px 0 0;}      /* 末尾を詰めて余分な改ページを防ぐ */
+  a{text-decoration:none !important;color:inherit !important;}
+}
 </style>
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
