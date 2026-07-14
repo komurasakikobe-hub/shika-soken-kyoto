@@ -622,7 +622,18 @@ h1,h2,h3,h4,h5,p,li,dd,figcaption,td,th,
   line-break:strict;      /* 日本語の禁則処理 */
   text-wrap:pretty;       /* 1文字残り・不自然に短い最終行を自動回避 */
 }
-h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
+h1,h2,h3,h4{ text-wrap:balance; }   /* 見出し・カード小見出しは各行の長さを均等に */
+.nb{white-space:nowrap;}   /* 語中・「」内で改行させないフレーズ保護（改行マニュアル準拠） */
+
+/* モバイル：POINTカードのタイトル列が狭く語中で折れる問題の対策
+   （「POINT 01」ラベルを独立行にしてタイトルに横幅を渡す・左右余白を圧縮） */
+@media(max-width:760px){
+  .research-point>summary{padding:15px 18px;gap:8px 12px;flex-wrap:wrap;}
+  .research-point-num{flex-basis:100%;}
+  .research-point[open]>summary{padding-bottom:4px;}
+  .research-point-body{padding:0 18px 18px;}
+  .ai-insight-card{padding-left:20px;padding-right:20px;}
+}
 </style>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "Organization", "name": "京都歯科総研", "alternateName": "Kyoto Dental Research Institute", "url": "https://kyoto.shikasoken.com/", "description": "京都市の歯科医院673院超の公開情報とGoogle口コミをAIで分析・公開する独立系データメディア。掲載順位は金銭で変わりません。", "email": "info@shikasoken.com"}</script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "WebSite", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/", "publisher": {"@type": "Organization", "name": "京都歯科総研"}}</script>
@@ -927,7 +938,7 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
         <details class="research-point">
           <summary>
             <span class="research-point-num">POINT 01</span>
-            <h4>口コミの「総件数」と「返信の丁寧さ」を見る</h4>
+            <h4>口コミの<span class="nb">「総件数」</span>と<span class="nb">「返信の丁寧さ」</span>を見る</h4>
           </summary>
           <div class="research-point-body">
             <p>星の数だけでは判断できません。口コミ3件の星4.5より、50件の星4.3のほうが評価は安定しています。さらに、一つひとつの口コミに丁寧に返信している院は、患者への向き合い方も誠実な傾向があります。</p>
@@ -937,7 +948,7 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
         <details class="research-point">
           <summary>
             <span class="research-point-num">POINT 02</span>
-            <h4>自分の悩みに合った「専門性」を確認する</h4>
+            <h4>自分の悩みに合った<span class="nb">「専門性」</span>を確認する</h4>
           </summary>
           <div class="research-point-body">
             <p>虫歯治療は一般歯科で十分ですが、矯正・インプラント・根管治療には専門的な技術が要ります。自分の悩みを得意とする院を選ぶことが、納得できる治療への近道です。</p>
@@ -947,7 +958,7 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
         <details class="research-point">
           <summary>
             <span class="research-point-num">POINT 03</span>
-            <h4>通い続けられる「利便性」を妥協しない</h4>
+            <h4>通い続けられる<span class="nb">「利便性」</span>を妥協しない</h4>
           </summary>
           <div class="research-point-body">
             <p>歯科治療は、最後まで通いきって初めて効果が出ます。途中で中断すると、費用も時間も無駄になりがちです。駅からの距離に加え、夜間・土日の診療や予約の取りやすさなど、無理なく続けられる環境かを事前に確認しましょう。</p>
@@ -965,17 +976,17 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
       <div class="ai-insights">
         <div class="ai-insight-card">
           <span class="insight-tag">DATA VOLUME</span>
-          <h4>「ウェブ上の評判の総量」を読んでいる</h4>
+          <h4><span class="nb">「ウェブ上の評判の総量」</span>を読んでいる</h4>
           <p>ChatGPTやGeminiが医院を推薦するとき、その根拠はホームページ・口コミ・ブログ・SNSなど、ウェブ上に存在する情報の総量と質です。広告費は一切関係ありません。</p>
         </div>
         <div class="ai-insight-card">
           <span class="insight-tag">CONTEXT</span>
-          <h4>「言及される文脈」が評価を左右する</h4>
+          <h4><span class="nb">「言及される文脈」</span>が評価を左右する</h4>
           <p>口コミが多くても否定的な文脈が多い院は推薦されにくくなります。「痛みが少ない」「説明が丁寧」「清潔」といった具体的なポジティブワードが多い院ほど、AIから高く評価されます。</p>
         </div>
         <div class="ai-insight-card">
           <span class="insight-tag">SINCERITY</span>
-          <h4>オーナー返信の「誠実さ」まで感知する</h4>
+          <h4>オーナー返信の<span class="nb">「誠実さ」まで</span>感知する</h4>
           <p>口コミへのオーナー返信テキストもAIの学習データです。定型文の使い回しではなく、患者の声に真摯に向き合っている文章かどうかを、AIはトーンから読み取ります。</p>
         </div>
       </div>

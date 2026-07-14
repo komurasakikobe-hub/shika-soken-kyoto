@@ -676,12 +676,13 @@ AXIS_QUOTE = {
 }
 
 def trend_word(v):
-    """言及指数→患者向けの傾向語。区分の基準は分析根拠の折りたたみで開示する。"""
+    """言及指数→患者向けの傾向語。「口コミの中でどれくらい見られたか」を、
+    基準（何に対して多いのか）が患者に伝わる言い回しにする。区分の基準は分析根拠の折りたたみで開示。"""
     if v >= 80:
-        return ("多い", "")
+        return ("多くの口コミで見られた", "")
     if v >= 76:
-        return ("やや多い", "")
-    return ("評価が分かれる", " mixed")
+        return ("ときどき見られた", "")
+    return ("評価が分かれた", " mixed")
 
 def hours_rows(hours):
     """Google由来の日本語診療時間を（曜日ラベル, 時間帯タプル）の行リストに変換。
@@ -925,13 +926,14 @@ def build_page(c, slug=""):
         sec_access = h_table + (hours_note_html(c, analyzed) if h_table else "") + info_html + map_link
 
     # ── ③口コミから見える傾向（数値バー廃止→傾向表。指数は分析根拠で開示） ──
+    # 肯定的な声が多い順に並べ、左列は「患者が実際に書いた肯定の声」で示す
+    # （例：「待ち時間」だけだと"待たされる"と誤読されるため「待ち時間が短い」と明示する）
+    axis_vals = sorted(((k, ps.get(k) or 0) for k in PATIENT_AXES if (ps.get(k) or 0) > 0),
+                       key=lambda kv: -kv[1])
     trend_rows = ""
-    for k in PATIENT_AXES:
-        v = ps.get(k) or 0
-        if v <= 0:
-            continue
+    for k, v in axis_vals:
         word, cls = trend_word(v)
-        trend_rows += f'<tr><td>{esc(AXIS_PATIENT_LABEL[k])}</td><td class="v{cls}">{word}</td></tr>'
+        trend_rows += f'<tr><td>{esc(AXIS_QUOTE[k])}</td><td class="v{cls}">{word}</td></tr>'
     sec_reviews = ""
     if trend_rows and reviews:
         s = ""
@@ -941,9 +943,9 @@ def build_page(c, slug=""):
             s += "一方で、" + "・".join(AXIS_SHORT[k] for k in weak_axes[:2]) + "については評価が分かれています。"
         s += f"（Google口コミ{reviews}件をAIが分析）"
         sec_reviews = (f'<p class="rr-review-text">{esc(s)}</p>'
-                       '<table class="rr-trend"><thead><tr><th>口コミで多く見られた内容</th><th>傾向</th></tr></thead>'
+                       '<table class="rr-trend"><thead><tr><th>患者さんの口コミで見られた声</th><th>口コミでの多さ</th></tr></thead>'
                        f'<tbody>{trend_rows}</tbody></table>'
-                       '<p class="rr-note">※「傾向」は口コミ本文にその話題の肯定的な言及がどの程度あったかを'
+                       '<p class="rr-note">※「口コミでの多さ」は、その声が口コミ本文にどれくらい登場したかを'
                        'AIが分類したもので、医院の医療技術そのものを採点したものではありません。'
                        '分類の目安（言及指数）は下の「この分析は何にもとづくか」で開示しています。</p>')
 
@@ -1002,8 +1004,8 @@ def build_page(c, slug=""):
     idx_txt = "・".join(f"{AXIS_PATIENT_LABEL[k]} {int(ps[k])}" for k in PATIENT_AXES if (ps.get(k) or 0) > 0)
     if idx_txt:
         meth += ("<p><strong>傾向の分類方法：</strong>口コミ本文の文脈をAIが話題ごとに定量化した"
-                 f"「言及指数」（100点満点：{esc(idx_txt)}）を「多い（80以上）／やや多い（76〜79）／"
-                 "評価が分かれる（75以下または肯定否定が混在）」に区分しています。"
+                 f"「言及指数」（100点満点：{esc(idx_txt)}）を「多くの口コミで見られた（80以上）／"
+                 "ときどき見られた（76〜79）／評価が分かれた（75以下または肯定否定が混在）」に区分しています。"
                  "医療技術そのものの評価ではありません。</p>")
     meth += (f"<p><strong>情報充実度：</strong>{m['confidence']}/100"
              "（この医院の分析に使えた公開情報の量と一致度の指標です。分析が正しい確率ではありません）。"
@@ -1195,8 +1197,8 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-quals{margin:14px 0 0;padding:0;list-style:none;display:flex;flex-direction:column;gap:7px;}
 .rr-quals li{position:relative;padding-left:22px;font-size:.9rem;color:var(--ink2);}
 .rr-quals li::before{content:"◆";position:absolute;left:0;color:var(--terra);font-size:.7rem;top:4px;}
-.rr-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:9px;}
-.rr-list li{position:relative;padding-left:26px;font-size:.95rem;}
+.rr-list{margin:0;padding:0;list-style:none;display:flex;flex-direction:column;gap:6px;}
+.rr-list li{position:relative;padding-left:22px;font-size:.9rem;line-height:1.6;}
 .rr-list.good li::before{content:"✓";position:absolute;left:0;color:#2e8c6a;font-weight:700;}
 .rr-list.bad li::before{content:"！";position:absolute;left:0;color:var(--terra);font-weight:700;}
 .rr-concl-label{font-size:.72rem;font-weight:700;letter-spacing:.04em;margin:0 0 10px;}
@@ -1240,11 +1242,12 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-hchip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 15px;font-size:.84rem;font-weight:500;color:#fff;}
 .rr-sec-h{display:block;}
 .rr-sec-h h2{padding-left:12px;border-left:4px solid var(--pine);font-size:1.28rem;}
-.rr-panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:0 4px 20px rgba(20,50,40,.04);}
-.rr-subhead{font-size:.95rem;font-weight:700;color:var(--pine);margin:22px 0 10px;}
-.rr-list.plain li{padding:10px 0 10px 20px;border-bottom:1px solid var(--line);}
+.rr-panel{background:#fff;border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:0 4px 20px rgba(20,50,40,.04);}
+.rr-subhead{font-size:.95rem;font-weight:700;color:var(--pine);margin:14px 0 8px;}
+.rr-list.plain{gap:0;}
+.rr-list.plain li{padding:7px 0 7px 20px;border-bottom:1px solid var(--line);}
 .rr-list.plain li:last-child{border-bottom:none;}
-.rr-list.plain li::before{content:"–";position:absolute;left:0;top:10px;color:var(--ink2);}
+.rr-list.plain li::before{content:"–";position:absolute;left:0;top:7px;color:var(--ink2);}
 .rr-hours{width:100%;border-collapse:collapse;font-size:.94rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
 .rr-hours th,.rr-hours td{padding:12px 16px;border-bottom:1px solid var(--line);text-align:left;}
 .rr-hours thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.82rem;}
@@ -1259,7 +1262,7 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-trend th,.rr-trend td{padding:12px 18px;border-bottom:1px solid var(--line);text-align:left;}
 .rr-trend thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.82rem;}
 .rr-trend tr:last-child th,.rr-trend tr:last-child td{border-bottom:none;}
-.rr-trend td.v{width:130px;font-weight:700;color:var(--pine);}
+.rr-trend td.v{width:170px;font-weight:700;color:var(--pine);}
 .rr-trend td.v.mixed{color:var(--terra);}
 .rr-fold{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:16px;}
 .rr-fold-btn{width:100%;text-align:left;background:none;border:none;padding:18px 22px;font-family:inherit;font-size:1rem;font-weight:700;color:var(--pine);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;}

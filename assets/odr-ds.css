@@ -160,7 +160,7 @@ body.odr{margin:0;font-family:var(--odr-sans);color:var(--odr-ink);background:va
 
 /* ===================== 改行・可読性の共通ルール（改行タイポグラフィ マニュアル v1.0準拠） =====================
    共有DSを読む全ページ（記事・研究・エリア・医院ページ等）に禁則処理と泣き別れ回避を効かせる。
-   balanceは付けない：本文の小見出し(h2/h3)でbalanceだと語中で割れることがあるため。 */
+   balanceは付けない：本文の小見出し(h2/h3)でbalanceだと語中で割れることがあるため（articles/style.css参照）。 */
 h1,h2,h3,h4,h5,h6,p,li,dd,dt,summary,figcaption,td,th,blockquote,button,
 .lead,.sec-lead{
   line-break:strict;      /* 日本語の禁則処理 */
