@@ -162,7 +162,10 @@ def check_links(path, src, errors, link_cache):
         else:
             full = os.path.normpath(os.path.join(base_dir, target))
         if full not in link_cache:
-            link_cache[full] = os.path.exists(full) or os.path.exists(os.path.join(full, "index.html"))
+            # 拡張子なしの正規URL（Cloudflare Pagesの308統一後の形。実ファイルは.html）も実在扱い
+            link_cache[full] = (os.path.exists(full)
+                                or os.path.exists(full + ".html")
+                                or os.path.exists(os.path.join(full, "index.html")))
         if not link_cache[full]:
             errors.append(f"[G-6] リンク先が存在しない: {relpath} → {href}")
 

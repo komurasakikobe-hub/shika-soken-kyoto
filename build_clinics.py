@@ -33,6 +33,11 @@ WARD_SLUGS = {
 ROOT = os.path.dirname(__file__)
 DB = os.path.join(ROOT, "clinic_db.json")
 SITE_CFG = json.load(open(os.path.join(ROOT, "site_config.json"), encoding="utf-8"))
+# 30秒診断のエリア事前選択に使う「この都市の有効な区」の集合。
+# site_config.jsonにwardsがある都市（神戸等）はそれを使い、無い都市（京都・区なし都市）は
+# WARD_SLUGSのキー（＝京都11区）にフォールバックする。区の無い市（尼崎等）は住所から区名が
+# 取れず空文字になり、この集合に一致しない＝診断リンクは都市全体版になる（都市分岐ハードコードなし）。
+VALID_WARDS = set(SITE_CFG.get("wards") or WARD_SLUGS.keys())
 CITY_SHORT = SITE_CFG.get("city_short", SITE_CFG.get("city", ""))
 N_PUBLISHED = SITE_CFG.get("stats", {}).get("clinics_published", 0)
 DOMAIN = SITE_CFG.get("domain", "shikasoken.com")
@@ -539,6 +544,77 @@ def evidence_panel_html(c):
             f'<div class="rr-ev-panel" hidden>{body}{note}</div>')
 
 
+def next_steps_html(c, ward_only, area_slug, tag_links):
+    """回遊導線ブロック「次の一歩」（2026-07-14 指示書③）。
+    医院ページを行き止まりにしないため、その医院のデータから
+    地域・条件・診断・最終行動への導線を動的生成する。
+    リンク先が実在するときだけ出す（404リンクを作らない）。
+    新規リンクは正規URL（.htmlなし・308統一後の形）で張る。
+    クリックはdata-odr-ev属性経由でGA4イベントを送る（末尾の委譲スクリプト参照）。"""
+    e = esc
+    items = []  # (event, filter_value, href, label, why)
+
+    # 1) 同じ区・市町の医院一覧（区別LPが実在するサイトのみ）
+    if area_slug:
+        items.append(("clinic_to_area", ward_only, f"../area/{area_slug}",
+                      f"{ward_only}の歯科医院一覧を見る",
+                      f"同じ{ward_only}の医院を、同じ分析基準で見比べられます。"))
+
+    # 2) 同じ特徴・設備を持つ医院（特徴ページの該当アンカーへ・最大2件）
+    for anchor, label in tag_links[:2]:
+        nice = label if label.endswith("医院") else f"{label}のある医院"
+        items.append(("clinic_to_condition", label, f"../features/#{anchor}",
+                      f"{nice}を一覧で見る",
+                      f"この医院と同じ「{label}」という特徴で、他の医院と比べられます。"))
+
+    # 3) 診療条件での比較（夜間・土日・駐車場。実データで確認できた条件のみ・最大2件）
+    conds = []
+    if evening_hours(c) is True:
+        conds.append(("夜間診療", "仕事帰りでも通いやすい、夜間対応の医院だけで比べられます。"))
+    if weekend_hours(c) is True:
+        conds.append(("土日診療", "平日の受診が難しい方向けに、土日に診療する医院だけで比べられます。"))
+    if parking_fact(c):
+        conds.append(("駐車場あり", "お車で通いたい方向けに、駐車場のある医院だけで比べられます。"))
+    for cond, why in conds[:2]:
+        items.append(("clinic_to_condition", cond, f"../shindan/?cond={quote(cond)}",
+                      f"「{cond}」の医院をランキングで比べる", why))
+
+    # 4) 30秒のAI診断（この医院のエリアを事前選択した状態で開く）
+    if ward_only and ward_only in VALID_WARDS:
+        items.append(("clinic_to_shindan", ward_only, f"../shindan/?ward={quote(ward_only)}",
+                      "30秒のAI診断で自分に合う医院を探す",
+                      f"{ward_only}を選択済みの状態から、症状やご希望の条件で絞り込めます。"))
+    else:
+        items.append(("clinic_to_shindan", "", "../shindan/",
+                      "30秒のAI診断で自分に合う医院を探す",
+                      "症状・エリア・ご希望の条件から、あなたに合う医院を絞り込めます。"))
+
+    rows = "".join(
+        f'<li><a href="{e(href)}" data-odr-ev="{e(ev)}" data-odr-v="{e(v)}">'
+        f'<span class="t">{e(label)}</span><span class="why">{e(why)}</span></a></li>'
+        for ev, v, href, label, why in items
+    )
+
+    # 5) 最終行動（公式サイト・地図・電話。データがあるものだけ）
+    final = ""
+    if c.get("url"):
+        final += (f'<a class="rr-btn-line" href="{e(c["url"])}" target="_blank" rel="noopener" '
+                  f'data-odr-ev="clinic_to_official" data-odr-v="公式サイト">公式サイトで診療内容を確認</a>')
+    if c.get("google_maps_url"):
+        final += (f'<a class="rr-btn-line" href="{e(c["google_maps_url"])}" target="_blank" rel="noopener" '
+                  f'data-odr-ev="clinic_to_map" data-odr-v="地図">Googleマップで場所・口コミを見る</a>')
+    phone = (c.get("phone") or "").strip()
+    if phone:
+        final += (f'<a class="rr-btn-line" href="tel:{e(phone.replace("-",""))}" '
+                  f'data-odr-ev="clinic_to_tel" data-odr-v="電話">電話で問い合わせる（{e(phone)}）</a>')
+    final_html = f'<div class="rr-next-final">{final}</div>' if final else ""
+
+    if not rows and not final_html:
+        return ""
+    return (f'<ul class="rr-next">{rows}</ul>{final_html}'
+            f'<p class="rr-note">リンク先の一覧・比較は、当サイトが公開情報から機械的に解析できた範囲にもとづく参考情報です。</p>')
+
+
 def build_page(c, slug=""):
     name   = c.get("name", "")
     catch  = c.get("catchphrase", "")
@@ -586,9 +662,11 @@ def build_page(c, slug=""):
 
     links = ""
     if url:
-        links += f'<a class="rr-btn primary" href="{esc(url)}" target="_blank" rel="noopener">公式サイト</a>'
+        links += (f'<a class="rr-btn primary" href="{esc(url)}" target="_blank" rel="noopener" '
+                  f'data-odr-ev="clinic_to_official" data-odr-v="公式サイト">公式サイト</a>')
     if maps:
-        links += f'<a class="rr-btn" href="{esc(maps)}" target="_blank" rel="noopener">Googleマップ</a>'
+        links += (f'<a class="rr-btn" href="{esc(maps)}" target="_blank" rel="noopener" '
+                  f'data-odr-ev="clinic_to_map" data-odr-v="地図">Googleマップ</a>')
 
     # ── 各セクションの中身を組み立て（空はNone扱いで非表示・自動連番） ──
     # 薄いページ（実データが閾値未満）では「公開情報が限定的…」等の定型空文を
@@ -693,6 +771,17 @@ def build_page(c, slug=""):
     )
     sec_related = f'<ul class="rr-related-list">{rel_items}</ul>' if rel_items else ""
 
+    # 区の判定（回遊導線ブロック・CTAのエリアリンク・descで共用）
+    m_ward = re.search(CITY + r'[^\d]*?区', addr or "")
+    ward_txt = m_ward.group(0) if m_ward else CITY
+    ward_paren = f"（{ward_txt}）"
+    ward_only = ward_txt.replace(CITY, "")
+    area_slug = WARD_SLUGS.get(ward_only)
+    # 区別LPが実在するサイトでのみリンクを出す（エリアページ未作成の都市で
+    # 404リンクを量産しない。2026-07-13・神戸で実在バグ確認）
+    if area_slug and not os.path.exists(os.path.join(ROOT, "articles", "area", f"{area_slug}.html")):
+        area_slug = None
+
     # ── 連番セクション（結論→根拠→詳細の順。中身のあるものだけ番号を振って出力） ──
     ordered = [
         ("結論",                  "Conclusion",         sec_conclusion),
@@ -709,6 +798,7 @@ def build_page(c, slug=""):
         ("該当する特徴",          "Feature Tags",       sec_tags),
         ("基本情報",              "Facility Data",     info_html),
         ("関連する研究レポート",  "Related Reports",   sec_related),
+        ("次の一歩",              "Next Steps",        next_steps_html(c, ward_only, area_slug, tag_links)),
     ]
     body, n = "", 0
     for ja, en, inner in ordered:
@@ -720,15 +810,6 @@ def build_page(c, slug=""):
                  f'<div><span class="rr-sec-en">{esc(en)}</span>'
                  f'<h2>{esc(ja)}</h2></div></div>{inner}</section>')
 
-    m_ward = re.search(CITY + r'[^\d]*?区', addr or "")
-    ward_txt = m_ward.group(0) if m_ward else CITY
-    ward_paren = f"（{ward_txt}）"
-    ward_only = ward_txt.replace(CITY, "")
-    area_slug = WARD_SLUGS.get(ward_only)
-    # 区別LPが実在するサイトでのみリンクを出す（エリアページ未作成の都市で
-    # 404リンクを量産しない。2026-07-13・神戸で実在バグ確認）
-    if area_slug and not os.path.exists(os.path.join(ROOT, "articles", "area", f"{area_slug}.html")):
-        area_slug = None
     area_link = (f'<a class="rr-cta-btn ghost" href="../area/{area_slug}.html">{ward_only}の医院一覧</a>'
                  if area_slug else "")
 
@@ -905,6 +986,18 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-foot{border-top:1px solid var(--line);padding:32px clamp(20px,4vw,40px);color:var(--ink2);font-size:.78rem;line-height:1.9;}
 .rr-foot .in{max-width:860px;margin:0 auto;}
 @media(max-width:560px){.rr-bar{grid-template-columns:92px 1fr 42px;gap:10px;}}
+/* ── 次の一歩（回遊導線・2026-07-14 指示書③） ── */
+.rr-next{margin:0;padding:0;list-style:none;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.rr-next li{border-bottom:1px solid var(--line);}
+.rr-next li:last-child{border-bottom:none;}
+.rr-next a{display:block;padding:14px 20px;text-decoration:none;transition:background .15s;}
+.rr-next a:hover{background:rgba(31,75,63,.04);}
+.rr-next .t{display:block;font-weight:700;color:var(--pine);font-size:.95rem;}
+.rr-next .t::after{content:"→";margin-left:8px;color:var(--terra);font-weight:500;}
+.rr-next .why{display:block;font-size:.8rem;color:var(--ink2);margin-top:3px;line-height:1.7;}
+.rr-next-final{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.rr-btn-line{display:inline-block;padding:10px 20px;border:1px solid var(--pine);border-radius:8px;font-size:.86rem;font-weight:500;color:var(--pine);text-decoration:none;background:#fff;}
+.rr-btn-line:hover{background:var(--pine);color:#fff;}
 /* ── Research Flow（パンくず） ── */
 .rf-crumb{max-width:860px;margin:14px auto 0;padding:0 clamp(20px,4vw,40px);display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:var(--mono);font-size:.72rem;letter-spacing:.02em;}
 .rf-crumb a{color:var(--ink2);text-decoration:none;}
@@ -915,7 +1008,7 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
 </head>
-<body>
+<body data-clinic="{name}">
 <header class="odr-brandbar">
   <a class="odr-sig" href="../../index.html">
     <span class="odr-sig-mark">ODR</span>
@@ -969,6 +1062,16 @@ document.addEventListener("click",function(ev){
   b.setAttribute("aria-expanded",open?"false":"true");
   b.textContent=open?"＋根拠を見る":"－根拠を閉じる";
   if(p)p.hidden=open;
+});
+/* 回遊導線のGA4計測（クリック委譲・2026-07-14 指示書③）。
+   イベント名 clinic_to_area / clinic_to_condition / clinic_to_shindan /
+   clinic_to_official / clinic_to_map / clinic_to_tel。
+   パラメータは既存規約に合わせ clinic_name / filter_value を使う。 */
+document.addEventListener("click",function(ev){
+  var a=ev.target.closest("[data-odr-ev]"); if(!a||typeof window.odrTrack!=="function")return;
+  window.odrTrack(a.getAttribute("data-odr-ev"),
+    {clinic_name:document.body.getAttribute("data-clinic")||"",
+     filter_value:a.getAttribute("data-odr-v")||""});
 });
 </script>
 </body>

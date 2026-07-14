@@ -143,6 +143,18 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-foot{border-top:1px solid var(--line);padding:32px clamp(20px,4vw,40px);color:var(--ink2);font-size:.78rem;line-height:1.9;}
 .rr-foot .in{max-width:860px;margin:0 auto;}
 @media(max-width:560px){.rr-bar{grid-template-columns:92px 1fr 42px;gap:10px;}}
+/* ── 次の一歩（回遊導線・2026-07-14 指示書③） ── */
+.rr-next{margin:0;padding:0;list-style:none;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.rr-next li{border-bottom:1px solid var(--line);}
+.rr-next li:last-child{border-bottom:none;}
+.rr-next a{display:block;padding:14px 20px;text-decoration:none;transition:background .15s;}
+.rr-next a:hover{background:rgba(31,75,63,.04);}
+.rr-next .t{display:block;font-weight:700;color:var(--pine);font-size:.95rem;}
+.rr-next .t::after{content:"→";margin-left:8px;color:var(--terra);font-weight:500;}
+.rr-next .why{display:block;font-size:.8rem;color:var(--ink2);margin-top:3px;line-height:1.7;}
+.rr-next-final{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
+.rr-btn-line{display:inline-block;padding:10px 20px;border:1px solid var(--pine);border-radius:8px;font-size:.86rem;font-weight:500;color:var(--pine);text-decoration:none;background:#fff;}
+.rr-btn-line:hover{background:var(--pine);color:#fff;}
 /* ── Research Flow（パンくず） ── */
 .rf-crumb{max-width:860px;margin:14px auto 0;padding:0 clamp(20px,4vw,40px);display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:var(--mono);font-size:.72rem;letter-spacing:.02em;}
 .rf-crumb a{color:var(--ink2);text-decoration:none;}
@@ -153,7 +165,7 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
 </head>
-<body>
+<body data-clinic="梶原歯科医院">
 <header class="odr-brandbar">
   <a class="odr-sig" href="../../index.html">
     <span class="odr-sig-mark">ODR</span>
@@ -182,11 +194,11 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
     <p class="rr-address">京都市山科区四ノ宮中在寺町３ ロイヤルグランデ</p>
     <div class="rr-hmeta"><div class="rr-metric"><span class="rr-metric-v">70%</span><span class="rr-metric-k">Confidence</span></div><div class="rr-metric"><span class="rr-metric-v">限定的</span><span class="rr-metric-k">Evidence</span></div><div class="rr-metric"><span class="rr-metric-v">1</span><span class="rr-metric-k">Research Sources</span></div></div>
     <p class="rr-fact">Google口コミ 2.7（3件） ・ 分析日 2026-07-09</p>
-    <div class="rr-links"><a class="rr-btn" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%A2%B6%E5%8E%9F%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2&amp;query_place_id=ChIJ2V7fiaIOAWARzek3pYZA-o0" target="_blank" rel="noopener">Googleマップ</a></div>
+    <div class="rr-links"><a class="rr-btn" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%A2%B6%E5%8E%9F%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2&amp;query_place_id=ChIJ2V7fiaIOAWARzek3pYZA-o0" target="_blank" rel="noopener" data-odr-ev="clinic_to_map" data-odr-v="地図">Googleマップ</a></div>
   </div>
 </section>
 <main>
-<section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">01</span><div><span class="rr-sec-en">Conclusion</span><h2>結論</h2></div></div><p class="rr-concl-label bad">受診前に確認したい点（AI分析による参考情報）</p><p class="rr-lead">スタッフの態度を重視する人</p></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">02</span><div><span class="rr-sec-en">Analysis Summary</span><h2>分析サマリー</h2></div></div><div class="rr-ai"><span class="rr-ai-label">AI Analysis</span><p>この医院は看護師の態度に対して不満を抱く方に向いていません。一方、他の部分に問題がない方には促進する可能性があります。</p><button type="button" class="rr-ev-toggle" aria-expanded="false">＋根拠を見る</button><div class="rr-ev-panel" hidden><div class="rr-ev-block"><p class="rr-ev-h">口コミからの根拠</p><p class="rr-ev-line"><span class="rr-ev-k">口コミ分析で抽出されたタグ</span><span class="rr-ev-tag">高圧的</span><span class="rr-ev-tag">看護師</span><span class="rr-ev-tag"></span></p><p class="rr-ev-k">実際の口コミからの引用</p><blockquote class="rr-ev-quote">「看護師は高飛車で高圧的」</blockquote><p class="rr-ev-meta">口コミ3件を分析 ・ 分析日 2026-07-09</p></div><div class="rr-ev-block"><p class="rr-ev-h">診療時間・立地からの事実</p><p class="rr-ev-line">夜間帯の診療あり（最終 20時00分まで）</p><p class="rr-ev-line">土日の診療なし</p><p class="rr-ev-line">最寄駅から徒歩約3分〜（直線距離からの推計）</p></div><p class="rr-ev-note">「根拠あり」は口コミ・公式サイト・診療時間等の公開データに対応する記述が確認できたもの、「AIによる推定」は直接の記述がなくAIが総合的に推測したものです。本分析は公開情報に基づく意見・論評であり、医療上の判断や治療結果を保証するものではありません。</p></div></div></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">03</span><div><span class="rr-sec-en">Key Findings</span><h2>主要所見</h2></div></div><ul class="rr-findings"><li>高圧的</li><li>看護師</li></ul><p class="rr-note">※ 公式サイト・Google口コミなどの公開情報にもとづくAI分析です。根拠が確認できなかった設備・特徴は表示していません。</p></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">04</span><div><span class="rr-sec-en">Area Context</span><h2>地域の中で見る</h2></div></div><p class="rr-lead">山科区には当サイトの分析対象の歯科医院が53院あります。この医院を山科区全体のデータの中に置くと、次のことが分かります。</p><ul class="rr-list good"><li>歯科用CT：公式サイトでは確認できませんでした（未確認）。山科区では12%の医院で導入を確認</li><li>マイクロスコープ：公式サイトでは確認できませんでした（未確認）。山科区では4%の医院で導入を確認</li><li>夜間診療：案内は確認できませんでした。山科区では0%の医院が夜間対応を案内しています</li></ul><p class="rr-note">割合は当サイトが公式サイト・口コミから機械的に解析できた範囲の値です（山科区の設備解析対象 50院）。「未確認」は「無い」という意味ではありません。集計の方法は<a href="../research/index.html">データ研究ページ</a>をご覧ください。データは毎月更新しています。</p></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">05</span><div><span class="rr-sec-en">Patient Fit</span><h2>適合する患者像</h2></div></div><p class="rr-lead">優しく接してくれる医院を求める人</p></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">06</span><div><span class="rr-sec-en">Facility Data</span><h2>基本情報</h2></div></div><table class="rr-info"><tr><th>診療</th><td>一般歯科</td></tr><tr><th>所在地</th><td>京都市山科区四ノ宮中在寺町３ ロイヤルグランデ</td></tr><tr><th>電話</th><td>075-581-8228</td></tr><tr><th>診療時間</th><td>月曜日: 9時00分～13時00分, 15時00分～20時00分 / 火曜日: 9時00分～13時00分, 15時00分～20時00分 / 水曜日: 定休日 / 木曜日: 9時00分～13時00分, 15時00分～20時00分 / 金曜日: 9時00分～13時00分, 15時00分～20時00分 / 土曜日: 定休日 / 日曜日: 定休日</td></tr></table></section>
+<section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">01</span><div><span class="rr-sec-en">Conclusion</span><h2>結論</h2></div></div><p class="rr-concl-label bad">受診前に確認したい点（AI分析による参考情報）</p><p class="rr-lead">スタッフの態度を重視する人</p></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">02</span><div><span class="rr-sec-en">Analysis Summary</span><h2>分析サマリー</h2></div></div><div class="rr-ai"><span class="rr-ai-label">AI Analysis</span><p>この医院は看護師の態度に対して不満を抱く方に向いていません。一方、他の部分に問題がない方には促進する可能性があります。</p><button type="button" class="rr-ev-toggle" aria-expanded="false">＋根拠を見る</button><div class="rr-ev-panel" hidden><div class="rr-ev-block"><p class="rr-ev-h">口コミからの根拠</p><p class="rr-ev-line"><span class="rr-ev-k">口コミ分析で抽出されたタグ</span><span class="rr-ev-tag">高圧的</span><span class="rr-ev-tag">看護師</span><span class="rr-ev-tag"></span></p><p class="rr-ev-k">実際の口コミからの引用</p><blockquote class="rr-ev-quote">「看護師は高飛車で高圧的」</blockquote><p class="rr-ev-meta">口コミ3件を分析 ・ 分析日 2026-07-09</p></div><div class="rr-ev-block"><p class="rr-ev-h">診療時間・立地からの事実</p><p class="rr-ev-line">夜間帯の診療あり（最終 20時00分まで）</p><p class="rr-ev-line">土日の診療なし</p><p class="rr-ev-line">最寄駅から徒歩約3分〜（直線距離からの推計）</p></div><p class="rr-ev-note">「根拠あり」は口コミ・公式サイト・診療時間等の公開データに対応する記述が確認できたもの、「AIによる推定」は直接の記述がなくAIが総合的に推測したものです。本分析は公開情報に基づく意見・論評であり、医療上の判断や治療結果を保証するものではありません。</p></div></div></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">03</span><div><span class="rr-sec-en">Key Findings</span><h2>主要所見</h2></div></div><ul class="rr-findings"><li>高圧的</li><li>看護師</li></ul><p class="rr-note">※ 公式サイト・Google口コミなどの公開情報にもとづくAI分析です。根拠が確認できなかった設備・特徴は表示していません。</p></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">04</span><div><span class="rr-sec-en">Area Context</span><h2>地域の中で見る</h2></div></div><p class="rr-lead">山科区には当サイトの分析対象の歯科医院が53院あります。この医院を山科区全体のデータの中に置くと、次のことが分かります。</p><ul class="rr-list good"><li>歯科用CT：公式サイトでは確認できませんでした（未確認）。山科区では12%の医院で導入を確認</li><li>マイクロスコープ：公式サイトでは確認できませんでした（未確認）。山科区では4%の医院で導入を確認</li><li>夜間診療：案内は確認できませんでした。山科区では0%の医院が夜間対応を案内しています</li></ul><p class="rr-note">割合は当サイトが公式サイト・口コミから機械的に解析できた範囲の値です（山科区の設備解析対象 50院）。「未確認」は「無い」という意味ではありません。集計の方法は<a href="../research/index.html">データ研究ページ</a>をご覧ください。データは毎月更新しています。</p></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">05</span><div><span class="rr-sec-en">Patient Fit</span><h2>適合する患者像</h2></div></div><p class="rr-lead">優しく接してくれる医院を求める人</p></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">06</span><div><span class="rr-sec-en">Facility Data</span><h2>基本情報</h2></div></div><table class="rr-info"><tr><th>診療</th><td>一般歯科</td></tr><tr><th>所在地</th><td>京都市山科区四ノ宮中在寺町３ ロイヤルグランデ</td></tr><tr><th>電話</th><td>075-581-8228</td></tr><tr><th>診療時間</th><td>月曜日: 9時00分～13時00分, 15時00分～20時00分 / 火曜日: 9時00分～13時00分, 15時00分～20時00分 / 水曜日: 定休日 / 木曜日: 9時00分～13時00分, 15時00分～20時00分 / 金曜日: 9時00分～13時00分, 15時00分～20時00分 / 土曜日: 定休日 / 日曜日: 定休日</td></tr></table></section><section class="rr-sec"><div class="rr-sec-h"><span class="rr-sec-n">07</span><div><span class="rr-sec-en">Next Steps</span><h2>次の一歩</h2></div></div><ul class="rr-next"><li><a href="../shindan/?cond=%E5%A4%9C%E9%96%93%E8%A8%BA%E7%99%82" data-odr-ev="clinic_to_condition" data-odr-v="夜間診療"><span class="t">「夜間診療」の医院をランキングで比べる</span><span class="why">仕事帰りでも通いやすい、夜間対応の医院だけで比べられます。</span></a></li><li><a href="../shindan/?ward=%E5%B1%B1%E7%A7%91%E5%8C%BA" data-odr-ev="clinic_to_shindan" data-odr-v="山科区"><span class="t">30秒のAI診断で自分に合う医院を探す</span><span class="why">山科区を選択済みの状態から、症状やご希望の条件で絞り込めます。</span></a></li></ul><div class="rr-next-final"><a class="rr-btn-line" href="https://www.google.com/maps/search/?api=1&amp;query=%E6%A2%B6%E5%8E%9F%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2&amp;query_place_id=ChIJ2V7fiaIOAWARzek3pYZA-o0" target="_blank" rel="noopener" data-odr-ev="clinic_to_map" data-odr-v="地図">Googleマップで場所・口コミを見る</a><a class="rr-btn-line" href="tel:0755818228" data-odr-ev="clinic_to_tel" data-odr-v="電話">電話で問い合わせる（075-581-8228）</a></div><p class="rr-note">リンク先の一覧・比較は、当サイトが公開情報から機械的に解析できた範囲にもとづく参考情報です。</p></section>
   <section class="rr-cta">
     <p class="rr-cta-t">あなたに合う歯科医院は？</p>
     <p class="rr-cta-s">症状・エリア・ご希望から、AIが京都市内 約673院を無料でマッチングします。</p>
@@ -207,6 +219,16 @@ document.addEventListener("click",function(ev){
   b.setAttribute("aria-expanded",open?"false":"true");
   b.textContent=open?"＋根拠を見る":"－根拠を閉じる";
   if(p)p.hidden=open;
+});
+/* 回遊導線のGA4計測（クリック委譲・2026-07-14 指示書③）。
+   イベント名 clinic_to_area / clinic_to_condition / clinic_to_shindan /
+   clinic_to_official / clinic_to_map / clinic_to_tel。
+   パラメータは既存規約に合わせ clinic_name / filter_value を使う。 */
+document.addEventListener("click",function(ev){
+  var a=ev.target.closest("[data-odr-ev]"); if(!a||typeof window.odrTrack!=="function")return;
+  window.odrTrack(a.getAttribute("data-odr-ev"),
+    {clinic_name:document.body.getAttribute("data-clinic")||"",
+     filter_value:a.getAttribute("data-odr-v")||""});
 });
 </script>
 </body>
