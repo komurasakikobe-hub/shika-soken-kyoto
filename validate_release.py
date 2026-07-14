@@ -87,6 +87,8 @@ def url_to_relfile(url):
     path = unquote(p.path)
     if path.endswith("/") or path == "":
         path += "index.html"
+    elif not path.endswith(".html"):
+        path += ".html"  # 拡張子なしURL（Cloudflare Pagesの308転送先）→ 実ファイルは.html
     return path.lstrip("/")
 
 

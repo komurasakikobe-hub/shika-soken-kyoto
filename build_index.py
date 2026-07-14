@@ -282,7 +282,7 @@ def build_cat_page(title, sub, arts, pad=None, href=""):
     if pad:
         cards += ("\n" if cards else "") + "\n".join(soon_card(t) for t in pad)
     return (CAT_TEMPLATE.replace("{title}", esc(title)).replace("{sub}", esc(sub))
-            .replace("{href}", href)
+            .replace("{href}", href[:-5] if href.endswith(".html") else href)
             .replace("{count}", str(len(arts))).replace("{cards}", cards)
             .replace("{SITE_NAME}", SITE_NAME).replace("{EN_INSTITUTE}", EN_INSTITUTE)
             .replace("{EN_UPPER}", EN_UPPER).replace("{CITY_SHORT}", CITY_SHORT)
@@ -615,8 +615,8 @@ TEMPLATE = '''<!DOCTYPE html>
 <meta property="og:site_name" content="{SITE_NAME}">
 <meta property="og:title" content="歯科コラム | {SITE_NAME}">
 <meta property="og:description" content="症状や治療の基礎知識、歯科医院の選び方まで。{CITY_SHORT}で後悔しない歯科選びに役立つ情報をお届けします。">
-<meta property="og:url" content="https://{DOMAIN}/articles/index.html">
-<link rel="canonical" href="https://{DOMAIN}/articles/index.html">
+<meta property="og:url" content="https://{DOMAIN}/articles/">
+<link rel="canonical" href="https://{DOMAIN}/articles/">
 <meta name="twitter:card" content="summary">
 ''' + STYLE + '''
 <script src="../assets/site-config.js"></script>

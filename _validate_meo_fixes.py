@@ -138,7 +138,7 @@ for c in pub:
     if not is_thin(c):
         continue
     slug = slug_map.get(c.get("place_id"), slugify(c["name"]))
-    if quote(f"articles/clinics/{slug}.html", safe="/-_.~") in sitemap:
+    if quote(f"articles/clinics/{slug}", safe="/-_.~") + "</loc>" in sitemap:
         thin_in_sitemap.append(slug)
 if thin_in_sitemap:
     errors.append(f"[A-1] sitemapに薄い院が混入: {len(thin_in_sitemap)}件 例: {thin_in_sitemap[:3]}")
@@ -148,7 +148,7 @@ for c in pub:
     if is_thin(c):
         continue
     slug = slug_map.get(c.get("place_id"), slugify(c["name"]))
-    if quote(f"articles/clinics/{slug}.html", safe="/-_.~") not in sitemap:
+    if quote(f"articles/clinics/{slug}", safe="/-_.~") + "</loc>" not in sitemap:
         thick_missing.append(slug)
 if thick_missing:
     errors.append(f"[A-1] sitemapから厚い院が欠落: {len(thick_missing)}件 例: {thick_missing[:3]}")

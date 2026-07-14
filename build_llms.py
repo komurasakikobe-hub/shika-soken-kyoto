@@ -26,8 +26,8 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 FACILITY = {"歯科": "歯科医院", "動物病院": "動物病院"}
 # コラムの集約先（都市サイトは本部ドメインに集約する運用のため固定）
 COLUMN_HUB = {
-    "歯科": "https://shikasoken.com/articles/index.html",
-    "動物病院": "https://osaka.doubutsu-navi.com/articles/index.html",
+    "歯科": "https://kyoto.shikasoken.com/articles/index.html",
+    "動物病院": "https://kyoto.doubutsu-navi.com/articles/index.html",
 }
 
 
@@ -38,6 +38,19 @@ def _approx(n):
     if n >= 100:
         return f"約{(n // 10) * 10}院"
     return f"{n}院"
+
+
+def _area_link(base):
+    """articles/area/ に区別ページが実在する都市だけ、代表1ページ＋区数のリンク行を返す。
+    実ページが無い都市（configにwardsがあっても未生成）は None＝出力しない（死にリンク回避）。"""
+    area_dir = os.path.join(ROOT, "articles", "area")
+    if not os.path.isdir(area_dir):
+        return None
+    pages = sorted(f for f in os.listdir(area_dir)
+                   if f.endswith(".html") and f != "index.html")
+    if not pages:
+        return None
+    return f"- [区別の分析ページ（{len(pages)}区）]({base}/articles/area/{pages[0]})"
 
 
 def build(cfg):
@@ -73,10 +86,16 @@ def build(cfg):
         ("運営ポリシー・免責事項", "policy.html", f"{base}/policy.html"),
     ]
 
-    lines = [heading, "", f"> {summary}", "", "## 主要ページ"]
+    page_lines = []
     for label, local, url in candidates:
         if local is None or os.path.exists(os.path.join(ROOT, local)):
-            lines.append(f"- [{label}]({url})")
+            page_lines.append(f"- [{label}]({url})")
+    # 区別ページが実在する都市は「特徴から探す」の直後に差し込む
+    area = _area_link(base)
+    if area:
+        idx = next((i for i, ln in enumerate(page_lines) if "特徴から探す" in ln), len(page_lines) - 1)
+        page_lines.insert(idx + 1, area)
+    lines = [heading, "", f"> {summary}", "", "## 主要ページ"] + page_lines
     lines += [
         "",
         "## データについて",

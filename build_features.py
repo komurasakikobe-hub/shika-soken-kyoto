@@ -204,7 +204,7 @@ def main():
                 .replace("{n_clinics}", f"{n_clinics:,}")
                 .replace("{n_reviews}", f"{n_reviews:,}")
                 .replace("{updated}", updated)
-                .replace("{CANONICAL}", f"https://{SITE_CFG.get('domain','shikasoken.com')}/articles/features/index.html")
+                .replace("{CANONICAL}", f"https://{SITE_CFG.get('domain','shikasoken.com')}/articles/features/")
                 .replace("{SITE_NAME}", SITE_NAME).replace("{EN_INSTITUTE}", EN_INSTITUTE).replace("{CITY}", CITY)
                 .replace("{CITY_SHORT}", CITY_SHORT).replace("{N_PUBLISHED:,}", f"{N_PUBLISHED:,}"))
     open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(html_out)

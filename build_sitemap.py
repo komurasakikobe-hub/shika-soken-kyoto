@@ -28,8 +28,21 @@ except FileNotFoundError:
     ARTICLE_DATES = {}
 
 
+def _canon_path(path: str) -> str:
+    """本番URL（Cloudflare Pages）の正規形に合わせる。
+    .html付きURLは拡張子なしへ308転送されるため、sitemapは転送先（拡張子なし）を載せる。
+    xxx/index.html → xxx/（末尾スラッシュ）／xxx.html → xxx／ルートはそのまま。"""
+    if path == "index.html":
+        return ""
+    if path.endswith("/index.html"):
+        return path[: -len("index.html")]
+    if path.endswith(".html"):
+        return path[: -len(".html")]
+    return path
+
+
 def url_entry(path: str, lastmod: str = "", priority: str = "0.5") -> str:
-    loc = BASE + "/" + quote(path, safe="/-_.~")
+    loc = BASE + "/" + quote(_canon_path(path), safe="/-_.~")
     lm = f"\n    <lastmod>{lastmod}</lastmod>" if lastmod else ""
     return f"""  <url>
     <loc>{loc}</loc>{lm}

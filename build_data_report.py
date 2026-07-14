@@ -29,13 +29,13 @@ CFG = json.loads((ROOT / "site_config.json").read_text(encoding="utf-8"))
 DB = json.loads((ROOT / "clinic_db.json").read_text(encoding="utf-8"))
 OUT = ROOT / "articles" / "research" / "index.html"
 
-CITY = CFG.get("city", "大阪市")
-SITE = CFG.get("site_name", "大阪歯科総研")
+CITY = CFG.get("city", "京都市")
+SITE = CFG.get("site_name", "京都歯科総研")
 DOMAIN = CFG.get("domain", "shikasoken.com")
-EN_UPPER = CFG.get("site_name_en", "OSAKA DENTAL RESEARCH")   # 例: OSAKA DENTAL RESEARCH
-# 例: Osaka Dental Research Institute（site_name_enから機械導出。build_clinics.py と同一ロジック）
+EN_UPPER = CFG.get("site_name_en", "KYOTO DENTAL RESEARCH")   # 例: KYOTO DENTAL RESEARCH
+# 例: Kyoto Dental Research Institute（site_name_enから機械導出。build_clinics.py と同一ロジック）
 EN_INSTITUTE = " ".join("-".join(p.capitalize() for p in w.split("-")) for w in EN_UPPER.split()) + " Institute"
-# 区の抽出は都市名から動的生成（例: 大阪市○区 / 神戸市○区）。区制の無い都市（尼崎市・広域エリア）は
+# 区の抽出は都市名から動的生成（例: 京都市○区 / 神戸市○区）。区制の無い都市（尼崎市・広域エリア）は
 # マッチせず区集計が空になり、区ベースの発見は母数不足として自動的に伏せられる。
 WARD_RE = re.compile(re.escape(CITY) + r'([一-龥]+区)')
 
@@ -126,6 +126,67 @@ def finding_block(kicker, title, lead, implication, cta_label=None, cta_href=Non
     </section>"""
 
 
+# ── コラムと同じ2カラム（本文＋右サイドバー）用の共有CSS ──
+# build()はf-string内の<style>に、build_article()は_ARTICLE_CSSに続けて注入する。
+# 単一ソースにして両ページのレイアウトを揃える（2026-07-14 デザイン統一）。
+_LAYOUT_CSS = """
+.rp-wrap{max-width:1120px;margin:0 auto;padding:0 var(--sp-page);display:grid;grid-template-columns:1fr 300px;gap:56px;align-items:start;}
+.rp-main{min-width:0;}
+.rp-main .rp-body{max-width:none;margin:0;padding:0;}
+.rp-main .rp-method{max-width:none;margin:clamp(28px,3.5vw,44px) 0;}
+.rp-main .rp-cta-box{max-width:none;margin:clamp(24px,3vw,40px) 0 0;padding:0;}
+.rp-main .rp-back{max-width:none;margin:0 0 6px;padding:0;}
+.rp-main .rp-updated{text-align:left;}
+.rp-aside{position:sticky;top:90px;align-self:start;background:#f6f8f7;border:1px solid var(--odr-line);border-radius:var(--r-card);padding:24px 22px;}
+.rp-aside .rp-side-block{margin:0 0 20px;padding:0 0 18px;border-bottom:1px solid var(--odr-line);}
+.rp-aside .rp-side-block:last-child{margin-bottom:0;padding-bottom:0;border-bottom:none;}
+.rp-aside .rp-side-label{font-family:var(--odr-mono);font-size:.7rem;font-weight:600;letter-spacing:.12em;color:var(--odr-terra);margin:0 0 12px;}
+.rp-aside ul{list-style:none;margin:0;padding:0;}
+.rp-aside .rp-side-toc li{position:relative;padding:6px 0 6px 16px;font-size:.83rem;line-height:1.6;}
+.rp-aside .rp-side-toc li::before{content:"";position:absolute;left:2px;top:13px;width:4px;height:4px;background:var(--odr-terra);border-radius:50%;}
+.rp-aside .rp-side-toc a{color:var(--odr-ink2);text-decoration:none;}
+.rp-aside .rp-side-toc a:hover{color:var(--odr-pine);text-decoration:underline;}
+.rp-aside .rp-side-cta{display:block;text-align:center;background:var(--odr-pine);color:#fff;font-size:.85rem;font-weight:700;padding:11px 14px;border-radius:22px;text-decoration:none;transition:background .2s;}
+.rp-aside .rp-side-cta:hover{background:#173a31;}
+.rp-aside .rp-side-note{font-size:.75rem;color:var(--odr-ink2);line-height:1.7;margin:0;}
+@media(max-width:900px){.rp-wrap{grid-template-columns:1fr;gap:0;}.rp-aside{position:static;margin-top:36px;}}
+"""
+
+_SIDE_NOTE = "当ページの数字は、公開情報にもとづき当サイトが独自に集計した参考情報です。医療的な診断ではありません。"
+
+
+def _anchor_findings(html):
+    """本文中の <section class="rp-finding"> に id を振り、TOC項目 [(id, 見出しテキスト), ...] を返す。
+    各記事ビルダーを個別に触らず、生成済み本文を後処理して目次を作るための共通関数。"""
+    items = []
+    n = [0]
+
+    def repl(m):
+        n[0] += 1
+        fid = f"f{n[0]}"
+        mt = re.search(r'<h2 class="rp-find-title">(.*?)</h2>', m.group(0), re.S)
+        t = re.sub(r"<[^>]+>", "", mt.group(1)) if mt else f"発見{n[0]}"
+        t = re.sub(r"\s+", " ", t).strip()
+        items.append((fid, t))
+        return m.group(0).replace('<section class="rp-finding">',
+                                  f'<section class="rp-finding" id="{fid}">', 1)
+
+    new = re.sub(r'<section class="rp-finding">.*?</section>', repl, html, flags=re.S)
+    return new, items
+
+
+def _rp_aside(toc_items, toc_label, cta_href, cta_label):
+    """研究ページ右サイドバー（目次＋CTA＋注記）。コラムの .art-side と役割を揃える。"""
+    toc_li = "".join(f'<li><a href="#{fid}">{esc(t)}</a></li>' for fid, t in toc_items)
+    toc_block = (f'<div class="rp-side-block"><p class="rp-side-label">{esc(toc_label)}</p>'
+                 f'<ul class="rp-side-toc">{toc_li}</ul></div>' if toc_li else "")
+    return f"""<aside class="rp-aside">
+{toc_block}
+  <div class="rp-side-block"><a class="rp-side-cta" href="{esc(cta_href)}">{esc(cta_label)} →</a></div>
+  <div class="rp-side-block"><p class="rp-side-note">{esc(_SIDE_NOTE)}</p></div>
+</aside>"""
+
+
 def build(series_meta=None):
     d = compute()
     today = date.today()
@@ -182,13 +243,17 @@ def build(series_meta=None):
             "当サイトが情報の充実度を重視して分析しているのは、この観察が背景にあります。"))
 
     findings_html = "".join(findings)
+    findings_html, toc_items = _anchor_findings(findings_html)
+    aside_html = _rp_aside(toc_items, "このページの発見",
+                           "../shindan/index.html", "条件に合う医院を探す")
 
     # ── 研究シリーズの一覧（記事が生成された時だけ表示） ──
     series_html = ""
     if series_meta:
         items = "".join(
             f'<a class="rp-series-item" href="{esc(m["slug"])}.html">'
-            + ('<span class="rp-series-badge">開業医向け</span>' if m.get("audience") == "clinic" else "")
+            + ('<span class="rp-series-badge cl">開業医・歯科衛生士向け</span>' if m.get("audience") == "clinic"
+               else '<span class="rp-series-badge pt">患者向け</span>')
             + f'<span class="rp-series-t">{esc(m["title"])}</span>'
             f'<span class="rp-series-h">{esc(m["hook"])}</span></a>'
             for m in series_meta)
@@ -264,9 +329,9 @@ def build(series_meta=None):
 <style>
 .rp-hero{{background:linear-gradient(168deg,var(--odr-pine) 0%,#173a31 60%,#122d26 100%);color:#fff;
   padding:clamp(30px,5vw,56px) var(--sp-page) clamp(36px,5vw,60px);}}
-.rp-hero .in{{max-width:760px;margin:0 auto;}}
+.rp-hero .in{{max-width:1120px;margin:0 auto;}}
 .rp-eyebrow{{font-family:var(--odr-mono);font-size:var(--fs-mono);letter-spacing:.2em;color:var(--odr-terra);margin:0 0 12px;}}
-.rp-hero h1{{font-family:'Shippori Mincho',serif;font-size:clamp(1.4rem,3vw,1.9rem);font-weight:900;line-height:1.5;margin:0 0 14px;}}
+.rp-hero h1{{font-family:'Shippori Mincho',serif;font-size:clamp(1.4rem,3vw,1.9rem);font-weight:900;line-height:1.5;margin:0 0 14px;word-break:auto-phrase;line-break:strict;}}
 .rp-hero p.lead{{color:rgba(255,255,255,.82);max-width:100%;margin:0;font-size:.95rem;line-height:1.9;}}
 .rp-metrics{{display:flex;flex-wrap:wrap;gap:24px;margin-top:24px;padding-top:20px;border-top:1px solid rgba(255,255,255,.14);}}
 .rp-metric b{{display:block;font-family:var(--odr-mono);font-size:1.4rem;color:#fff;line-height:1.2;}}
@@ -282,7 +347,7 @@ def build(series_meta=None):
 .rp-bar-v{{font-family:var(--odr-mono);font-weight:700;color:var(--odr-pine);font-size:.95rem;white-space:nowrap;}}
 .rp-bar-v small{{display:block;font-weight:400;color:var(--odr-ink2);font-size:.68rem;}}
 @media(max-width:560px){{.rp-bar{{grid-template-columns:88px 1fr auto;gap:10px;}}.rp-bar-l{{font-size:.82rem;}}}}
-.rp-find-title{{font-family:'Shippori Mincho',serif;font-size:clamp(1.3rem,3vw,1.7rem);font-weight:700;color:var(--odr-pine);line-height:1.5;margin:0 0 16px;}}
+.rp-find-title{{font-family:'Shippori Mincho',serif;font-size:clamp(1.3rem,3vw,1.7rem);font-weight:700;color:var(--odr-pine);line-height:1.5;margin:0 0 16px;word-break:auto-phrase;line-break:strict;}}
 .rp-find-body{{font-size:var(--fs-body);color:var(--odr-ink);line-height:2.05;}}
 .rp-find-body strong{{color:var(--odr-pine);font-weight:700;}}
 .rp-find-body p{{margin:0 0 14px;}}
@@ -311,8 +376,10 @@ def build(series_meta=None):
 .rp-series-item{{display:block;text-decoration:none;border:1px solid var(--odr-line);border-radius:var(--r-card);padding:18px 22px;transition:border-color .2s;}}
 .rp-series-item:hover{{border-color:var(--odr-terra);}}
 .rp-series-badge{{display:inline-block;font-family:var(--odr-mono);font-size:.6rem;font-weight:600;letter-spacing:.1em;color:var(--odr-terra);border:1px solid var(--odr-terra);border-radius:999px;padding:2px 9px;margin-bottom:9px;}}
+.rp-series-badge.pt{{color:var(--odr-pine);border-color:var(--odr-pine);}}
 .rp-series-t{{display:block;font-weight:700;color:var(--odr-pine);font-size:1.02rem;line-height:1.7;}}
 .rp-series-h{{display:block;color:var(--odr-ink2);font-size:.85rem;margin-top:6px;line-height:1.8;}}
+{_LAYOUT_CSS}
 </style>
 </head>
 <body class="odr">
@@ -345,10 +412,12 @@ def build(series_meta=None):
   </div>
 </section>
 
-<main class="rp-body">
+<div class="rp-wrap">
+<main class="rp-main">
+<div class="rp-body">
 {findings_html}
 {series_html}
-</main>
+</div>
 
 <section class="rp-method">
   <p class="rp-note">METHODOLOGY ／ この分析の作り方（包み隠さず開示します）</p>
@@ -373,6 +442,9 @@ def build(series_meta=None):
 </section>
 
 <p class="rp-updated">最終更新：{stamp}（データは毎月更新しています）</p>
+</main>
+{aside_html}
+</div>
 
 <footer class="rp-foot">
   当ページの数字は、公開情報にもとづき当サイトが独自に集計・分析した参考情報です。医療的な診断ではありません。<br>
@@ -889,7 +961,7 @@ def _art_equipment_visibility():
 
     # ── 訴求の地理：区ごとの「精密機器いずれか訴求」率（束指標・区別集計は25院以上）──
     def _ward(c):
-        m = re.search(r"(大阪市[^\s0-9０-９]{1,4}区)", c.get("address", ""))
+        m = re.search(r"(京都市[^\s0-9０-９]{1,4}区)", c.get("address", ""))
         return m.group(1) if m else None
     wd = {}
     for c in deep:
@@ -900,7 +972,7 @@ def _art_equipment_visibility():
     for w, cs in wd.items():
         if len(cs) >= 25:
             r = sum(1 for c in cs if any(has(c, pat) for pat, _ in PREC)) / len(cs) * 100
-            wrates.append((w.replace("大阪市", ""), r, len(cs)))
+            wrates.append((w.replace("京都市", ""), r, len(cs)))
     wrates.sort(key=lambda x: -x[1])
     ward_ok = len(wrates) >= 8
     if ward_ok:
@@ -1064,7 +1136,7 @@ def _art_equipment_visibility():
               "所有率ではなく“訴求率”から見た開業医のためのデータ研究。"),
         cta=("../../shikumi.html",
              "自院の“見え方”を、同じ区のデータと照らして見直す →",
-             "設備の便益説明・症例への導線・料金や院長情報の充実度が、同じ区の医院と比べてどうか。大阪歯科総研は公開情報をもとに分析しています。医院・開業医の方へのご案内はこちら。"),
+             "設備の便益説明・症例への導線・料金や院長情報の充実度が、同じ区の医院と比べてどうか。京都歯科総研は公開情報をもとに分析しています。医院・開業医の方へのご案内はこちら。"),
         body=body, faq=faq,
         method=[
             ("データの出どころ", f"各医院の公式サイトの公開情報をAIが解析した結果です。{CITY}の掲載院{n_all:,}院のうち、サイトを解析できた{nd:,}院を訴求率の母数としています（フォーム・サイト有無の集計は掲載院{n_all:,}院全体が母数）。"),
@@ -1137,16 +1209,19 @@ def _next_sections_html(a, titles):
 _ARTICLE_CSS = """
 .rp-hero{background:linear-gradient(168deg,var(--odr-pine) 0%,#173a31 60%,#122d26 100%);color:#fff;
   padding:calc(var(--sp-sec)*.7) var(--sp-page) calc(var(--sp-sec)*.8);}
-.rp-hero .in{max-width:760px;margin:0 auto;}
+.rp-hero .in{max-width:1120px;margin:0 auto;}
+.rp-audience{display:inline-block;font-family:var(--odr-mono);font-size:.66rem;font-weight:700;letter-spacing:.12em;padding:4px 13px;border-radius:999px;margin:0 0 14px;}
+.rp-audience.pt{background:#fff;color:var(--odr-pine);}
+.rp-audience.cl{background:var(--odr-terra);color:#fff;}
 .rp-eyebrow{font-family:var(--odr-mono);font-size:var(--fs-mono);letter-spacing:.2em;color:var(--odr-terra);margin:0 0 14px;}
-.rp-hero h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:700;line-height:1.6;margin:0;}
+.rp-hero h1{font-family:'Shippori Mincho',serif;font-size:clamp(1.5rem,3.4vw,2.1rem);font-weight:700;line-height:1.6;margin:0;word-break:auto-phrase;line-break:strict;}
 .rp-body{max-width:760px;margin:0 auto;padding:0 var(--sp-page);}
 .rp-lede{font-size:var(--fs-body);color:var(--odr-ink);line-height:2.1;padding:clamp(26px,3.5vw,44px) 0 0;margin:0;}
 .rp-lede strong{color:var(--odr-pine);}
 .rp-finding{padding:clamp(26px,3.5vw,44px) 0;border-bottom:1px solid var(--odr-line);}
 .rp-finding:last-of-type{border-bottom:none;}
 .rp-kicker{font-family:var(--odr-mono);font-size:.8rem;font-weight:600;letter-spacing:.14em;color:var(--odr-terra);margin:0 0 10px;}
-.rp-find-title{font-family:'Shippori Mincho',serif;font-size:clamp(1.25rem,2.8vw,1.55rem);font-weight:700;color:var(--odr-pine);line-height:1.55;margin:0 0 16px;}
+.rp-find-title{font-family:'Shippori Mincho',serif;font-size:clamp(1.25rem,2.8vw,1.55rem);font-weight:700;color:var(--odr-pine);line-height:1.55;margin:0 0 16px;word-break:auto-phrase;line-break:strict;}
 .rp-find-body{font-size:var(--fs-body);color:var(--odr-ink);line-height:2.05;}
 .rp-find-body strong{color:var(--odr-pine);font-weight:700;}
 .rp-find-body em{font-style:normal;background:linear-gradient(transparent 68%,rgba(196,109,60,.22) 68%);}
@@ -1218,7 +1293,7 @@ def _existing_date_published(path):
 def build_article(a, titles=None):
     today = date.today()
     stamp = today.strftime("%Y年%m月")
-    url = f"https://{DOMAIN}/articles/research/{a['slug']}.html"
+    url = f"https://{DOMAIN}/articles/research/{a['slug']}"
     title = f"{a['title']}｜{SITE} データ研究"
     published = _existing_date_published(OUT.parent / f"{a['slug']}.html") or today.isoformat()
 
@@ -1255,6 +1330,11 @@ def build_article(a, titles=None):
         for q, ans in a["faq"])
     method_html = "".join(f"<dt>{esc(k)}</dt><dd>{v}</dd>" for k, v in a["method"])
     next_html = _next_sections_html(a, titles or {})
+    body_html, toc_items = _anchor_findings(a["body"])
+    _cta = a.get("cta")
+    aside_html = _rp_aside(toc_items, "この記事の内容",
+                           _cta[0] if _cta else "../shindan/index.html",
+                           _cta[1] if _cta else "条件に合う医院を探す")
 
     doc = f"""<!DOCTYPE html>
 <html lang="ja">
@@ -1274,7 +1354,7 @@ def build_article(a, titles=None):
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
 {schema_html}
-<style>{_ARTICLE_CSS}</style>
+<style>{_ARTICLE_CSS}{_LAYOUT_CSS}</style>
 </head>
 <body class="odr">
 
@@ -1294,17 +1374,20 @@ def build_article(a, titles=None):
 
 <section class="rp-hero">
   <div class="in">
+    <span class="rp-audience {'cl' if a.get('audience') == 'clinic' else 'pt'}">{'開業医・歯科衛生士向け' if a.get('audience') == 'clinic' else '患者向け'}</span>
     <p class="rp-eyebrow">{esc(a.get('eyebrow') or f'DATA RESEARCH SERIES ／ {date.today().year}')}</p>
     <h1>{esc(a['title'])}</h1>
   </div>
 </section>
 
+<div class="rp-wrap">
+<main class="rp-main">
 <div class="rp-back"><a href="index.html">← データ研究トップへ戻る</a></div>
 
-<main class="rp-body">
-{a['body']}
+<div class="rp-body">
+{body_html}
 {next_html}
-</main>
+</div>
 
 <div class="rp-cta-box">
   {(lambda c: f'<a href="{esc(c[0])}">{esc(c[1])}<small>{esc(c[2])}</small></a>' if c else '<a href="../shindan/index.html">条件に合う医院を探す →<small>診療時間・設備・口コミ傾向から、あなたの条件で絞り込めます（無料・登録不要）</small></a>')(a.get('cta'))}
@@ -1328,6 +1411,9 @@ def build_article(a, titles=None):
 </section>
 
 <p class="rp-updated">最終更新：{stamp}（集計日：{today.isoformat()}／データは毎月更新しています）</p>
+</main>
+{aside_html}
+</div>
 
 <footer class="rp-foot">
   当ページの数字は、公開情報にもとづき当サイトが独自に集計・分析した参考情報です。医療的な診断ではありません。<br>
@@ -1340,7 +1426,7 @@ def build_article(a, titles=None):
 </html>"""
 
     out = ROOT / "articles" / "research" / f"{a['slug']}.html"
-    out.parent.mkdir(parents=True, exist_ok=True)  # 新規都市はresearch/未作成のため（大阪は既存で表面化せず）
+    out.parent.mkdir(parents=True, exist_ok=True)  # 新規都市はresearch/未作成のため（京都は既存で表面化せず）
     out.write_text(doc, encoding="utf-8")
     return out
 

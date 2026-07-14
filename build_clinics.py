@@ -234,7 +234,7 @@ def page_url_of(slug):
     """院ページの正規URL。canonical / og:url / JSON-LD url / Breadcrumb の
     4箇所すべてこの1本を使う（表記ゆれ＝重複URL候補の量産を防ぐ。2026-07-13統一）。
     日本語slugはパーセントエンコードした形を正とする。"""
-    return f"https://{DOMAIN}/articles/clinics/{quote(slug)}.html"
+    return f"https://{DOMAIN}/articles/clinics/{quote(slug)}"
 
 def build_jsonld(c, slug):
     """Google検索のリッチリザルト向け構造化データ（JSON-LD, schema.org/Dentist）。
