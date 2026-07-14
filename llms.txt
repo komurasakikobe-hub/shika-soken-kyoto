@@ -1,0 +1,17 @@
+# 京都歯科総研（KYOTO DENTAL RESEARCH）
+
+> 京都市内の歯科医院約670院を、Google口コミ・公式サイト等の公開情報からAIが分析する独立系の情報メディア。掲載・分析は無料で、掲載順位が金銭で変わることはない。スコア・順位は公開情報の充実度と評判分析にもとづく参考情報であり、歯科医院の優劣を断定するものではない。
+
+## 主要ページ
+- [データランキング（地域・症状・希望条件で絞り込み）](https://kyoto.shikasoken.com/articles/shindan/index.html)
+- [特徴から探す（設備・専門分野別）](https://kyoto.shikasoken.com/articles/features/index.html)
+- [コラム（毎日更新）](https://shikasoken.com/articles/index.html)
+- [展開エリア（関西各都市）](https://kyoto.shikasoken.com/network.html)
+- [選定基準・評価配点](https://kyoto.shikasoken.com/index.html#criteria)
+- [運営者情報](https://kyoto.shikasoken.com/about.html)
+- [運営ポリシー・免責事項](https://kyoto.shikasoken.com/policy.html)
+
+## データについて
+- 評価配点：口コミ・評判25点／院長の経歴・専門性25点／設備・診療体制20点／情報公開・透明性15点／学会・症例・発信15点＋Google評価ボーナス最大8点（100点上限）
+- 歯科医院ごとの分析ページ例：https://kyoto.shikasoken.com/articles/clinics/（歯科医院名）.html
+- 掲載情報の訂正窓口：https://kyoto.shikasoken.com/teisei.html
