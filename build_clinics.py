@@ -416,6 +416,31 @@ def area_context_html(c):
             f'（{w}の設備解析対象 {st["eq_n"]}院）。「未確認」は「無い」という意味ではありません。'
             f'{method_ref}データは毎月更新しています。</p>')
 
+
+# ── 表示用の軟化（2026-07-14 患者向け再編集） ──
+# AI要約・口コミタグに残る強い断定（専門/信頼できる/最適）を、患者向けの表示だけ弱める。
+# grounding判定（scan_summary_claims等）には元文を渡す（表示層のみの変換）。
+# ※根本対処はDB側のai_summary再生成だが、機械置換で法務リスクの高い定型パターンを先に消す。
+_SOFTEN_PAIRS = [
+    ("に特化した専門性の高い", "を重視した"),
+    ("専門性の高い", "に力を入れる"),
+    ("に最適です", "に合う可能性があります"),
+    ("最適です", "合う可能性があります"),
+    ("最適な", "有力な候補となる"),
+    ("信頼できる医院", "口コミ評価の高い医院"),
+    ("信頼できる", "口コミ評価の高い"),
+    ("信頼度が高く", "口コミ上の評価が高く"),
+    ("専門クリニック", "に注力するクリニック"),
+    ("専門医院", "に注力する医院"),
+    ("専門の", "に力を入れる"),
+]
+def soften_display_text(t):
+    for a, b in _SOFTEN_PAIRS:
+        t = t.replace(a, b)
+    return t
+# 資格の裏取りなく「専門」等を名乗るタグは表示しない（例：歯周病専門・信頼できる医院）
+_NG_TAG_RE = _re.compile(r"専門|信頼|最適|[Nn]o\.?1|一番")
+
 def evidence_panel_html(c):
     """AI Analysis の「＋根拠」パネル。判断の元になった実データを開示する（2026-07-11新設）。
     患者・院長・オーナーが「AIはなぜそう言ったのか」を検証できるようにするのが目的。"""
@@ -438,12 +463,12 @@ def evidence_panel_html(c):
             ctx = '（注意点として）' if x["negative"] else ''
             rows += (f'<li><span class="rr-ev-term">「{e(x["term"])}」{ctx}</span>{badge}'
                      f'<span class="rr-ev-basis">{e(x["basis"])}</span></li>')
-        inner = (f'<p class="rr-ev-summary">{e(c.get("ai_summary", ""))}</p>'
+        inner = (f'<p class="rr-ev-summary">{e(soften_display_text(c.get("ai_summary", "")))}</p>'
                  f'<ul class="rr-ev-list">{rows}</ul>')
         blocks.append(('この分析文が何にもとづくか', inner))
 
     # 1) 口コミからの根拠
-    tags = c.get("reputation_tags") or []
+    tags = [t for t in (c.get("reputation_tags") or []) if not _NG_TAG_RE.search(str(t))]
     # 薄いページでは「公開情報が限定的」等のプレースホルダタグを出さない（Key Findingsと同方針・2026-07-13）
     if is_thin(c):
         tags = [t for t in tags if not is_placeholder_text(t)]
@@ -540,8 +565,9 @@ def evidence_panel_html(c):
             '対応する記述が確認できたもの、「AIによる推定」は直接の記述がなくAIが総合的に'
             '推測したものです。本分析は公開情報に基づく意見・論評であり、医療上の判断や'
             '治療結果を保証するものではありません。</p>')
-    return ('<button type="button" class="rr-ev-toggle" aria-expanded="false">＋根拠を見る</button>'
-            f'<div class="rr-ev-panel" hidden>{body}{note}</div>')
+    # 2026-07-14 患者向け再編集：トグルは外側（「この分析は何にもとづくか」の折りたたみ）が
+    # 担うため、ここでは中身（ブロック＋注記）だけを返す
+    return body + note
 
 
 def next_steps_html(c, ward_only, area_slug, tag_links):
@@ -615,11 +641,129 @@ def next_steps_html(c, ward_only, area_slug, tag_links):
             f'<p class="rr-note">リンク先の一覧・比較は、当サイトが公開情報から機械的に解析できた範囲にもとづく参考情報です。</p>')
 
 
+# ── 患者向け再編集レイアウト（2026-07-14 全面改修）ヘルパー ──
+# 「研究レポートを読むページ」から「患者が判断できる比較ページ」への再編集。
+# 方針（試作 articles/clinics/_prototype_リベ大… でユーザー承認済み 2026-07-14）：
+#  ・断定（専門/信頼できる/最適）を使わない。「案内しています」「確認できます」「比較候補」の語調
+#  ・患者スコアは数値バーでなく「言及傾向（多い/やや多い/評価が分かれる）」で表示。
+#    数値（言及指数）は「この分析は何にもとづくか」の折りたたみで開示（透明性は維持）
+#  ・診療時間は表形式＋出典（Googleビジネスプロフィール）＋最終確認日＋「要確認」を必ず添える
+#  ・英字指標（Confidence/Patient Fit等）はヒーローから撤去し「情報充実度」として分析根拠内で開示
+#    （「92%＝分析が正しい確率」という誤読を避ける）
+#  ・折りたたみは見出し＋要約を常時可視・中身はDOMに残す（SEO・被引用を壊さない）
+#  ・データが薄い医院は各セクションが自動非表示になり簡素なページに落ちる（＝3段テンプレの自動分岐。
+#    薄いページのnoindex/定型空文の扱いはthin_page_policy.pyの既存ルールのまま）
+
+# 口コミ7軸の患者向け表記（「技術力85」等が医療技術そのものの採点と誤読されるのを避ける）
+AXIS_PATIENT_LABEL = {
+    "技術力": "治療内容への肯定的な言及",
+    "説明力": "説明の丁寧さ",
+    "清潔感": "清潔感",
+    "優しさ": "スタッフ対応の良さ",
+    "子ども対応": "子どもへの対応",
+    "痛みへの配慮": "痛みへの配慮",
+    "待ち時間": "待ち時間",
+}
+AXIS_SHORT = {
+    "技術力": "治療内容", "説明力": "説明の丁寧さ", "清潔感": "清潔感",
+    "優しさ": "スタッフ対応", "子ども対応": "子どもへの対応",
+    "痛みへの配慮": "痛みへの配慮", "待ち時間": "待ち時間",
+}
+AXIS_QUOTE = {
+    "技術力": "治療内容への評価が高い", "説明力": "説明が丁寧", "清潔感": "清潔",
+    "優しさ": "対応がやさしい", "子ども対応": "子どもへの対応が良い",
+    "痛みへの配慮": "痛みに配慮してくれる", "待ち時間": "待ち時間が短い",
+}
+
+def trend_word(v):
+    """言及指数→患者向けの傾向語。区分の基準は分析根拠の折りたたみで開示する。"""
+    if v >= 80:
+        return ("多い", "")
+    if v >= 76:
+        return ("やや多い", "")
+    return ("評価が分かれる", " mixed")
+
+def hours_rows(hours):
+    """Google由来の日本語診療時間を（曜日ラベル, 時間帯タプル）の行リストに変換。
+    連続する同一時間帯の曜日は「月〜金」のようにまとめる。1行でも解析不能なら
+    None（表を出さず従来の文字列表示にフォールバック＝誤った表を出さない）。"""
+    day_order = []
+    for line in hours[:7]:
+        line = str(line)
+        d = line[:1]
+        if d not in _DAY_EN:
+            return None
+        if "定休" in line or "休診" in line:
+            day_order.append((d, ()))
+            continue
+        spans = tuple(
+            f"{int(h1)}:{int(m1):02d}〜{int(h2)}:{int(m2):02d}"
+            for h1, m1, h2, m2 in _HOURS_RE.findall(line)
+        )
+        if not spans:
+            return None
+        day_order.append((d, spans))
+    if not day_order:
+        return None
+    rows = []
+    for d, spans in day_order:
+        if rows and rows[-1][1] == spans:
+            rows[-1][0].append(d)
+        else:
+            rows.append(([d], spans))
+    return [(days[0] if len(days) == 1 else f"{days[0]}〜{days[-1]}", spans)
+            for days, spans in rows]
+
+def hours_table_html(hours):
+    """診療時間の表。全曜日が2枠（午前/午後）なら3列、そうでなければ2列で出す。"""
+    rows = hours_rows(hours) if hours else None
+    if not rows or all(not s for _, s in rows):
+        return ""
+    two = all(len(s) in (0, 2) for _, s in rows) and any(len(s) == 2 for _, s in rows)
+    if two:
+        head = "<tr><th>曜日</th><th>午前</th><th>午後</th></tr>"
+        body = ""
+        for label, spans in rows:
+            if not spans:
+                body += f'<tr><th>{esc(label)}</th><td colspan="2">休診</td></tr>'
+            else:
+                body += f'<tr><th>{esc(label)}</th><td>{esc(spans[0])}</td><td>{esc(spans[1])}</td></tr>'
+    else:
+        head = "<tr><th>曜日</th><th>診療時間</th></tr>"
+        body = "".join(
+            f'<tr><th>{esc(label)}</th><td>{"休診" if not spans else esc("、".join(spans))}</td></tr>'
+            for label, spans in rows
+        )
+    return f'<table class="rr-hours"><thead>{head}</thead><tbody>{body}</tbody></table>'
+
+def hours_note_html(c, analyzed):
+    """診療時間の注記：夜間有無の事実＋出典＋最終確認日＋要確認（矛盾・誤認対策の要）。"""
+    ev = evening_hours(c)
+    bits = []
+    if ev is False:
+        bits.append("<strong>18時以降の診療は確認できませんでした。</strong>")
+    elif ev is True:
+        latest = latest_closing_minutes(c)
+        if latest:
+            bits.append(f"<strong>{latest // 60}時{latest % 60:02d}分まで（夜間帯）の診療の表示があります。</strong>")
+    src = "出典：Googleビジネスプロフィール掲載の診療時間"
+    if analyzed:
+        src += f"（最終確認日：{esc(str(analyzed))}）"
+    bits.append(src + "。")
+    bits.append("診療時間は変更される場合があります。<strong>受診前に必ず公式サイト・電話でご確認ください。</strong>")
+    return '<p class="rr-hours-note">' + "<br>".join(bits) + "</p>"
+
+def fold_html(title, sub, body):
+    """折りたたみ。見出し＋要約は常時可視・中身はDOMに残す（SEO・被引用を壊さない）。"""
+    if not body:
+        return ""
+    return ('<div class="rr-fold"><button type="button" class="rr-fold-btn" aria-expanded="false" data-fold>'
+            f'<span>{title}<span class="sub">{sub}</span></span><span class="mk">＋</span></button>'
+            f'<div class="rr-fold-body" hidden>{body}</div></div>')
+
+
 def build_page(c, slug=""):
     name   = c.get("name", "")
-    catch  = c.get("catchphrase", "")
-    if catch and is_placeholder_text(catch):
-        catch = ""  # 「公開情報が限定的…」等の定型空文は掲出しない（A-1・validate_releaseが検出）
     addr   = c.get("address", "")
     rating = c.get("rating", 0) or 0
     reviews= c.get("total_reviews", 0) or 0
@@ -627,83 +771,183 @@ def build_page(c, slug=""):
     maps   = c.get("google_maps_url", "")
     phone  = c.get("phone") or ""
     hours  = c.get("business_hours") or []
-    if isinstance(hours, str):   # データ不整合対策：文字列で入っている場合は1件のリストとして扱う（文字単位に分割されるバグを防ぐ）
+    if isinstance(hours, str):   # データ不整合対策：文字列は1件のリストとして扱う
         hours = [hours] if hours else []
     genre  = c.get("genre", "")
     analyzed = c.get("last_analyzed", "")
-    sources  = c.get("sources_analyzed", 0) or 0
 
-    catch_html = f'<p class="rr-catch">{esc(catch)}</p>' if catch else ""
+    # 区の判定（ヒーロー要約・回遊導線・descで共用）
+    m_ward = re.search(CITY + r'[^\d]*?区', addr or "")
+    ward_txt = m_ward.group(0) if m_ward else CITY
+    ward_paren = f"（{ward_txt}）"
+    ward_only = ward_txt.replace(CITY, "")
+    area_slug = WARD_SLUGS.get(ward_only)
+    # 区別LPが実在するサイトでのみリンクを出す（404リンクを量産しない）
+    if area_slug and not os.path.exists(os.path.join(ROOT, "articles", "area", f"{area_slug}.html")):
+        area_slug = None
 
-    # 研究レポートの4指標（Confidence / Evidence / Research Sources / Patient Fit）
-    # ★評価やランキングではなく、根拠の強さを示す
-    m = compute_metrics(c)
-    metric_items = [
-        ("Confidence", f'{m["confidence"]}%'),
-        ("Evidence", m["evidence"]),
-        ("Research Sources", str(m["research_sources"])),
-    ]
-    if m["patient_fit"] is not None:
-        metric_items.append(("Patient Fit", f'{m["patient_fit"]}%'))
-    metric_html = "".join(
-        f'<div class="rr-metric"><span class="rr-metric-v">{esc(v)}</span>'
-        f'<span class="rr-metric-k">{esc(k)}</span></div>'
-        for k, v in metric_items
-    )
-    meta_html = f'<div class="rr-hmeta">{metric_html}</div>'
+    deep = bool(c.get("deep_fetched"))
+    focus_list = [t for t in (c.get("focus_treatments") or []) if t] if deep else []
+    focus = focus_list[0] if focus_list else ""
+    ps = c.get("patient_scores") or {}
+    strong_axes = [k for k in PATIENT_AXES if (ps.get(k) or 0) >= 80]
+    weak_axes   = [k for k in PATIENT_AXES if 0 < (ps.get(k) or 0) <= 75]
+    equip_stars = c.get("equipment_stars") or {}
+    ev_night = evening_hours(c)
+    sun = any(str(l)[:1] == "日" and "休" not in str(l) for l in hours)
+    sat = any(str(l)[:1] == "土" and "休" not in str(l) for l in hours)
 
-    # 事実情報（口コミ件数・分析日）は控えめな注記として残す
-    fact_bits = []
-    if rating:
-        fact_bits.append(f'Google口コミ {esc(rating)}（{esc(reviews)}件）')
-    if analyzed:
-        fact_bits.append(f'分析日 {esc(analyzed)}')
-    fact_html = f'<p class="rr-fact">{" ・ ".join(fact_bits)}</p>' if fact_bits else ""
+    # ── ヒーロー：患者向け要約（断定しない・実データからの機械導出のみ） ──
+    if focus:
+        hero_summary = f"{focus}を重視して歯科を探している方の、比較候補になり得る医院です。"
+    elif genre and genre != "一般歯科":
+        hero_summary = f"{genre}を中心とする医院として、公開情報とAI分析をまとめた参考ページです。"
+    else:
+        hero_summary = f"{ward_txt}で歯科を探している方向けに、公開情報とAI分析をまとめた参考ページです。"
+    facts_bits = []
+    if rating and reviews:
+        facts_bits.append(f"Google評価 {rating}（口コミ{reviews}件）")
+    if strong_axes:
+        facts_bits.append("・".join(AXIS_SHORT[k] for k in strong_axes[:2]) + "に関する肯定的な投稿が多く見られます")
+    hero_facts = f'<p class="rr-summary-facts">{esc("／".join(facts_bits))}</p>' if facts_bits else ""
+
+    chip_items = []
+    if focus:
+        chip_items.append(f"公式サイトで{focus}を詳しく案内")
+    if rating and reviews >= 10:
+        chip_items.append(f"口コミ評価 {rating}")
+    elif reviews:
+        chip_items.append(f"口コミ {reviews}件")
+    if sun:
+        chip_items.append("日曜診療の表示あり（要確認）")
+    elif sat:
+        chip_items.append("土曜診療の表示あり（要確認）")
+    elif ev_night is True:
+        chip_items.append("夜間帯の診療の表示あり（要確認）")
+    hchips = ('<div class="rr-hchips">'
+              + "".join(f'<span class="rr-hchip">{esc(t)}</span>' for t in chip_items[:3])
+              + '</div>') if chip_items else ""
 
     links = ""
     if url:
         links += (f'<a class="rr-btn primary" href="{esc(url)}" target="_blank" rel="noopener" '
-                  f'data-odr-ev="clinic_to_official" data-odr-v="公式サイト">公式サイト</a>')
+                  f'data-odr-ev="clinic_to_official" data-odr-v="公式サイト">公式サイトで確認</a>')
     if maps:
         links += (f'<a class="rr-btn" href="{esc(maps)}" target="_blank" rel="noopener" '
-                  f'data-odr-ev="clinic_to_map" data-odr-v="地図">Googleマップ</a>')
+                  f'data-odr-ev="clinic_to_map" data-odr-v="地図">地図・口コミを見る</a>')
+    if area_slug:
+        links += (f'<a class="rr-btn" href="../area/{area_slug}" '
+                  f'data-odr-ev="clinic_to_area" data-odr-v="{esc(ward_only)}">同じ{esc(ward_only)}の医院と比較</a>')
 
-    # ── 各セクションの中身を組み立て（空はNone扱いで非表示・自動連番） ──
-    # 薄いページ（実データが閾値未満）では「公開情報が限定的…」等の定型空文を
-    # 本番URLに出さない（scaled contentの署名になるため。2026-07-13）
-    ai = c.get("ai_summary", "")
-    if is_thin(c) and not has_substantive_ai(c):
-        ai = ""
-    sec_summary = (f'<div class="rr-ai"><span class="rr-ai-label">AI Analysis</span>'
-                   f'<p>{esc(ai)}</p>{evidence_panel_html(c)}</div>') if ai else ""
+    # スマホ下部固定CTA（公式｜地図｜比較。データがあるものだけ）
+    st = ""
+    if url:
+        st += (f'<a class="s-official" href="{esc(url)}" target="_blank" rel="noopener" '
+               f'data-odr-ev="clinic_to_official" data-odr-v="公式サイト">公式サイト</a>')
+    if maps:
+        st += (f'<a class="s-map" href="{esc(maps)}" target="_blank" rel="noopener" '
+               f'data-odr-ev="clinic_to_map" data-odr-v="地図">地図・口コミ</a>')
+    if area_slug:
+        st += (f'<a class="s-cmp" href="../area/{area_slug}" data-odr-ev="clinic_to_area" '
+               f'data-odr-v="{esc(ward_only)}">比較</a>')
+    else:
+        st += ('<a class="s-cmp" href="../shindan/" data-odr-ev="clinic_to_shindan" '
+               'data-odr-v="">診断</a>')
+    sticky = f'<div class="rr-sticky">{st}</div>' if (url or maps) else ""
 
-    # 主要所見：口コミ特徴＋専門性タグを統合した"Key Findings"
-    key = []
-    key += list(c.get("reputation_tags") or [])
-    key += [t for t in (c.get("specialty_tags") or []) if t not in key]
-    # 薄いページでは「公開情報が限定的」等のプレースホルダタグを表示しない
-    # （定型空文と同じscaled content署名になるため。2026-07-13 監査後の是正）
-    if is_thin(c):
-        key = [t for t in key if not is_placeholder_text(t)]
-    sec_key = (f'<ul class="rr-findings">{findings(key)}</ul>{SRC_NOTE}') if key else ""
+    # ── ①この医院の特徴（特徴＋向いている方＋「判断できない項目」の折りたたみ） ──
+    # 根拠のある項目だけを表示（AIの当て推量は出さない・従来ルール踏襲）
+    ref  = [x for x in (c.get("referral_to") or c.get("fit_for") or []) if ground_claim(x, c)[0] == "grounded"]
+    nref = [x for x in (c.get("not_referral_to") or c.get("not_fit_for") or []) if ground_claim(x, c, negative=True)[0] == "grounded"]
+    feats = []
+    if focus_list:
+        feats.append("公式サイトで" + "・".join(focus_list[:3]) + "を詳しく案内しています")
+    if strong_axes:
+        feats.append("口コミでは「" + "」「".join(AXIS_QUOTE[k] for k in strong_axes[:3]) + "」といった内容が多く確認できます")
+    if sun:
+        feats.append("日曜診療の表示があります（変更の可能性があるため公式サイトで要確認）")
+    elif sat:
+        feats.append("土曜診療の表示があります（変更の可能性があるため公式サイトで要確認）")
+    if ev_night is True:
+        feats.append("夜間帯の診療の表示があります（変更の可能性があるため公式サイトで要確認）")
+    eq_ok = [k for k in EQUIP_KEYS if (equip_stars.get(k) or 0) >= 3]
+    if eq_ok:
+        feats.append("公式サイトで" + "・".join(("歯科用CT" if k == "CT" else k) for k in eq_ok) + "の記載を確認しています")
+    elif parking_fact(c):
+        feats.append("駐車場の案内があります")
+    feats_html = ('<ul class="rr-list plain">' + "".join(f"<li>{esc(x)}</li>" for x in feats[:5]) + "</ul>") if feats else ""
+    ref_html = ('<p class="rr-subhead">向いている可能性がある方</p><ul class="rr-list good">' + li([soften_display_text(x) for x in ref]) + "</ul>") if ref else ""
+    unknown = []
+    if ev_night is False:
+        unknown.append("18時以降（夜間）の診療 … 公開情報では確認できませんでした")
+    if deep:
+        eq_un = [("歯科用CT" if k == "CT" else k) for k in ("CT", "マイクロスコープ") if (equip_stars.get(k) or 0) < 3]
+        if eq_un:
+            unknown.append("・".join(eq_un) + " … 公式サイト上では確認できませんでした")
+    for x in nref:
+        unknown.append(f"{soften_display_text(x)} … 該当する方は受診前に医院へご確認ください")
+    unknown_html = ""
+    if unknown:
+        u_body = ("<ul>" + "".join(f"<li>{esc(x)}</li>" for x in unknown) + "</ul>"
+                  "<p>※「確認できませんでした」は「無い」という意味ではありません。"
+                  "実際の対応可否は公式サイト・電話でご確認ください。</p>")
+        unknown_html = fold_html("公開情報だけでは判断できない項目",
+                                 "夜間診療・設備など、受診前に医院へ確認したい項目です。", u_body)
+    sec_glance = ""
+    if feats_html or ref_html:
+        sec_glance = (f'<div class="rr-panel">{feats_html}{ref_html}</div>{unknown_html}'
+                      '<p class="rr-note">※ 公開情報（公式サイト・Google口コミ）から機械的に確認できた範囲です。</p>')
+    elif unknown_html:
+        sec_glance = unknown_html
 
-    ctype_html = f'<div class="rr-chips">{chips(c.get("clinic_type"))}</div>' if c.get("clinic_type") else ""
+    # ── ②診療時間・場所（前半に配置・表形式・出典と最終確認日つき） ──
+    h_table = hours_table_html(hours)
+    info_rows = ""
+    shinryo = "／".join([x for x in [genre] + list(c.get("clinic_type") or []) if x])
+    if addr:
+        info_rows += f'<tr><th>所在地</th><td>{esc(addr)}</td></tr>'
+    ns = c.get("nearest_station") or {}
+    walk = station_walk_min(c)
+    if ns.get("name") and walk is not None and walk <= 20:
+        info_rows += f'<tr><th>最寄駅</th><td>{esc(ns["name"])}駅（徒歩約{walk}分〜・直線距離からの推計）</td></tr>'
+    if shinryo:
+        info_rows += f'<tr><th>診療</th><td>{esc(shinryo)}</td></tr>'
+    if phone:
+        info_rows += f'<tr><th>電話</th><td>{esc(phone)}</td></tr>'
+    if hours and not h_table:
+        # 表にできない形式は従来どおり文字列で（誤った表を出すより安全）
+        info_rows += f'<tr><th>診療時間</th><td>{esc(" / ".join(str(x) for x in hours[:7]))}</td></tr>'
+    info_html = f'<table class="rr-info">{info_rows}</table>' if info_rows else ""
+    map_link = (f'<a class="rr-maplink" href="{esc(maps)}" target="_blank" rel="noopener" '
+                f'data-odr-ev="clinic_to_map" data-odr-v="地図">Googleマップで場所・口コミを見る</a>') if maps else ""
+    sec_access = ""
+    if h_table or info_html:
+        sec_access = h_table + (hours_note_html(c, analyzed) if h_table else "") + info_html + map_link
 
-    pbars = bar_rows(c.get("patient_scores"), PATIENT_AXES, 100)
-    sec_patient = (f'<div class="rr-bars">{pbars}</div>'
-                   f'<p class="rr-note">口コミ本文の文脈をAIが7軸で定量化（100点満点・{SITE_NAME} 独自指標）。</p>') if pbars else ""
+    # ── ③口コミから見える傾向（数値バー廃止→傾向表。指数は分析根拠で開示） ──
+    trend_rows = ""
+    for k in PATIENT_AXES:
+        v = ps.get(k) or 0
+        if v <= 0:
+            continue
+        word, cls = trend_word(v)
+        trend_rows += f'<tr><td>{esc(AXIS_PATIENT_LABEL[k])}</td><td class="v{cls}">{word}</td></tr>'
+    sec_reviews = ""
+    if trend_rows and reviews:
+        s = ""
+        if strong_axes:
+            s += "口コミでは「" + "」「".join(AXIS_QUOTE[k] for k in strong_axes[:3]) + "」といった内容が多く確認できました。"
+        if weak_axes:
+            s += "一方で、" + "・".join(AXIS_SHORT[k] for k in weak_axes[:2]) + "については評価が分かれています。"
+        s += f"（Google口コミ{reviews}件をAIが分析）"
+        sec_reviews = (f'<p class="rr-review-text">{esc(s)}</p>'
+                       '<table class="rr-trend"><thead><tr><th>口コミで多く見られた内容</th><th>傾向</th></tr></thead>'
+                       f'<tbody>{trend_rows}</tbody></table>'
+                       '<p class="rr-note">※「傾向」は口コミ本文にその話題の肯定的な言及がどの程度あったかを'
+                       'AIが分類したもので、医院の医療技術そのものを採点したものではありません。'
+                       '分類の目安（言及指数）は下の「この分析は何にもとづくか」で開示しています。</p>')
 
-    dbars = bar_rows(c.get("doctor_stars"), DOCTOR_AXES, 5)
-    sec_doctor = (f'<div class="rr-bars">{dbars}</div>{SRC_NOTE}') if dbars else ""
-
-    ebars = bar_rows(c.get("equipment_stars"), EQUIP_KEYS, 5)
-    sec_equip = (f'<div class="rr-bars">{ebars}</div>{SRC_NOTE}') if ebars else ""
-
-    fbars = bar_rows(c.get("patient_fit"), FIT_KEYS, 5)
-    fit_lead = f'<p class="rr-lead">{esc(c["best_patient_profile"])}</p>' if c.get("best_patient_profile") else ""
-    sec_fit = (fit_lead + (f'<div class="rr-bars">{fbars}</div>' if fbars else "") + (SRC_NOTE if fbars else "")) if (fbars or fit_lead) else ""
-
-    # 診療理念・注力治療
+    # 診療理念・注力治療（実データのみ・従来どおり）
     care_bits = ""
     if c.get("philosophy"):
         care_bits += f'<p class="rr-quote">「{esc(c["philosophy"])}」</p>'
@@ -711,7 +955,7 @@ def build_page(c, slug=""):
         care_bits += f'<div class="rr-chips">{chips(c.get("focus_treatments"))}</div>'
     sec_policy = care_bits
 
-    # 院長プロフィール
+    # 院長プロフィール（事実情報のみ。旧「院長評価」の星バーは採点誤読のため廃止）
     doc = ""
     if c.get("doctor_name"):
         doc += f'<p class="rr-docname">院長　{esc(c["doctor_name"])}</p>'
@@ -721,31 +965,7 @@ def build_page(c, slug=""):
         doc += f'<ul class="rr-quals">{li(c.get("qualifications"))}</ul>'
     sec_doc = doc
 
-    # 結論：向いている方／注意が必要な方を1つにまとめ、レポート冒頭で提示する
-    # 根拠のある項目だけを「向いている方・注意点」に表示（AIの当て推量＝女性・高齢者等は出さない）
-    ref = [x for x in (c.get("referral_to") or c.get("fit_for") or []) if ground_claim(x, c)[0] == "grounded"]
-    nref = [x for x in (c.get("not_referral_to") or c.get("not_fit_for") or []) if ground_claim(x, c, negative=True)[0] == "grounded"]
-    conclusion_bits = ""
-    if ref:
-        conclusion_bits += (f'<p class="rr-concl-label good">この医院が向いている方</p>'
-                            f'<ul class="rr-list good">{li(ref)}</ul>')
-    if c.get("not_recommended_profile") or nref:
-        conclusion_bits += '<p class="rr-concl-label bad">受診前に確認したい点（AI分析による参考情報）</p>'
-        if c.get("not_recommended_profile"):
-            conclusion_bits += f'<p class="rr-lead">{esc(c["not_recommended_profile"])}</p>'
-        if nref:
-            conclusion_bits += f'<ul class="rr-list bad">{li(nref)}</ul>'
-    sec_conclusion = conclusion_bits
-
-    info_rows = ""
-    if genre:  info_rows += f'<tr><th>診療</th><td>{esc(genre)}</td></tr>'
-    if addr:   info_rows += f'<tr><th>所在地</th><td>{esc(addr)}</td></tr>'
-    if phone:  info_rows += f'<tr><th>電話</th><td>{esc(phone)}</td></tr>'
-    if hours:  info_rows += f'<tr><th>診療時間</th><td>{esc(" / ".join(hours[:7]))}</td></tr>'
-    info_html = f'<table class="rr-info">{info_rows}</table>' if info_rows else ""
-
     # 特徴ページ（features/index.html）へのタグ相互リンク
-    equip_stars = c.get("equipment_stars") or {}
     spec_tags = set(c.get("specialty_tags") or [])
     tag_links = []
     for key, anchor in EQUIP_ANCHOR.items():
@@ -771,64 +991,79 @@ def build_page(c, slug=""):
     )
     sec_related = f'<ul class="rr-related-list">{rel_items}</ul>' if rel_items else ""
 
-    # 区の判定（回遊導線ブロック・CTAのエリアリンク・descで共用）
-    m_ward = re.search(CITY + r'[^\d]*?区', addr or "")
-    ward_txt = m_ward.group(0) if m_ward else CITY
-    ward_paren = f"（{ward_txt}）"
-    ward_only = ward_txt.replace(CITY, "")
-    area_slug = WARD_SLUGS.get(ward_only)
-    # 区別LPが実在するサイトでのみリンクを出す（エリアページ未作成の都市で
-    # 404リンクを量産しない。2026-07-13・神戸で実在バグ確認）
-    if area_slug and not os.path.exists(os.path.join(ROOT, "articles", "area", f"{area_slug}.html")):
-        area_slug = None
+    # ── ④この分析は何にもとづくか（根拠開示＋言及指数＋情報充実度。折りたたみ） ──
+    # 薄いページでは定型空文のAI要約を出さない（従来ルール踏襲）
+    ai = c.get("ai_summary", "")
+    if is_thin(c) and not has_substantive_ai(c):
+        ai = ""
+    m = compute_metrics(c)
+    ev_body = evidence_panel_html(c) if ai else ""
+    meth = ""
+    idx_txt = "・".join(f"{AXIS_PATIENT_LABEL[k]} {int(ps[k])}" for k in PATIENT_AXES if (ps.get(k) or 0) > 0)
+    if idx_txt:
+        meth += ("<p><strong>傾向の分類方法：</strong>口コミ本文の文脈をAIが話題ごとに定量化した"
+                 f"「言及指数」（100点満点：{esc(idx_txt)}）を「多い（80以上）／やや多い（76〜79）／"
+                 "評価が分かれる（75以下または肯定否定が混在）」に区分しています。"
+                 "医療技術そのものの評価ではありません。</p>")
+    meth += (f"<p><strong>情報充実度：</strong>{m['confidence']}/100"
+             "（この医院の分析に使えた公開情報の量と一致度の指標です。分析が正しい確率ではありません）。"
+             f"参照データ源 {m['research_sources']}種類。</p>")
+    meth += ("<p><strong>限界：</strong>本分析は公開情報にもとづく意見・論評であり、"
+             "医療上の判断や治療結果を保証するものではありません。"
+             "根拠が確認できなかった設備・特徴は表示していません。</p>")
+    sub_bits = []
+    if reviews:
+        sub_bits.append(f"Google口コミ{reviews}件")
+    if deep:
+        sub_bits.append("公式サイト")
+    sub = ("・".join(sub_bits) + "を分析" if sub_bits else "公開情報を分析")
+    if analyzed:
+        sub += f"（分析日 {analyzed}）"
+    sub += "。何が事実で何がAI推定かを開示しています。"
+    sec_method = fold_html("使用データ・確認日・分類方法・情報充実度を見る", esc(sub), ev_body + meth)
+    if sec_method:
+        # 分析根拠の折りたたみはセクション先頭に置くため上マージンを消す
+        sec_method = sec_method.replace('<div class="rr-fold">', '<div class="rr-fold" style="margin-top:0;">', 1)
 
-    # ── 連番セクション（結論→根拠→詳細の順。中身のあるものだけ番号を振って出力） ──
+    # ── セクション出力（番号なし・空セクションは自動非表示＝データ量に応じた自動分岐） ──
     ordered = [
-        ("結論",                  "Conclusion",         sec_conclusion),
-        ("分析サマリー",          "Analysis Summary",  sec_summary),
-        ("主要所見",              "Key Findings",      sec_key),
-        ("患者体験の分析",        "Patient Experience",sec_patient),
-        ("院長評価",              "Doctor Assessment", sec_doctor),
-        ("設備の充実度",          "Facilities",        sec_equip),
-        ("地域の中で見る",        "Area Context",      area_context_html(c)),
-        ("適合する患者像",        "Patient Fit",       sec_fit),
-        ("医院タイプ",            "Clinic Type",       ctype_html),
-        ("診療理念・注力治療",    "Philosophy & Focus",sec_policy),
-        ("院長プロフィール",      "Director",          sec_doc),
-        ("該当する特徴",          "Feature Tags",       sec_tags),
-        ("基本情報",              "Facility Data",     info_html),
-        ("関連する研究レポート",  "Related Reports",   sec_related),
-        ("次の一歩",              "Next Steps",        next_steps_html(c, ward_only, area_slug, tag_links)),
+        ("この医院の特徴",           "At a glance",    sec_glance),
+        ("診療時間・場所",           "Hours & Access", sec_access),
+        ("口コミから見える傾向",     "Reviews",        sec_reviews),
+        ("地域の中で見る",           "In the area",    area_context_html(c)),
+        ("診療理念・注力治療",       "",               sec_policy),
+        ("院長プロフィール",         "",               sec_doc),
+        ("該当する特徴",             "",               sec_tags),
+        ("関連する研究レポート",     "",               sec_related),
+        ("この分析は何にもとづくか", "Methodology",    sec_method),
+        ("次にすること",             "Next",           next_steps_html(c, ward_only, area_slug, tag_links)),
     ]
-    body, n = "", 0
+    body = ""
     for ja, en, inner in ordered:
         if not inner:
             continue
-        n += 1
-        body += (f'<section class="rr-sec">'
-                 f'<div class="rr-sec-h"><span class="rr-sec-n">{n:02d}</span>'
-                 f'<div><span class="rr-sec-en">{esc(en)}</span>'
-                 f'<h2>{esc(ja)}</h2></div></div>{inner}</section>')
+        en_html = f'<span class="rr-sec-en">{esc(en)}</span>' if en else ""
+        body += (f'<section class="rr-sec"><div class="rr-sec-h">{en_html}'
+                 f'<h2>{esc(ja)}</h2></div>{inner}</section>')
 
     area_link = (f'<a class="rr-cta-btn ghost" href="../area/{area_slug}.html">{ward_only}の医院一覧</a>'
                  if area_slug else "")
 
-    # meta description：文の途中で切らない（語尾切れ対策 2026-07-13）。
-    # 90字以内で最後の「。」まで採用し、句点が無ければ「…」を付ける。
-    desc_ai = (ai or "").strip()
-    if len(desc_ai) > 90:
-        cut = desc_ai[:90]
-        pos = cut.rfind("。")
-        desc_ai = cut[:pos + 1] if pos >= 20 else cut.rstrip("、,") + "…"
-    desc = f"{name}（{ward_txt}）の口コミ・評判をAIが分析。" + desc_ai
+    # meta description：機械導出の要約のみを使う（AI要約の強い断定をdescに残さない・2026-07-14）
+    desc = f"{name}（{ward_txt}）の口コミ・評判をAIが分析。{hero_summary}"
+    if rating and reviews:
+        desc += f"Google評価{rating}・口コミ{reviews}件。"
+    desc += "診療時間・地図・公式サイトへの導線も掲載。"
 
     # 薄いページはnoindex,follow（インデックス対象から除外・リンクは辿らせる）
     robots_meta = ('<meta name="robots" content="noindex,follow">\n'
                    if is_thin(c) else "")
 
     return (TEMPLATE.replace("{name}", esc(name)).replace("{addr}", esc(addr))
-            .replace("{catch}", catch_html).replace("{meta}", meta_html)
-            .replace("{fact}", fact_html)
+            .replace("{summary}", esc(hero_summary))
+            .replace("{facts}", hero_facts)
+            .replace("{hchips}", hchips)
+            .replace("{sticky}", sticky)
             .replace("{links}", links).replace("{body}", body)
             .replace("{jsonld}", build_jsonld(c, slug))
             .replace("{robots}", robots_meta)
@@ -998,6 +1233,46 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 .rr-next-final{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px;}
 .rr-btn-line{display:inline-block;padding:10px 20px;border:1px solid var(--pine);border-radius:8px;font-size:.86rem;font-weight:500;color:var(--pine);text-decoration:none;background:#fff;}
 .rr-btn-line:hover{background:var(--pine);color:#fff;}
+/* ── 患者向け再編集（2026-07-14 全面改修） ── */
+.rr-summary{color:#eaf3ee;font-size:1.06rem;font-weight:500;margin:0 0 6px;line-height:1.7;}
+.rr-summary-facts{color:#cfe0d8;font-size:.9rem;margin:0 0 18px;}
+.rr-hchips{display:flex;flex-wrap:wrap;gap:8px;margin:0 0 20px;}
+.rr-hchip{background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.22);border-radius:999px;padding:6px 15px;font-size:.84rem;font-weight:500;color:#fff;}
+.rr-sec-h{display:block;}
+.rr-sec-h h2{padding-left:12px;border-left:4px solid var(--pine);font-size:1.28rem;}
+.rr-panel{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;box-shadow:0 4px 20px rgba(20,50,40,.04);}
+.rr-subhead{font-size:.95rem;font-weight:700;color:var(--pine);margin:22px 0 10px;}
+.rr-list.plain li{padding:10px 0 10px 20px;border-bottom:1px solid var(--line);}
+.rr-list.plain li:last-child{border-bottom:none;}
+.rr-list.plain li::before{content:"–";position:absolute;left:0;top:10px;color:var(--ink2);}
+.rr-hours{width:100%;border-collapse:collapse;font-size:.94rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.rr-hours th,.rr-hours td{padding:12px 16px;border-bottom:1px solid var(--line);text-align:left;}
+.rr-hours thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.82rem;}
+.rr-hours tbody th{width:96px;color:var(--ink2);font-weight:500;background:#fbfcfb;}
+.rr-hours tr:last-child th,.rr-hours tr:last-child td{border-bottom:none;}
+.rr-hours-note{margin:12px 0 0;padding:12px 16px;background:#faf8f5;border-left:3px solid var(--terra);border-radius:0 8px 8px 0;font-size:.84rem;line-height:1.8;color:#3d4643;}
+.rr-hours-note strong{color:#2c3532;}
+.rr-maplink{display:inline-block;margin-top:14px;padding:10px 20px;border:1px solid var(--pine);border-radius:8px;font-size:.86rem;font-weight:500;color:var(--pine);text-decoration:none;background:#fff;}
+.rr-maplink:hover{background:var(--pine);color:#fff;}
+.rr-review-text{background:#fff;border:1px solid var(--line);border-radius:14px;padding:22px 24px;font-size:.98rem;line-height:1.9;margin:0 0 16px;}
+.rr-trend{width:100%;border-collapse:collapse;font-size:.94rem;background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;}
+.rr-trend th,.rr-trend td{padding:12px 18px;border-bottom:1px solid var(--line);text-align:left;}
+.rr-trend thead th{background:#fbfcfb;color:var(--ink2);font-weight:500;font-size:.82rem;}
+.rr-trend tr:last-child th,.rr-trend tr:last-child td{border-bottom:none;}
+.rr-trend td.v{width:130px;font-weight:700;color:var(--pine);}
+.rr-trend td.v.mixed{color:var(--terra);}
+.rr-fold{background:#fff;border:1px solid var(--line);border-radius:14px;overflow:hidden;margin-top:16px;}
+.rr-fold-btn{width:100%;text-align:left;background:none;border:none;padding:18px 22px;font-family:inherit;font-size:1rem;font-weight:700;color:var(--pine);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:12px;}
+.rr-fold-btn .sub{display:block;font-size:.8rem;font-weight:400;color:var(--ink2);margin-top:4px;line-height:1.6;}
+.rr-fold-btn .mk{flex-shrink:0;color:var(--terra);font-weight:700;}
+.rr-fold-body{padding:0 22px 20px;font-size:.9rem;line-height:1.85;color:#3d4643;}
+.rr-fold-body p{margin:0 0 10px;}
+.rr-fold-body ul{margin:0 0 10px;padding-left:20px;}
+.rr-sticky{position:fixed;left:0;right:0;bottom:0;z-index:40;display:none;background:#fff;border-top:1px solid var(--line);box-shadow:0 -4px 16px rgba(20,50,40,.08);padding:8px 10px;gap:8px;}
+.rr-sticky a{flex:1;text-align:center;padding:11px 4px;border-radius:8px;font-size:.82rem;font-weight:700;text-decoration:none;}
+.rr-sticky .s-official{background:var(--terra);color:#fff;}
+.rr-sticky .s-map,.rr-sticky .s-cmp{background:#fff;color:var(--pine);border:1px solid var(--pine);}
+@media(max-width:760px){.rr-sticky{display:flex;}body{padding-bottom:72px;}}
 /* ── Research Flow（パンくず） ── */
 .rf-crumb{max-width:860px;margin:14px auto 0;padding:0 clamp(20px,4vw,40px);display:flex;flex-wrap:wrap;align-items:center;gap:6px;font-family:var(--mono);font-size:.72rem;letter-spacing:.02em;}
 .rf-crumb a{color:var(--ink2);text-decoration:none;}
@@ -1033,10 +1308,10 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
   <div class="rr-hero-in">
     <span class="rr-tag">AI RESEARCH REPORT</span>
     <h1 class="rr-name">{name}</h1>
-    {catch}
     <p class="rr-address">{addr}</p>
-    {meta}
-    {fact}
+    <p class="rr-summary">{summary}</p>
+    {facts}
+    {hchips}
     <div class="rr-links">{links}</div>
   </div>
 </section>
@@ -1055,13 +1330,16 @@ main{max-width:860px;margin:0 auto;padding:clamp(36px,5vw,64px) clamp(20px,4vw,4
 <footer class="rr-foot">
   <div class="in">当レポートのAI分析（サマリー・各スコア等）は、Googleマップの口コミや各医院公式サイト等の公開情報をもとに{SITE_NAME}が独自に生成した参考情報です。根拠となる情報がない項目は表示していません。診断・治療方針の決定を目的としたものではなく、受診の判断は必ず歯科医師にご相談ください。掲載内容の訂正は<a href="../../teisei.html" style="color:inherit;text-decoration:underline;">こちら</a>、免責事項の詳細は<a href="../../policy.html" style="color:inherit;text-decoration:underline;">運営ポリシー</a>をご覧ください。運営者と分析手法（データ源・算出方法・限界）は<a href="../../about.html" style="color:inherit;text-decoration:underline;">運営者情報</a>{research_foot}で開示しています。<br>© {SITE_NAME} {EN_UPPER}</div>
 </footer>
+{sticky}
 <script>
+/* 折りたたみ（見出し＋要約は常時可視・中身はDOMに残す＝SEOを壊さない） */
 document.addEventListener("click",function(ev){
-  var b=ev.target.closest(".rr-ev-toggle"); if(!b)return;
-  var p=b.nextElementSibling; var open=b.getAttribute("aria-expanded")==="true";
+  var b=ev.target.closest("[data-fold]"); if(!b)return;
+  var panel=b.nextElementSibling;
+  var open=b.getAttribute("aria-expanded")==="true";
   b.setAttribute("aria-expanded",open?"false":"true");
-  b.textContent=open?"＋根拠を見る":"－根拠を閉じる";
-  if(p)p.hidden=open;
+  if(panel)panel.hidden=open;
+  var mk=b.querySelector(".mk"); if(mk)mk.textContent=open?"＋":"−";
 });
 /* 回遊導線のGA4計測（クリック委譲・2026-07-14 指示書③）。
    イベント名 clinic_to_area / clinic_to_condition / clinic_to_shindan /
