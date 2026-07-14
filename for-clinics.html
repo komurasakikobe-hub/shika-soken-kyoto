@@ -165,9 +165,9 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
       var body='医院名: '+(fd.get('医院名')||'')+'\nご担当者名: '+(fd.get('ご担当者名')||'')+
                '\nメール: '+(fd.get('email')||'')+'\n電話: '+(fd.get('電話番号')||'')+
                '\n\nご相談内容:\n'+(fd.get('ご相談内容')||'');
-      location.href='mailto:komurasaki.kobe@gmail.com?subject='+
+      location.href='mailto:info@shikasoken.com?subject='+
         encodeURIComponent('【医院お問い合わせ】京都歯科総研')+'&body='+encodeURIComponent(body);
-      if(note){note.textContent='メール作成画面を開きました。そのまま送信してください（開かない場合は komurasaki.kobe@gmail.com まで直接お送りください）。';}
+      if(note){note.textContent='メール作成画面を開きました。そのまま送信してください（開かない場合は info@shikasoken.com まで直接お送りください）。';}
       return;
     }
     var btn=f.querySelector('.cbtn'); if(btn){btn.disabled=true;btn.textContent='送信中…';}
