@@ -212,8 +212,9 @@ function calcRankScore(clinic) {
     // unknown（データなし）は中立のまま加減点しない
   });
 
-  // 注目医院ボーナス（軽め。優越感を煽らないためスコアのみで表示上は特別扱いしない）
-  if (clinic.notable) score += 4;
+  // 注目医院(notable)は順位に一切影響させない（2026-07-16 中立化・優先3）。
+  // 運営/AI判定による「注目」を適合スコアに加点するのは中立性の穴（利益相反R6）のため撤去。
+  // notableはデータとしては保持するが、患者向けの順位・表示に特別扱いを持たせない。
 
   return { score: Math.round(score * 10) / 10, matched };
 }
