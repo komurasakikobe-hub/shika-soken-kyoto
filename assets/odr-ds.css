@@ -71,7 +71,36 @@ body.odr{margin:0;font-family:var(--odr-sans);color:var(--odr-ink);background:va
 .odr-brandbar nav{display:flex;gap:22px;align-items:center;}
 .odr-brandbar nav a{color:#cfe0d8;text-decoration:none;font-size:15px;}
 .odr-brandbar nav a:hover{color:#fff;}
-@media(max-width:640px){.odr-brandbar nav{display:none;}}
+/* ハンバーガーはJS(odr-track.js)がbrandbarに注入。PCでは非表示、スマホのみ出す */
+.odr-navtoggle{display:none;}
+.odr-navtoggle:focus-visible{outline:2px solid #fff;outline-offset:2px;border-radius:6px;}
+@media(max-width:640px){
+  .odr-brandbar{position:relative;}
+  .odr-brandbar nav{display:none;}
+  /* トグルボタン（≡）——地味な白線3本、開くと×に */
+  .odr-navtoggle{display:inline-flex;align-items:center;justify-content:center;
+    width:44px;height:44px;margin-right:-8px;padding:0;background:none;border:0;
+    color:#fff;cursor:pointer;-webkit-tap-highlight-color:transparent;}
+  .odr-navtoggle-bars,
+  .odr-navtoggle-bars::before,
+  .odr-navtoggle-bars::after{display:block;width:22px;height:2px;border-radius:2px;
+    background:#fff;transition:transform .18s ease,background .18s ease,top .18s ease;}
+  .odr-navtoggle-bars{position:relative;}
+  .odr-navtoggle-bars::before,.odr-navtoggle-bars::after{content:"";position:absolute;left:0;}
+  .odr-navtoggle-bars::before{top:-7px;}
+  .odr-navtoggle-bars::after{top:7px;}
+  .odr-brandbar.nav-open .odr-navtoggle-bars{background:transparent;}
+  .odr-brandbar.nav-open .odr-navtoggle-bars::before{top:0;transform:rotate(45deg);}
+  .odr-brandbar.nav-open .odr-navtoggle-bars::after{top:0;transform:rotate(-45deg);}
+  /* 開いたときだけ、バー直下に不透明ドロワーを重ねる（本文は押し下げない） */
+  .odr-brandbar.nav-open nav{display:flex;flex-direction:column;align-items:stretch;gap:0;
+    position:absolute;top:100%;left:0;right:0;background:var(--odr-pine);
+    box-shadow:0 10px 26px rgba(15,40,32,.30);padding:4px 0;z-index:1000;}
+  .odr-brandbar.nav-open nav a{font-size:16px;color:#eaf2ee;padding:14px var(--sp-page);
+    border-top:1px solid rgba(255,255,255,.08);}
+  .odr-brandbar.nav-open nav a:first-child{border-top:0;}
+  .odr-brandbar.nav-open nav a:active{background:rgba(255,255,255,.07);}
+}
 
 /* ===================== Mono カテゴリ・キッカー =====================
    ページごとに RESEARCH DATABASE / AI RESEARCH REPORT / FEATURE REPORT /

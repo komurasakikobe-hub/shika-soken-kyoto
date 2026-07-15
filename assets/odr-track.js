@@ -41,3 +41,62 @@
   window.gtag("js", new Date());
   ids.forEach(function (id) { window.gtag("config", id); });
 })();
+
+/* =========================================================
+   スマホ用ナビ（ハンバーガー）。全ページ共通の .odr-brandbar に
+   トグルボタンを注入し、既存 <nav> をドロップダウン開閉する。
+   markupは各ページ非改変。見た目は odr-ds.css（≤640px）が担当。
+   グローバル汚染ゼロ・二重注入ガードあり。
+   ========================================================= */
+(function () {
+  function initNav() {
+    var bars = document.querySelectorAll(".odr-brandbar");
+    for (var i = 0; i < bars.length; i++) {
+      (function (bar) {
+        if (bar.getAttribute("data-odr-nav") === "1") return; // 二重注入ガード
+        var nav = bar.querySelector("nav");
+        if (!nav) return;
+        bar.setAttribute("data-odr-nav", "1");
+        if (!nav.id) nav.id = "odr-nav";
+
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.className = "odr-navtoggle";
+        btn.setAttribute("aria-label", "メニュー");
+        btn.setAttribute("aria-expanded", "false");
+        btn.setAttribute("aria-controls", nav.id);
+        btn.innerHTML = '<span class="odr-navtoggle-bars" aria-hidden="true"></span>';
+        bar.appendChild(btn);
+
+        function close() {
+          bar.classList.remove("nav-open");
+          btn.setAttribute("aria-expanded", "false");
+        }
+        function open() {
+          bar.classList.add("nav-open");
+          btn.setAttribute("aria-expanded", "true");
+        }
+        btn.addEventListener("click", function (e) {
+          e.preventDefault();
+          e.stopPropagation();
+          bar.classList.contains("nav-open") ? close() : open();
+        });
+        var links = nav.querySelectorAll("a");
+        for (var j = 0; j < links.length; j++) {
+          links[j].addEventListener("click", close);
+        }
+        document.addEventListener("click", function (e) {
+          if (bar.classList.contains("nav-open") && !bar.contains(e.target)) close();
+        });
+        document.addEventListener("keydown", function (e) {
+          if (e.key === "Escape" || e.keyCode === 27) close();
+        });
+      })(bars[i]);
+    }
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", initNav);
+  } else {
+    initNav();
+  }
+})();
