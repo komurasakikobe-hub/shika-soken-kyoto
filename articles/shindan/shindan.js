@@ -61,7 +61,11 @@ const TREATMENT_MAP = {
 const TREATMENT_LIST = Object.keys(TREATMENT_MAP);
 
 // ── 希望条件 ───────────────────────────────────────────────
+// 「口コミ評価を重視」は他の希望条件（±16の加減点）と違い、スコアの
+// 重み配分そのものを切り替える特別な条件（emphasis）。calcRankScoreで判定する。
+const REVIEW_EMPHASIS_KEY = "口コミ評価を重視";
 const CONDITION_MAP = {
+  "口コミ評価を重視":     { emphasis: true },
   "駅から近い":           { station: 500 },
   "土日診療":             { tags: ["土日診療"] },
   "夜間診療":             { tags: ["夜間診療"] },
@@ -87,6 +91,9 @@ let clinicDB = {};
 let clinicSlugMap = {};
 let allClinics = [];
 let isRestoringHistory = false;
+// 口コミ評価の全体平均（ベイズ縮小の事前分布に使う）。loadDBで実データから算出し、
+// 「口コミ評価を重視」時に少件数の高評価を全体平均へ寄せる信頼性補正の基準にする。
+let ratingPrior = 3.8;
 
 // ── データ読み込み ───────────────────────────────────────────
 async function loadDB() {
@@ -100,6 +107,8 @@ async function loadDB() {
         allClinics = Object.entries(clinicDB)
           .map(([pid, c]) => ({ ...c, place_id: c.place_id || pid }))
           .filter(c => !c.q_excluded && c.name);
+        const rated = allClinics.filter(c => c.rating && (c.total_reviews || 0) > 0);
+        if (rated.length) ratingPrior = rated.reduce((s, c) => s + c.rating, 0) / rated.length;
         return clinicDB;
       }
     } catch (e) { /* try next path */ }
@@ -151,16 +160,31 @@ function calcRankScore(clinic) {
   let score = 0;
   const matched = [];
 
-  // ベース：口コミ評価（0-100換算）
   const r = clinic.rating || 0;
   const rv = clinic.total_reviews || 0;
-  const reviewScore = Math.max(0, Math.min(100, ((r - 3) / 2) * 100 + Math.min(20, Math.log10(rv + 1) * 10) - 10));
-  score += reviewScore * 0.28;
 
   // データ充実度（患者スコア平均。無ければ口コミからのフォールバック）
   const psVals = Object.values(ps).filter(v => typeof v === "number");
   const qualityAvg = psVals.length ? psVals.reduce((a, b) => a + b, 0) / psVals.length : qualityProxy100(clinic);
-  score += qualityAvg * 0.32;
+
+  // ベース配点：口コミ評価とデータ充実度。
+  // 通常は 口コミ0.28／データ0.32。「口コミ評価を重視」がONのときだけ、
+  // 口コミの重みを大きく（0.28→0.55）、データ充実度を下げる（0.32→0.20）。
+  // このとき少件数の高評価（★5.0が数件だけ等）に順位が引っ張られないよう、
+  // 件数で全体平均に寄せる信頼性補正（ベイズ縮小）を1本の式でかける
+  // （調整評価 =(件数×実評価 + 事前件数×全体平均)/(件数+事前件数)。件数が増える
+  // ほど実評価を反映し、少件数ほど全体平均に近づく。滑らか＝しきい値の段差なし）。
+  if (filters.conditions.has(REVIEW_EMPHASIS_KEY)) {
+    const PRIOR_N = 10; // 事前分布の重み（この件数までは全体平均に寄る）
+    const adjRating = ((rv * r) + (PRIOR_N * ratingPrior)) / (rv + PRIOR_N);
+    const reviewScore = Math.max(0, Math.min(100, (adjRating - 3.0) / 2.0 * 100));
+    score += reviewScore * 0.55;
+    score += qualityAvg * 0.20;
+  } else {
+    const reviewScore = Math.max(0, Math.min(100, ((r - 3) / 2) * 100 + Math.min(20, Math.log10(rv + 1) * 10) - 10));
+    score += reviewScore * 0.28;
+    score += qualityAvg * 0.32;
+  }
 
   // 治療ジャンル一致（複数選択可。選んだ悩みごとに一致を加点）
   filters.treatments.forEach(tKey => {
@@ -182,6 +206,7 @@ function calcRankScore(clinic) {
   const es = clinic.equipment_stars || {};
   filters.conditions.forEach(c => {
     const cond = CONDITION_MAP[c];
+    if (!cond || cond.emphasis) return; // 「口コミ評価を重視」は加減点でなく重み切替なので対象外
     let state = "unknown"; // "yes" | "no" | "unknown"
 
     if (cond.tags) {
@@ -297,6 +322,15 @@ const TREND_PHRASES = [
   ["清潔感",       80, "院内の清潔さに関する言及"],
   ["子ども対応",   75, "子どもへの対応に関する言及"],
 ];
+// 料金の「分かりやすさ」への肯定的言及だけを口コミ由来テキストから拾う。
+// 「安い／高い」等の曖昧・主観語は使わず、明朗・明示・透明性など断定を招きにくい
+// 表現に限定する（固定スコアは新設せず＝再分析コストなし。ある医院にだけ表示）。
+const FEE_CLARITY_RE = /料金.{0,6}(明確|明朗|明示|わかりやす|分かりやす|透明|良心的|リーズナブル)|費用.{0,6}(明確|明朗|明示|わかりやす|分かりやす|透明|説明)|明朗(会計|な料金)|料金表.{0,4}(明確|掲示|あり)/;
+function feeClaritySignal(clinic) {
+  const t = [...(clinic.reputation_tags || []), ...(clinic.phrases || []),
+             clinic.reputation_summary || "", clinic.ai_summary || ""].join("／");
+  return FEE_CLARITY_RE.test(t);
+}
 function reviewTrendsHTML(clinic) {
   const ps = clinic.patient_scores || {};
   const items = [];
@@ -304,6 +338,8 @@ function reviewTrendsHTML(clinic) {
     if (typeof ps[key] === "number" && ps[key] >= min) items.push(phrase);
     if (items.length >= 3) break;
   }
+  // 料金の分かりやすさへの言及があれば、上限3件のスコア傾向に加えて表示する
+  if (feeClaritySignal(clinic)) items.push("料金の分かりやすさに関する声");
   if (!items.length) return "";
   return `<div class="rk-trend">
     <p class="rk-trend-label">口コミで確認された傾向</p>
