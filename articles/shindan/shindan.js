@@ -751,7 +751,7 @@ function cardHTML(clinic, rank, matched) {
     : "";
 
   return `
-  <article class="rk-card" data-pid="${esc(clinic.place_id || "")}"${rank <= 3 ? ` data-top="${rank}"` : ""}>
+  <article class="rk-card" data-pid="${esc(clinic.place_id || "")}"${rank <= 3 ? ` data-top="${rank}"` : ""} data-odr-impression="card_impression" data-name="${esc(clinic.name || "")}" data-rank="${rank}">
     <div class="rk-card-rank"><span class="num">${String(rank).padStart(2, "0")}</span><span class="unit">位</span>${prizeHTML}</div>
     <div class="rk-card-body">
       <h3 class="rk-card-name"><a href="${esc(url)}">${esc(clinic.name || "")}</a></h3>
@@ -834,6 +834,9 @@ function renderRanking() {
   }
 
   container.innerHTML = top.map((t, i) => cardHTML(t.clinic, i + 1, t.matched)).join("");
+
+  // 表示回数（card_impression）計測：描画のたびに新カードを監視対象へ（odr-track.js）
+  if (window.odrObserveImpressions) window.odrObserveImpressions();
 
   if (reduceMotion || top.length > 200) return;
 

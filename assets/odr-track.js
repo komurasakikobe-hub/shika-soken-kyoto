@@ -17,6 +17,7 @@
      map_click       … 地図クリック {clinic_name, rank}
      compare_add     … 比較に追加 {clinic_name}
      compare_view    … 比較表を表示 {count}
+     card_impression … 医院カードが画面に表示された {clinic_name, rank}（CTRの分母）
    これらが「どんな患者が・どの条件で・どの医院に興味を持ったか」の
    一次データになり、医院向けレポート/AI評判設計プランの営業材料になる。
    ========================================================= */
@@ -40,6 +41,52 @@
   window.gtag = function () { window.dataLayer.push(arguments); };
   window.gtag("js", new Date());
   ids.forEach(function (id) { window.gtag("config", id); });
+})();
+
+/* =========================================================
+   表示回数（Impression）計測。[data-odr-impression] を持つ要素が
+   画面に入ったら、その属性値をイベント名として一度だけ送信する。
+   医院カード（ランキング）の「表示回数」＝クリック率(CTR)の分母を取るための汎用計測。
+   医院名・順位・フィルタ値は data-name / data-rank / data-filter から拾う。
+   動的に描画される要素にも対応：描画後に window.odrObserveImpressions() を
+   呼べば、未監視の要素だけを追加で監視する（二重監視・二重送信ガードあり）。
+   IntersectionObserver 非対応環境・GA4未設定時は安全に無効化。
+   ========================================================= */
+(function () {
+  if (typeof IntersectionObserver !== "function") {
+    window.odrObserveImpressions = function () {};
+    return;
+  }
+  var io = new IntersectionObserver(function (entries) {
+    for (var i = 0; i < entries.length; i++) {
+      var en = entries[i];
+      if (!en.isIntersecting) continue;
+      var el = en.target;
+      io.unobserve(el);
+      if (el.getAttribute("data-odr-seen") === "1") continue; // 一度だけ送信
+      el.setAttribute("data-odr-seen", "1");
+      var name = el.getAttribute("data-odr-impression") || "impression";
+      var params = {};
+      if (el.dataset.name) params.clinic_name = el.dataset.name;
+      if (el.dataset.rank) params.rank = Number(el.dataset.rank) || 0;
+      if (el.dataset.filter) params.filter_value = el.dataset.filter;
+      if (typeof window.odrTrack === "function") window.odrTrack(name, params);
+    }
+  }, { threshold: 0.5 });
+
+  window.odrObserveImpressions = function () {
+    var els = document.querySelectorAll("[data-odr-impression]:not([data-odr-obs])");
+    for (var i = 0; i < els.length; i++) {
+      els[i].setAttribute("data-odr-obs", "1"); // 二重監視ガード
+      io.observe(els[i]);
+    }
+  };
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", window.odrObserveImpressions);
+  } else {
+    window.odrObserveImpressions();
+  }
 })();
 
 /* =========================================================

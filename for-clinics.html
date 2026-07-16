@@ -122,8 +122,9 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
         ご相談内容は<strong>「無料レポート希望」や「口コミ返信のお試し希望」の一言だけで十分です</strong>。
         貴院の分析レポート（このサイトでの紹介のされ方・公開情報の充実度・改善できる点）を無料でお送りします。
         しつこい営業のお電話はいたしません。</p>
-      <!-- ▼ Formspree: 下の YOUR_FORM_ID をご自身のフォームIDに置き換えてください（例: mbljabcd） -->
-      <form id="clinicForm" class="cform" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+      <!-- 受信：FormSubmit.co（登録不要・無料）経由で info@shikasoken.com へ転送。
+           初回送信時に info@ 宛へ届く「有効化メール」のリンクを1度だけクリックすると受信が開始する。 -->
+      <form id="clinicForm" class="cform" action="https://formsubmit.co/ajax/info@shikasoken.com" method="POST">
         <label>医院名<span class="req">必須</span>
           <input type="text" name="医院名" required placeholder="○○歯科クリニック">
         </label>
@@ -142,8 +143,12 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
           <textarea name="ご相談内容" rows="5" required placeholder="例：「無料レポート希望」「口コミ返信の下書きを1本お試しで」など、一言でかまいません。"></textarea>
         </label>
         <input type="hidden" name="_subject" value="【医院お問い合わせ】京都歯科総研">
+        <input type="hidden" name="_template" value="table">
+        <input type="hidden" name="_captcha" value="false">
+        <!-- ハニーポット（bot除け）：人には見えず、入力されていたら送信を破棄 -->
+        <input type="text" name="_honey" tabindex="-1" autocomplete="off" aria-hidden="true" style="position:absolute;left:-9999px;width:1px;height:1px;opacity:0;">
         <button type="submit" class="cbtn">この内容で問い合わせる</button>
-        <p class="cnote" id="cform-note">「問い合わせる」を押すと、入力内容を引き継いだメール作成画面が開きます。</p>
+        <p class="cnote" id="cform-note">「問い合わせる」を押すと送信されます。担当者より折り返しご連絡いたします。</p>
       </form>
     </section>
   </div>
@@ -157,33 +162,31 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
   var f=document.getElementById('clinicForm');
   if(!f)return;
   var note=document.getElementById('cform-note');
+  function mailtoFallback(fd){
+    var body='医院名: '+(fd.get('医院名')||'')+'\nご担当者名: '+(fd.get('ご担当者名')||'')+
+             '\nメール: '+(fd.get('email')||'')+'\n電話: '+(fd.get('電話番号')||'')+
+             '\n\nご相談内容:\n'+(fd.get('ご相談内容')||'');
+    location.href='mailto:info@shikasoken.com?subject='+
+      encodeURIComponent('【医院お問い合わせ】京都歯科総研')+'&body='+encodeURIComponent(body);
+  }
+  function fail(fd,btn){
+    /* 送信サービスに繋がらない時も取りこぼさない：メール作成画面へ退避 */
+    if(note){note.textContent='うまく送信できなかったため、メール作成画面を開きました。そのまま送信してください（開かない場合は info@shikasoken.com まで直接お送りください）。';note.style.color='#c0392b';}
+    if(btn){btn.disabled=false;btn.textContent='この内容で問い合わせる';}
+    mailtoFallback(fd);
+  }
   f.addEventListener('submit',function(e){
     e.preventDefault();
-    if(f.action.indexOf('YOUR_FORM_ID')>=0){
-      /* Formspree未設定の間は、入力内容を引き継いだメール作成画面を開く（無料・確実） */
-      var fd=new FormData(f);
-      var body='医院名: '+(fd.get('医院名')||'')+'\nご担当者名: '+(fd.get('ご担当者名')||'')+
-               '\nメール: '+(fd.get('email')||'')+'\n電話: '+(fd.get('電話番号')||'')+
-               '\n\nご相談内容:\n'+(fd.get('ご相談内容')||'');
-      location.href='mailto:info@shikasoken.com?subject='+
-        encodeURIComponent('【医院お問い合わせ】京都歯科総研')+'&body='+encodeURIComponent(body);
-      if(note){note.textContent='メール作成画面を開きました。そのまま送信してください（開かない場合は info@shikasoken.com まで直接お送りください）。';}
-      return;
-    }
+    var fd=new FormData(f);
+    if((fd.get('_honey')||'').length){return;} /* bot：無反応で破棄 */
     var btn=f.querySelector('.cbtn'); if(btn){btn.disabled=true;btn.textContent='送信中…';}
-    fetch(f.action,{method:'POST',body:new FormData(f),headers:{'Accept':'application/json'}})
+    fetch(f.action,{method:'POST',body:fd,headers:{'Accept':'application/json'}})
       .then(function(r){
         if(r.ok){
           f.innerHTML='<p style="text-align:center;font-size:1.05rem;color:#1f4b3f;font-weight:700;padding:20px 0;">お問い合わせを送信しました。<br>担当者より折り返しご連絡いたします。</p>';
-        }else{
-          if(note){note.textContent='送信に失敗しました。時間をおいて再度お試しください。';note.style.color='#c0392b';}
-          if(btn){btn.disabled=false;btn.textContent='この内容で問い合わせる';}
-        }
+        }else{ fail(fd,btn); }
       })
-      .catch(function(){
-        if(note){note.textContent='送信に失敗しました。通信環境をご確認ください。';note.style.color='#c0392b';}
-        if(btn){btn.disabled=false;btn.textContent='この内容で問い合わせる';}
-      });
+      .catch(function(){ fail(fd,btn); });
   });
 })();
 </script>
