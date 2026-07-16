@@ -367,7 +367,7 @@ a{text-decoration:none;color:inherit;}
 /* ---- Nav：全ページ共通のodr-brandbar（assets/odr-ds.css）を使用。ページ固有CSSは持たない ---- */
 
 /* ---- Hero ---- */
-.hero{position:relative;overflow:hidden;color:#fff;zoom:1.05;
+.hero{position:relative;overflow:hidden;color:#fff;
   background:
     radial-gradient(72% 105% at 82% 44%,rgba(62,139,113,.30) 0%,rgba(36,102,84,.16) 42%,transparent 72%),
     radial-gradient(54% 86% at 12% 36%,rgba(0,22,18,.26) 0%,transparent 72%),
@@ -378,7 +378,7 @@ a{text-decoration:none;color:inherit;}
     linear-gradient(90deg,rgba(4,31,25,.52) 0%,rgba(4,31,25,.22) 31%,rgba(4,31,25,0) 58%),
     radial-gradient(46% 78% at 78% 48%,rgba(92,169,141,.08),transparent 74%);
 }
-.hero-in{position:relative;z-index:2;padding:clamp(48px,7vw,84px) 0 clamp(40px,5vw,60px);max-width:620px;}
+.hero-in{position:relative;z-index:2;padding:clamp(34px,5vw,60px) 0 clamp(30px,4vw,44px);max-width:620px;}
 .hero .eyebrow{font-family:'Inter';font-size:.72rem;font-weight:600;letter-spacing:.22em;color:var(--accent);margin:0 0 18px;}
 .hero h1{font-family:'Shippori Mincho',serif;font-weight:700;font-size:clamp(1.95rem,4.3vw,2.9rem);line-height:1.25;letter-spacing:.01em;margin:0 0 20px;}
 .hero .lead{font-size:1rem;line-height:1.9;color:#d5e4dd;margin:0 0 30px;font-weight:400;}
