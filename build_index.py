@@ -16,13 +16,19 @@ ART = os.path.join(os.path.dirname(__file__), "articles")
 
 # 都市固有値は site_config.json から読む（ハードコード禁止・多都市共通スクリプト）
 SITE_CFG = json.load(open(os.path.join(os.path.dirname(__file__), "site_config.json"), encoding="utf-8"))
-CITY = SITE_CFG.get("city", "")                # 例: 京都市 / 神戸市 / 北播磨エリア
+CITY = SITE_CFG.get("city", "")                # 例: 大阪市 / 神戸市 / 北播磨エリア
 CITY_SHORT = SITE_CFG.get("city_short", SITE_CFG.get("city", ""))
-SITE_NAME = SITE_CFG.get("site_name", "")      # 例: 京都歯科総研
-EN_UPPER = SITE_CFG.get("site_name_en", "")    # 例: KYOTO DENTAL RESEARCH
-# 例: Kyoto Dental Research Institute（site_name_enから機械導出。ハイフン語は各パートを大文字化）
+SITE_NAME = SITE_CFG.get("site_name", "")      # 例: 大阪歯科総研
+EN_UPPER = SITE_CFG.get("site_name_en", "")    # 例: OSAKA DENTAL RESEARCH
+# 例: Osaka Dental Research Institute（site_name_enから機械導出。ハイフン語は各パートを大文字化）
 EN_INSTITUTE = " ".join("-".join(p.capitalize() for p in w.split("-")) for w in EN_UPPER.split()) + " Institute"
 DOMAIN = SITE_CFG.get("domain", "shikasoken.com")
+
+# コラム集約ハブ（大阪＝shikasoken.com）だけが一般コラム一覧を持つ（2バケット原則＝ARTICLE_MANUAL §0）。
+# 都市サイトは一般コラム棚（新着・痛み・インプラント…）を出さず、ハブへの導線＋自都市の研究シリーズのみ表示する。
+# 既定はドメインから判定（cityサブドメインでないもの＝ハブ）。必要なら site_config で明示上書き可。
+COLUMN_HUB_URL = SITE_CFG.get("column_hub_url", "https://shikasoken.com/articles/")
+IS_COLUMN_HUB = SITE_CFG.get("is_column_hub", DOMAIN == "shikasoken.com")
 
 # 表示用の投稿日（ファイル名は他所から参照されているため変更せず、
 # 表示日付だけをこのマップで上書きする。2026-07-08：初期一括生成分の全記事が
@@ -288,6 +294,19 @@ def build_cat_page(title, sub, arts, pad=None, href=""):
             .replace("{EN_UPPER}", EN_UPPER).replace("{CITY_SHORT}", CITY_SHORT)
             .replace("{DOMAIN}", DOMAIN))
 
+def city_callout():
+    """都市サイト用：一般コラムは集約ハブ（大阪）にあるため、その導線カードを出す。"""
+    return f'''  <section class="col-hub-callout">
+    <div class="ch-card">
+      <div class="ch-txt">
+        <h2>歯科コラム</h2>
+        <p>症状や治療の基礎知識、歯科医院の選び方などのコラムは、歯科総研の共通コラムにまとめています。</p>
+      </div>
+      <a class="ch-btn" href="{COLUMN_HUB_URL}">コラムを読む<span aria-hidden="true">→</span></a>
+    </div>
+  </section>'''
+
+
 def build():
     rows = scan()
     by = {}
@@ -323,6 +342,20 @@ def build():
         ("歯科医院の選び方", "", select_all, "select", select_all, False, None),
     ]
 
+    # 研究シリーズの棚（articles/research/ の実ファイルを自動検出。0件なら棚ごと出さない）
+    research = scan_research()
+
+    if not IS_COLUMN_HUB:
+        # 都市サイト：一般コラム棚は出さず（記事はハブに集約）、ハブ導線＋自都市の研究シリーズのみ。
+        sections = city_callout()
+        if research:
+            sections += "\n" + section("研究シリーズ", "独自データの集計から見えた発見", research,
+                                       "cat-research.html")
+        return (TEMPLATE.replace("{sections}", sections)
+                .replace("{SITE_NAME}", SITE_NAME).replace("{EN_INSTITUTE}", EN_INSTITUTE)
+                .replace("{EN_UPPER}", EN_UPPER).replace("{CITY_SHORT}", CITY_SHORT)
+                .replace("{DOMAIN}", DOMAIN))
+
     sections = ""
     for title, sub, shown, slug, full, new, pad in specs:
         href = f"cat-{slug}.html"
@@ -330,8 +363,6 @@ def build():
         open(os.path.join(ART, href), "w", encoding="utf-8").write(
             build_cat_page(title, sub if sub else title, full, pad=pad, href=href))
 
-    # 研究シリーズの棚（articles/research/ の実ファイルを自動検出。0件なら棚ごと出さない）
-    research = scan_research()
     research_tab = ""
     if research:
         sections += "\n" + section("研究シリーズ", "独自データの集計から見えた発見", research,
@@ -382,6 +413,21 @@ a{text-decoration:none;color:inherit;}
 .hero .eyebrow{font-family:'Inter';font-size:.72rem;font-weight:600;letter-spacing:.22em;color:var(--accent);margin:0 0 18px;}
 .hero h1{font-family:'Shippori Mincho',serif;font-weight:700;font-size:clamp(1.95rem,4.3vw,2.9rem);line-height:1.25;letter-spacing:.01em;margin:0 0 20px;}
 .hero .lead{font-size:1rem;line-height:1.9;color:#d5e4dd;margin:0 0 30px;font-weight:400;}
+/* モバイルのみ：ヒーロー説明文を「＋」で開閉（PCは常時表示・トグル非表示） */
+.lead-cb{display:none;}
+.lead-more{display:none;}
+@media(max-width:600px){
+  .lead-cb{display:block;position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;margin:0;}
+  .lead-cb ~ .lead{display:none;margin-top:2px;}
+  .lead-cb:checked ~ .lead{display:block;}
+  .lead-more{display:inline-flex;align-items:center;gap:8px;cursor:pointer;
+    font-size:.9rem;font-weight:600;color:#fff;background:rgba(255,255,255,.10);
+    border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:8px 16px;margin:2px 0 26px;
+    -webkit-tap-highlight-color:transparent;-webkit-user-select:none;user-select:none;transition:background .15s;}
+  .lead-more:active{background:rgba(255,255,255,.18);}
+  .lead-more-ic{font-size:1.15rem;line-height:1;transition:transform .2s ease;}
+  .lead-cb:checked ~ .lead-more .lead-more-ic{transform:rotate(45deg);}
+}
 .search{display:flex;align-items:center;gap:10px;max-width:400px;
   background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.28);border-radius:999px;padding:13px 20px;}
 .search svg{color:#bcd2c9;flex-shrink:0;}
@@ -463,6 +509,19 @@ main.wrap-x{padding-top:clamp(15px,2.1vw,23px);padding-bottom:90px;}
   padding:8px 15px;border:1px solid var(--accent);border-radius:999px;white-space:nowrap;
   transition:background .15s,color .15s,border-color .15s;}
 .col-tabs a:hover{background:var(--accent);color:#fff;border-color:var(--accent);}
+/* 都市サイトのコラム集約ハブ導線カード */
+.col-hub-callout{margin:0 0 clamp(18px,3vw,30px);}
+.ch-card{display:flex;align-items:center;justify-content:space-between;gap:18px 26px;flex-wrap:wrap;
+  background:#FDF4EE;border:1px solid #F0DBCB;border-radius:16px;
+  padding:clamp(20px,3vw,30px) clamp(20px,3.2vw,34px);}
+.ch-txt h2{margin:0 0 6px;font-size:1.22rem;font-weight:700;color:var(--pine);letter-spacing:.01em;}
+.ch-txt p{margin:0;color:var(--ink-2);font-size:.95rem;line-height:1.75;max-width:54ch;}
+.ch-btn{flex:0 0 auto;display:inline-flex;align-items:center;gap:8px;background:var(--pine);color:#fff;
+  font-weight:600;font-size:.95rem;padding:12px 22px;border-radius:999px;white-space:nowrap;
+  transition:background .15s;}
+.ch-btn:hover{background:var(--pine-2);}
+.ch-btn span{transition:transform .2s;}
+.ch-btn:hover span{transform:translateX(3px);}
 .sec{margin:0 0 clamp(10px,1.5vw,16px);scroll-margin-top:84px;}
 .sec-head{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;margin:0 0 8px;}
 .sec-head h2{font-size:1.16rem;font-weight:700;margin:0;letter-spacing:.01em;display:inline-flex;align-items:center;gap:10px;}
@@ -534,6 +593,18 @@ main.wrap-x{padding-top:clamp(15px,2.1vw,23px);padding-bottom:90px;}
 
 html.text-lg .c-title{font-size:1.1rem;}
 html.text-xl .c-title{font-size:1.2rem;}
+
+/* スマホ：コラムカードをNetflix風にコンパクト化（250px→約44vwで2枚強が見える） */
+@media(max-width:600px){
+  .row{gap:10px;}
+  .row>*{width:44vw;}
+  .c-body{padding:9px 11px 10px;gap:5px;}
+  .c-cat{font-size:.63rem;}
+  .c-title{font-size:.82rem;line-height:1.45;}
+  .c-meta{font-size:.62rem;padding-top:3px;}
+  .c-meta .c-rt{display:block;flex:1 1 auto;min-width:0;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;}
+  .c-meta .c-date{flex:0 0 auto;margin-left:6px;}
+}
 
 /* ---- Footer ---- */
 .site-footer{background:#f7f8f7;border-top:1px solid var(--line);padding:52px 0 34px;margin-top:20px;}
@@ -629,6 +700,8 @@ TEMPLATE = '''<!DOCTYPE html>
     <div class="hero-in">
       <p class="eyebrow">CLINICAL GUIDE</p>
       <h1>歯科医院選びに、確かな知識を。</h1>
+      <input type="checkbox" id="lead-more" class="lead-cb" aria-hidden="true" tabindex="-1">
+      <label for="lead-more" class="lead-more"><span class="lead-more-ic" aria-hidden="true">＋</span>このサイトについて</label>
       <p class="lead">正しい知識は、納得できる歯科医院選びにつながります。<br>{SITE_NAME}では、症状・治療・医院選びに役立つ情報を、<br>口コミや公開情報、AI分析の視点から整理しています。</p>
       <div class="search">
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
