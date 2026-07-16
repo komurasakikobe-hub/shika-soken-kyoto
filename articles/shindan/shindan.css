@@ -65,40 +65,47 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 
 /* ── ヒーロー（メインコピー） ── */
 .rk-hero{
-  padding:16px clamp(16px,4vw,40px) 24px;
+  padding:12px clamp(16px,4vw,40px) 12px;
   max-width:900px;
 }
 .rk-hero-eyebrow{
   font-family:'Roboto Mono',monospace;font-size:.68rem;
   letter-spacing:.22em;color:var(--warm);text-transform:uppercase;
-  margin:0 0 10px;
+  margin:0 0 6px;
 }
 .rk-hero-title{
   font-size:clamp(1.5rem,3.4vw,2.15rem);font-weight:700;
-  line-height:1.55;margin:0 0 18px;
+  line-height:1.35;margin:0 0 10px;
 }
 @media(min-width:600px){.rk-hero-br{display:none;}}
 .rk-hero-lead{
-  font-size:.92rem;line-height:2;color:var(--ink-soft);
-  max-width:640px;margin:0 0 22px;
+  font-size:.92rem;line-height:1.7;color:var(--ink-soft);
+  max-width:640px;margin:0 0 12px;
 }
 .rk-disclaimer{
   background:var(--surface);border:1px solid var(--line);
-  border-radius:var(--r);padding:16px 20px;
+  border-radius:var(--r);padding:10px 16px;
 }
-.rk-disclaimer ul{margin:0;padding-left:1.1em;}
-.rk-disclaimer li{font-size:.78rem;color:var(--ink-faint);line-height:1.9;}
+.rk-disclaimer > summary{
+  cursor:pointer;list-style:none;font-size:.8rem;font-weight:600;color:var(--ink);
+  display:flex;align-items:center;gap:8px;
+}
+.rk-disclaimer > summary::-webkit-details-marker{display:none;}
+.rk-disclaimer > summary::before{content:"+";color:var(--warm);font-weight:700;}
+.rk-disclaimer[open] > summary::before{content:"–";}
+.rk-disclaimer ul{margin:10px 0 0;padding-left:1.1em;}
+.rk-disclaimer li{font-size:.78rem;color:var(--ink);line-height:1.6;}
 
 /* ── フィルタータブ ── */
 .rk-filters{
-  padding:0 clamp(16px,4vw,40px) 8px;
-  display:flex;flex-direction:column;gap:16px;
+  padding:0 clamp(16px,4vw,40px) 6px;
+  display:flex;flex-direction:column;gap:10px;
 }
 .rk-filter-group{}
 .rk-filter-label{
   font-family:'Roboto Mono',monospace;font-size:.68rem;
   letter-spacing:.12em;color:var(--ink-faint);text-transform:uppercase;
-  margin:0 0 8px;
+  margin:0 0 5px;
 }
 .rk-filter-row{
   display:flex;gap:8px;overflow-x:auto;padding-bottom:6px;
@@ -110,7 +117,7 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
   flex-shrink:0;
   background:var(--surface);border:1px solid var(--line);
   color:var(--ink-soft);font-size:.82rem;font-weight:500;
-  padding:9px 16px;border-radius:999px;cursor:pointer;
+  padding:6px 13px;border-radius:999px;cursor:pointer;
   white-space:nowrap;transition:border-color .15s,background .15s,color .15s;
   font-family:inherit;
 }
@@ -120,11 +127,11 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 }
 
 /* ── 症状から探す（③） ── */
-.rk-symptom{padding:0 clamp(16px,4vw,40px) 24px;max-width:900px;}
+.rk-symptom{padding:0 clamp(16px,4vw,40px) 14px;max-width:900px;}
 .rk-symptom-box{
   display:flex;gap:10px;align-items:stretch;
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-  padding:10px;
+  padding:7px;
 }
 .rk-symptom-box textarea{
   flex:1;border:none;resize:none;font-family:inherit;font-size:.88rem;
@@ -170,10 +177,10 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 .rk-symptom-miss{font-size:.82rem;color:var(--ink-soft);margin:0;line-height:1.8;}
 
 /* ── 順位の見方 ── */
-.rk-methodology{padding:20px clamp(16px,4vw,40px) 0;}
+.rk-methodology{padding:10px clamp(16px,4vw,40px) 0;}
 .rk-methodology details{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-  padding:14px 20px;
+  padding:10px 16px;
 }
 .rk-methodology summary{
   cursor:pointer;font-weight:700;color:var(--ink);font-size:.88rem;
@@ -210,9 +217,9 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 
 /* ── レイアウト ── */
 .rk-layout{
-  max-width:1460px;margin:28px auto 60px;
+  max-width:1460px;margin:14px auto 36px;
   padding:0 clamp(12px,2.5vw,24px);
-  display:grid;grid-template-columns:1fr 280px;gap:40px;
+  display:grid;grid-template-columns:1fr 280px;gap:24px;
   align-items:start;
 }
 @media(max-width:980px){
@@ -220,7 +227,7 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
   .rk-side{order:-1;}
 }
 
-.rk-result-head{margin-bottom:16px;}
+.rk-result-head{margin-bottom:10px;}
 .rk-result-count{
   font-family:'Roboto Mono',monospace;font-size:.76rem;
   letter-spacing:.05em;color:var(--ink-faint);
@@ -230,10 +237,10 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 }
 
 /* ── ランキングカード ── */
-.rk-list{display:flex;flex-direction:column;gap:10px;}
+.rk-list{display:flex;flex-direction:column;gap:7px;}
 .rk-card{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-  padding:12px 18px;display:flex;gap:16px;
+  padding:9px 14px;display:flex;gap:14px;
   will-change:transform;
 }
 .rk-card{position:relative;overflow:hidden;}
@@ -263,7 +270,7 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 .rk-card[data-top="1"] .rk-card-rank .num{font-size:2rem;color:var(--gold);}
 .rk-card[data-top="2"] .rk-card-rank .num{font-size:1.8rem;color:var(--silver);}
 .rk-card[data-top="3"] .rk-card-rank .num{font-size:1.7rem;color:var(--bronze);}
-.rk-card[data-top="1"]{padding-top:14px;padding-bottom:14px;background:linear-gradient(135deg,var(--gold-soft) 0%,var(--surface) 34%);}
+.rk-card[data-top="1"]{padding-top:11px;padding-bottom:11px;background:linear-gradient(135deg,var(--gold-soft) 0%,var(--surface) 34%);}
 .rk-card[data-top="2"]{background:linear-gradient(135deg,var(--silver-soft) 0%,var(--surface) 30%);}
 .rk-card[data-top="3"]{background:linear-gradient(135deg,var(--bronze-soft) 0%,var(--surface) 30%);}
 .rk-prize{
@@ -324,11 +331,11 @@ h1,h2,h3{font-family:'Shippori Mincho',serif;color:var(--ink);}
 }
 
 /* ── サイドパネル ── */
-.rk-side{display:flex;flex-direction:column;gap:16px;}
+.rk-side{display:flex;flex-direction:column;gap:12px;}
 @media(min-width:981px){.rk-side{position:sticky;top:20px;}}
 .rk-panel{
   background:var(--surface);border:1px solid var(--line);border-radius:var(--r);
-  padding:18px 20px;
+  padding:12px 16px;
 }
 .rk-panel-label{
   font-family:'Roboto Mono',monospace;font-size:.68rem;letter-spacing:.12em;
