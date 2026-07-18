@@ -831,11 +831,25 @@ function renderRanking() {
   rollNumber($("matchedCount"), pool.length, n => `${n.toLocaleString()}院`);
 
   if (top.length === 0) {
-    container.innerHTML = `<div class="rk-empty">該当する医院が見つかりませんでした。条件を変更してみてください。</div>`;
+    container.innerHTML = `<div class="rk-empty">この条件に合う医院は見つかりませんでした。エリアを広げるか、こだわり条件を1つ外すと候補が増えます。</div>`;
     return;
   }
 
-  container.innerHTML = top.map((t, i) => cardHTML(t.clinic, i + 1, t.matched)).join("");
+  // 結果リード文（件数帯に応じた1文。scoreは判定のみ・非表示）
+  let leadHTML = "";
+  if (top.length >= 20) {
+    leadHTML = "<p>候補がたくさん出ました。多いと逆に迷いますよね。上から順に、いま選んだ条件に合いやすい医院です。まずは上位2〜3院を「比較に追加」で並べてみてください。</p>";
+  } else if (top.length >= 2 && top.length <= 5) {
+    leadHTML = "<p>条件に合う医院はこちらです。数が絞れているぶん、1院ずつていねいに見られます。候補を増やしたいときは、こだわり条件を1つ外すか、エリアを広げてみてください。</p>";
+  } else if (top.length === 1) {
+    leadHTML = "<p>今の条件にいちばん合ったのは、この1院でした。ほかとも見比べたいときは、こだわり条件を1つ外すと近い医院が出てきます。</p>";
+  }
+  if (top.length >= 3 && (scored[0].score - scored[2].score) <= 3) {
+    leadHTML += "<p>上位の医院はどれも今の条件によく合っていて、実力が拮抗しています。1位だから正解というより「どれも有力候補」と受け取ってください。</p>";
+  }
+  const leadBlock = leadHTML ? `<div class="rk-result-lead">${leadHTML}</div>` : "";
+
+  container.innerHTML = leadBlock + top.map((t, i) => cardHTML(t.clinic, i + 1, t.matched)).join("");
 
   // 表示回数（card_impression）計測：描画のたびに新カードを監視対象へ（odr-track.js）
   if (window.odrObserveImpressions) window.odrObserveImpressions();
@@ -1099,7 +1113,7 @@ function runSymptomSearch() {
 
   if (parsed.treatments.size === 0 && parsed.conditions.size === 0 && !parsed.ward) {
     result.hidden = false;
-    result.innerHTML = `<p class="rk-symptom-miss">症状を読み取れませんでした。「しみる」「腫れた」「詰め物が取れた」など、症状や希望の言葉を入れてみてください。</p>`;
+    result.innerHTML = `<p class="rk-symptom-miss">うまく読み取れませんでした。「どこが・いつから・どうつらい」の順で書くと読み取りやすくなります。例：右下の奥歯が昨日から噛むと痛い</p>`;
     return;
   }
 

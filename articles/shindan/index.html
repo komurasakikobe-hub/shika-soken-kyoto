@@ -19,6 +19,47 @@
 <link rel="stylesheet" href="shindan.css?v=20260716c">
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
+<script type="application/ld+json">
+{
+  "@context": "https://schema.org",
+  "@type": "FAQPage",
+  "mainEntity": [
+    {
+      "@type": "Question",
+      "name": "口コミって、サクラや自作自演が混ざっていませんか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "当サイトの口コミ分析はGoogleマップ等に公開されている口コミが元で、当サイトが書いたり集めたりしたものではありません。そのうえで、分析では星の数より「書かれている中身」を重視し、件数が少ない医院の高評価が過大に効かないよう統計的な調整を行っています（このページの「順位のしくみ」をご覧ください）。件数が多い医院の「低評価の理由」を先に読むと、待ち時間の話か説明の話かで、あなたにとっての重みが分かります。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "診断ツールで候補がゼロ（または多すぎ）になりました。どうすれば？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "条件を欲張るとゼロになりがちで、何も選ばないと絞れません。コツは「譲れない条件2つ＋あったら嬉しい条件1つ」から始めることです。たとえば「土日診療」「駅近」だけでまず回し、候補が多ければ「口コミ評価を重視」を足す、という順番です。条件は後からいくらでも変えられます。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "診断結果カードの「根拠を見る」は何が見られるのですか？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "スコアや分析コメントが「どの公開情報から来たのか」をたどれるようにしたものです。AIの分析は間違いがゼロではないため、うのみにせず出どころを確認できるようにしています。「本当かな？」と思った記述ほど、根拠を確認してから公式サイトで裏を取る使い方をおすすめします。誤りを見つけたら info@shikasoken.com までお知らせください。確認のうえ訂正します。"
+      }
+    },
+    {
+      "@type": "Question",
+      "name": "候補を2〜3院に絞った後、受診前に確認すべきことは？",
+      "acceptedAnswer": {
+        "@type": "Answer",
+        "text": "当サイトの情報が最新とは限りません。診療時間・休診日は変わることがあります。受診前チェックは3つです。①公式サイトで最新の診療時間・予約方法を見る ②初診の予約可否と持ち物を電話かWebで確認する ③保険証（マイナ保険証）とお薬手帳を用意する。当サイトは候補絞りの入口です。最後は必ず医院に直接ご確認ください。"
+      }
+    }
+  ]
+}
+</script>
+<style>.rk-result-lead{background:#f2f7f5;border:1px solid #dbe7e2;border-radius:10px;padding:12px 16px;margin:0 0 14px;font-size:.9rem;line-height:1.9;color:#3c4a47;}.rk-result-lead p{margin:0;}.rk-result-lead p+p{margin-top:6px;}</style>
 </head>
 <body>
 
@@ -73,7 +114,7 @@
   <p class="rk-filter-label">SYMPTOM SEARCH — 症状の言葉から探す（β）</p>
   <div class="rk-symptom-box">
     <textarea id="symptomInput" rows="2" placeholder="例：右の犬歯が3日前からしみる。仕事帰りの夜しか行けない"></textarea>
-    <button type="button" id="symptomBtn">AIに条件を読み取らせる</button>
+    <button type="button" id="symptomBtn">この内容で条件をセットする</button>
   </div>
   <div class="rk-symptom-result" id="symptomResult" hidden></div>
 </section>
@@ -171,7 +212,7 @@
   <div class="rk-compare-modal">
     <div class="rk-compare-modal-head">
       <p class="rk-panel-label">CLINIC COMPARISON</p>
-      <button type="button" class="rk-compare-close" id="compareCloseBtn" aria-label="閉じる">×</button>
+      <button type="button" class="rk-compare-close" id="compareCloseBtn" aria-label="比較パネルを閉じる">×</button>
     </div>
     <div class="rk-compare-table-wrap" id="compareTableWrap"></div>
     <p class="rk-compare-note">公開情報にもとづく比較です。医院の技術や治療結果を保証するものではありません。</p>
@@ -179,8 +220,25 @@
 </div>
 
 <!-- スマホ用固定ボタン -->
-<button type="button" class="rk-mobile-cta" id="mobileFilterBtn">条件を変更</button>
+<button type="button" class="rk-mobile-cta" id="mobileFilterBtn">条件を変えて再検索</button>
 
+
+<!-- ════════════════════════════════════════════════════════
+     よくある質問（FAQPage JSON-LDと同文・独立節）
+════════════════════════════════════════════════════════ -->
+<section class="rk-methodology">
+  <details>
+    <summary>よくある質問</summary>
+    <div class="rk-methodology-body">
+      <div class="rk-mth-list">
+        <details class="rk-mth-item"><summary>口コミって、サクラや自作自演が混ざっていませんか？</summary><p class="rk-mth-d">当サイトの口コミ分析はGoogleマップ等に公開されている口コミが元で、当サイトが書いたり集めたりしたものではありません。そのうえで、分析では星の数より「書かれている中身」を重視し、件数が少ない医院の高評価が過大に効かないよう統計的な調整を行っています（このページの「順位のしくみ」をご覧ください）。件数が多い医院の「低評価の理由」を先に読むと、待ち時間の話か説明の話かで、あなたにとっての重みが分かります。</p></details>
+        <details class="rk-mth-item"><summary>診断ツールで候補がゼロ（または多すぎ）になりました。どうすれば？</summary><p class="rk-mth-d">条件を欲張るとゼロになりがちで、何も選ばないと絞れません。コツは「譲れない条件2つ＋あったら嬉しい条件1つ」から始めることです。たとえば「土日診療」「駅近」だけでまず回し、候補が多ければ「口コミ評価を重視」を足す、という順番です。条件は後からいくらでも変えられます。</p></details>
+        <details class="rk-mth-item"><summary>診断結果カードの「根拠を見る」は何が見られるのですか？</summary><p class="rk-mth-d">スコアや分析コメントが「どの公開情報から来たのか」をたどれるようにしたものです。AIの分析は間違いがゼロではないため、うのみにせず出どころを確認できるようにしています。「本当かな？」と思った記述ほど、根拠を確認してから公式サイトで裏を取る使い方をおすすめします。誤りを見つけたら info@shikasoken.com までお知らせください。確認のうえ訂正します。</p></details>
+        <details class="rk-mth-item"><summary>候補を2〜3院に絞った後、受診前に確認すべきことは？</summary><p class="rk-mth-d">当サイトの情報が最新とは限りません。診療時間・休診日は変わることがあります。受診前チェックは3つです。①公式サイトで最新の診療時間・予約方法を見る ②初診の予約可否と持ち物を電話かWebで確認する ③保険証（マイナ保険証）とお薬手帳を用意する。当サイトは候補絞りの入口です。最後は必ず医院に直接ご確認ください。</p></details>
+      </div>
+    </div>
+  </details>
+</section>
 
 <footer class="rk-footer">
   <p>当サイトの情報は歯医者選びの一般的な参考情報です。診断や治療方針の決定を目的としたものではありません。</p>
@@ -189,6 +247,6 @@
   <p>© 京都歯科総研 KYOTO DENTAL RESEARCH</p>
 </footer>
 
-<script src="shindan.js"></script>
+<script src="shindan.js?v=20260718a"></script>
 </body>
 </html>

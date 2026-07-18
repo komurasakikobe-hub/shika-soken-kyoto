@@ -24,7 +24,7 @@ ROOT = Path(__file__).resolve().parent
 # 公開してよいルート直下ファイル
 PUBLIC_ROOT_FILES = {
     "index.html", "about.html", "network.html", "policy.html", "teisei.html",
-    "shikumi.html", "for-clinics.html", "sample-report.html",
+    "shikumi.html", "for-clinics.html", "sample-report.html", "404.html",
     "favicon.ico", "robots.txt", "sitemap.xml", "llms.txt",
     "clinic_db.json", "clinic_slugs.json",  # shindan.jsがブラウザからfetchする（遮断禁止）
     "_redirects", "_headers",

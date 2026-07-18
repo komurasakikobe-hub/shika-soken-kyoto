@@ -117,7 +117,16 @@
    "viewport"
   ],
   "has_canonical": true,
-  "jsonld": [],
+  "jsonld": [
+   {
+    "@type": "FAQPage",
+    "keys": [
+     "@context",
+     "@type",
+     "mainEntity"
+    ]
+   }
+  ],
   "headings": [
    "h1"
   ]
