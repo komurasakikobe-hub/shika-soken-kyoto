@@ -82,6 +82,8 @@ def build(cfg):
         ("コラム（毎日更新）", None, hub),
         ("展開エリア（関西各都市）", "network.html", f"{base}/network.html"),
         ("選定基準・評価配点", "index.html", f"{base}/index.html#criteria"),
+        ("はじめての方へ（使い方ガイド）", "guide.html", f"{base}/guide.html"),
+        ("よくある質問（FAQ）", "faq.html", f"{base}/faq.html"),
         ("運営者情報", "about.html", f"{base}/about.html"),
         ("運営ポリシー・免責事項", "policy.html", f"{base}/policy.html"),
     ]

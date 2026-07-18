@@ -72,6 +72,10 @@ def main():
     entries.append(url_entry("for-clinics.html", priority="0.4"))
     entries.append(url_entry("teisei.html", priority="0.3"))
     entries.append(url_entry("policy.html", priority="0.3"))
+    if (ROOT / "guide.html").exists():
+        entries.append(url_entry("guide.html", priority="0.5"))  # はじめての方へ（使い方ガイド）
+    if (ROOT / "faq.html").exists():
+        entries.append(url_entry("faq.html", priority="0.5"))    # よくある質問（FAQ）
     if (ROOT / "about.html").exists():
         entries.append(url_entry("about.html", priority="0.3"))  # 運営者情報（E-E-A-T）
 

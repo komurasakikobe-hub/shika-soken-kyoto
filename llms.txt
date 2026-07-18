@@ -5,9 +5,11 @@
 ## 主要ページ
 - [データランキング（地域・症状・希望条件で絞り込み）](https://kyoto.shikasoken.com/articles/shindan/index.html)
 - [特徴から探す（設備・専門分野別）](https://kyoto.shikasoken.com/articles/features/index.html)
-- [コラム（毎日更新）](https://shikasoken.com/articles/index.html)
+- [コラム（毎日更新）](https://kyoto.shikasoken.com/articles/index.html)
 - [展開エリア（関西各都市）](https://kyoto.shikasoken.com/network.html)
 - [選定基準・評価配点](https://kyoto.shikasoken.com/index.html#criteria)
+- [はじめての方へ（使い方ガイド）](https://kyoto.shikasoken.com/guide.html)
+- [よくある質問（FAQ）](https://kyoto.shikasoken.com/faq.html)
 - [運営者情報](https://kyoto.shikasoken.com/about.html)
 - [運営ポリシー・免責事項](https://kyoto.shikasoken.com/policy.html)
 
