@@ -294,7 +294,9 @@ def analyze_reputation_and_expertise(
     }
 
     if not ANTHROPIC_KEY:
-        return empty
+        # キー未設定は「分析失敗」＝None（空分析で既存データを上書きしない・呼び出し側が温存スキップ）
+        print("\n    ⚠️ APIキー未設定: AI分析不可（既存データ温存）", flush=True)
+        return None
 
     # 分析テキストを構築
     sections = []
@@ -455,9 +457,12 @@ JSONのみ出力（コメント・説明文不要）:
         if m:
             result = json.loads(m.group())
             return result
+        last_err = "応答からJSONを抽出できず"
     except Exception as e:
-        pass
-    return empty
+        last_err = str(e)
+    # 分析失敗＝None を返す（空分析での上書き防止。呼び出し側が既存データを温存してスキップ）
+    print(f"\n    ⚠️ AI分析失敗: {str(last_err)[:100]}", flush=True)
+    return None
 
 
 def calc_total_score(analysis: dict, rating: float, total_rv: int) -> dict:
@@ -640,6 +645,8 @@ def build_profile_page(entry: dict):
 # ─────────────────────────────────────────────
 # 医院エントリの処理（共通）
 # ─────────────────────────────────────────────
+_AI_FAIL_STREAK = 0  # AI分析の連続失敗カウンタ（5回で収集中断）
+
 def process_place(p: dict, db: dict, today: str, default_genre: str = "一般歯科") -> bool:
     """
     1件の Places 結果をDBに追加・更新する。
@@ -697,12 +704,24 @@ def process_place(p: dict, db: dict, today: str, default_genre: str = "一般歯
     print(f"    ▶ {name[:22]}（★{rating}・{total_rv}件）", end="  ", flush=True)
     sources  = collect_reputation_sources(name, website, phrases)
     analysis = analyze_reputation_and_expertise(name, final_genre, sources)
+
+    # AI分析失敗（None）＝既存データを温存してスキップ。連続5回でDB保存して収集中断
+    global _AI_FAIL_STREAK
+    if analysis is None:
+        _AI_FAIL_STREAK += 1
+        print(f"→ スキップ（AI分析失敗 {_AI_FAIL_STREAK}連続）")
+        if _AI_FAIL_STREAK >= 5:
+            save_db(db)
+            sys.exit("❌ AI分析が5回連続で失敗したため収集を中断しました（保存済み。APIキー・利用上限を確認してください）")
+        return False
+    _AI_FAIL_STREAK = 0
+
     scores   = calc_total_score(analysis, rating, total_rv)
 
     addr_clean = re.sub(r'^〒\d{3}-\d{4}\s*', '', address)
     addr_clean = re.sub(r'^(京都府|大阪府|兵庫県)', '', addr_clean).strip()
 
-    entry = {
+    updates = {
         "place_id":        place_id,
         "name":            name,
         "address":         addr_clean,
@@ -766,6 +785,10 @@ def process_place(p: dict, db: dict, today: str, default_genre: str = "一般歯
         "linked_articles": existing.get("linked_articles", []),
         "last_analyzed":   today,
     }
+    # 既存レコードとマージ（収集以外のパイプラインが付与した q_excluded・nearest_station・
+    # deep_*・kousei_*・contact_* 等30キー超を温存。全置換は脱落事故になる）
+    entry = dict(existing)
+    entry.update(updates)
     db[place_id] = entry
 
     src_mark = f"📡{sources['sources_count']}ソース"
