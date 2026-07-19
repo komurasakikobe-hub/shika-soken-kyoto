@@ -72,14 +72,19 @@ def load_db() -> dict:
     if CLINIC_DB.exists():
         try:
             return json.loads(CLINIC_DB.read_text(encoding="utf-8"))
-        except Exception:
-            pass
+        except Exception as e:
+            # 破損ファイルを空DB扱いで続行すると、後続のsave_dbで既存DBを丸ごと上書き全損する。
+            # 「ファイルが存在するのに読めない」は即中断（空DBフォールバックはファイル無しの時だけ）
+            sys.exit(f"❌ {CLINIC_DB.name} の読み込みに失敗しました（破損の可能性）: {e}\n   _backups/等から復旧するまで収集を実行しないでください。")
     return {}
 
 def save_db(db: dict):
-    CLINIC_DB.write_text(
+    # 一時ファイル→os.replace のアトミック保存（書き込み途中のクラッシュでDBを壊さない）
+    tmp = CLINIC_DB.with_suffix(".json.tmp")
+    tmp.write_text(
         json.dumps(db, ensure_ascii=False, indent=2), encoding="utf-8"
     )
+    os.replace(tmp, CLINIC_DB)
 
 
 # ─────────────────────────────────────────────
@@ -615,7 +620,17 @@ def get_place_details(place_id: str) -> dict:
     )
     try:
         with urllib.request.urlopen(url, timeout=10) as r:
-            result = json.loads(r.read().decode("utf-8")).get("result", {})
+            data = json.loads(r.read().decode("utf-8"))
+        _st = data.get("status", "")
+        if _st in ("REQUEST_DENIED", "OVER_QUERY_LIMIT"):
+            # Billing無効・クォータ切れ（nearby_searchと同一ガード。SystemExitはexcept Exceptionを素通りする）
+            raise SystemExit(f"❌ Place Details {_st}: {data.get('error_message','')[:200]} — 収集を中断します（GCPのBilling/クォータを確認してください）")
+        if _st == "INVALID_REQUEST":
+            # フィールド名タイポ等の早期検知（07-15 national_phone_numberバグの再発防御）
+            raise SystemExit(f"❌ Place Details INVALID_REQUEST: {data.get('error_message','')[:200]} — fieldsパラメータ等の不正の疑い。収集を中断します")
+        if _st not in ("OK", "ZERO_RESULTS"):
+            print(f"\n    ⚠️ Place Details status={_st}（{place_id[:24]}）", flush=True)
+        result = data.get("result", {})
         hours_obj = result.get("opening_hours", {})
         result["weekday_text"] = hours_obj.get("weekday_text", [])
         result["phone"] = result.get("formatted_phone_number") or ""
