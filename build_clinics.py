@@ -1192,7 +1192,15 @@ def build_page(c, slug=""):
                  if area_slug else "")
 
     # meta description：機械導出の要約のみを使う（AI要約の強い断定をdescに残さない・2026-07-14）
-    desc = f"{name}（{ward_txt}）の口コミ・評判をAIが分析。{hero_summary}"
+    # 2026-07-21 CTR改善：GBP(地図)に無い独自価値「N件を読んで傾向整理」「近隣比較」を先頭に出す。
+    # 口コミ10件未満の院は件数を出さない（「3件をAI分析」は逆効果・discuss採用指摘）。捏造なし＝実データのみ機械挿入。
+    if reviews and int(reviews) >= 10:
+        seo_title = f"{name}の口コミ{reviews}件をAI分析｜評判・近隣比較{ward_paren}｜{SITE_NAME}"
+        desc = (f"{name}（{ward_txt}）の口コミ・レビュー{reviews}件をAIが読み、"
+                f"評価されている点と気になる点、近隣医院との比較を整理。{hero_summary}")
+    else:
+        seo_title = f"{name}の口コミ・評判をAI分析｜近隣比較{ward_paren}｜{SITE_NAME}"
+        desc = f"{name}（{ward_txt}）の口コミ・評判をAIが分析。近隣医院との比較も整理。{hero_summary}"
     if rating and reviews:
         desc += f"Google評価{rating}・口コミ{reviews}件。"
     desc += "診療時間・地図・公式サイトへの導線も掲載。"
@@ -1211,6 +1219,7 @@ def build_page(c, slug=""):
             .replace("{robots}", robots_meta)
             .replace("{ogurl}", page_url_of(slug))
             .replace("{desc}", esc(desc))
+            .replace("{seo_title}", esc(seo_title))
             .replace("{ward_paren}", esc(ward_paren))
             .replace("{area_link}", area_link)
             .replace("{research_foot}",
@@ -1224,12 +1233,12 @@ TEMPLATE = '''<!DOCTYPE html>
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1.0">
-<title>{name}の口コミ・評判・AI分析{ward_paren}｜{SITE_NAME}</title>
+<title>{seo_title}</title>
 <meta name="description" content="{desc}">
 {robots}<link rel="canonical" href="{ogurl}">
 <meta property="og:type" content="article">
 <meta property="og:site_name" content="{SITE_NAME}">
-<meta property="og:title" content="{name}の口コミ・評判・AI分析{ward_paren}｜{SITE_NAME}">
+<meta property="og:title" content="{seo_title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{ogurl}">
 <meta name="twitter:card" content="summary">
