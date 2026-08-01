@@ -688,7 +688,10 @@ TEMPLATE = '''<!DOCTYPE html>
 <meta property="og:description" content="症状や治療の基礎知識、歯科医院の選び方まで。{CITY_SHORT}で後悔しない歯科選びに役立つ情報をお届けします。">
 <meta property="og:url" content="https://{DOMAIN}/articles/">
 <link rel="canonical" href="https://{DOMAIN}/articles/">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://{DOMAIN}/assets/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 ''' + STYLE + '''
 <script src="../assets/site-config.js"></script>
 <script src="../assets/odr-track.js"></script>
@@ -748,6 +751,13 @@ CAT_TEMPLATE = '''<!DOCTYPE html>
 <title>{title} | {SITE_NAME} コラム</title>
 <meta name="description" content="{title}に関する{CITY_SHORT}の歯科コラム記事一覧。">
 <link rel="canonical" href="https://{DOMAIN}/articles/{href}">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://{DOMAIN}/articles/{href}">
+<meta property="og:title" content="{title}">
+<meta property="og:image" content="https://{DOMAIN}/assets/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 ''' + STYLE + '''
 <script src="../assets/site-config.js"></script>
 <script src="../assets/odr-track.js"></script>
