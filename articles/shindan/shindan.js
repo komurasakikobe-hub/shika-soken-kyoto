@@ -12,6 +12,31 @@ const odrTrack = (name, params) => {
   if (typeof window.odrTrack === "function") window.odrTrack(name, params);
 };
 
+/* ── 診断ファネルの計測（2026-08-01追加） ────────────────────────
+   ページ表示だけでは「どこで諦めたか」が分からないため、
+     shindan_start  … 診断に入った（入口の条件つき／1回だけ）
+     shindan_result … 条件を絞った結果が出た（該当院数の帯つき／条件ごとに1回）
+   の2つを送る。clinic_click（既存）まで届いた割合が診断の通過率、
+   shindan_result の「0院」が離脱の主因を示す。
+   同じ条件の再描画で何度も送らないよう、条件の署名で重複を抑える。 */
+const funnelSeen = new Set();
+let funnelStartSent = false;
+
+function trackFunnelStart(entry) {
+  if (funnelStartSent) return;
+  funnelStartSent = true;
+  odrTrack("shindan_start", { filter_value: entry });
+}
+
+function trackFunnelResult(signature, count) {
+  // イベントの送りすぎを防ぐ（1ページあたり30条件まで）
+  if (funnelSeen.has(signature) || funnelSeen.size >= 30) return;
+  funnelSeen.add(signature);
+  const band = count === 0 ? "0院" : count <= 5 ? "1〜5院"
+             : count <= 20 ? "6〜20院" : "21院以上";
+  odrTrack("shindan_result", { filter_value: band });
+}
+
 // ── エリア定義（京都市11区・住所の区名で一致） ──────
 const AREA_KEYWORDS = {
   "伏見区（伏見桃山・丹波橋）": ["京都市伏見区", "伏見区"],
@@ -827,6 +852,12 @@ function renderRanking() {
   const top = hasFilter ? scored : scored.slice(0, 50);
   lastTop = top;
 
+  // 条件を絞った結果が出た時点を記録する（絞り込み前の初期表示は数えない）
+  if (hasFilter) {
+    try { trackFunnelResult(JSON.stringify(serializeFilters()), top.length); }
+    catch (e) { /* 計測は本体の描画を止めない */ }
+  }
+
   rollNumber($("resultCount"), top.length, n => `${n}院を表示（データランキング）`);
   rollNumber($("matchedCount"), pool.length, n => `${n.toLocaleString()}院`);
 
@@ -1167,6 +1198,13 @@ document.addEventListener("DOMContentLoaded", async () => {
   initCardDelegation();
   initCompareUI();
   initSymptomSearch();
+
+  // どんな条件を持って診断に入ってきたか（医院ページや記事からの条件つきリンクを識別する）
+  const entry = filters.ward !== "all" ? "エリア指定で流入"
+              : filters.conditions.size > 0 ? "希望条件つきで流入"
+              : filters.treatments.size > 0 ? "治療内容つきで流入"
+              : "条件なしで流入";
+  trackFunnelStart(entry);
 
   await loadDB();
   await loadSlugMap();

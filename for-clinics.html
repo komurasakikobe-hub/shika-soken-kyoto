@@ -197,6 +197,8 @@ h1,h2,h3{ text-wrap:balance; }   /* 見出しは各行の長さを均等に */
     fetch(f.action,{method:'POST',body:fd,headers:{'Accept':'application/json'}})
       .then(function(r){
         if(r.ok){
+          /* 成果（CV）の記録。ページ表示でなくここが事業上の到達点 */
+          if(typeof window.odrTrack==='function'){window.odrTrack('contact_submit',{filter_value:'医院向け窓口'});}
           f.innerHTML='<p style="text-align:center;font-size:1.05rem;color:#1f4b3f;font-weight:700;padding:20px 0;">お問い合わせを送信しました。<br>担当者より折り返しご連絡いたします。</p>';
         }else{ fail(fd,btn); }
       })

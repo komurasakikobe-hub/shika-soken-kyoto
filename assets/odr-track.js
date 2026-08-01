@@ -90,6 +90,95 @@
 })();
 
 /* =========================================================
+   成果（CV）計測。ページ表示だけでは事業の成果が分からないため、
+   「問い合わせにつながる行動」を全ページ共通で拾う（2026-08-01追加）。
+
+     tel_click         … 電話番号リンクのタップ {filter_value:番号種別}
+     mail_click        … メールアドレスリンクのクリック {filter_value:宛先}
+     contact_nav       … 医院向け窓口（for-clinics / teisei）への遷移 {filter_value:遷移元}
+     contact_form_view … 問い合わせフォームが画面に入った＝到達 {filter_value:フォーム名}
+     contact_submit    … 送信完了（各ページのフォーム側から明示的に呼ぶ）
+
+   パラメータは既存の登録済みカスタムディメンション（clinic_name / filter_value）
+   だけを使う。新しいディメンションを登録しなくてもGA4の探索で内訳が見られる。
+
+   ★二重計上を避ける設計：医院ページは自前の [data-odr-ev] 委譲スクリプトを
+   持ち、電話・公式・地図を clinic_to_* として送っている。そのためこの共通処理は
+   [data-odr-ev] を持つ要素には一切触れない（医院ページの電話は clinic_to_tel の
+   まま・ここでは重ねて送らない）。
+   ========================================================= */
+(function () {
+  function track(name, label) {
+    if (typeof window.odrTrack !== "function") return;
+    window.odrTrack(name, label ? { filter_value: label } : {});
+  }
+
+  /* 掲載相談の窓口ページ。都市・業種が変わってもファイル名は共通のため名前で判定する */
+  function contactPageLabel(href) {
+    if (/for-clinics(\.html)?(\?|#|$)/.test(href)) return "掲載相談の窓口";
+    if (/teisei(\.html)?(\?|#|$)/.test(href)) return "情報の修正依頼";
+    return "";
+  }
+
+  document.addEventListener("click", function (ev) {
+    var a = ev.target && ev.target.closest ? ev.target.closest("a[href]") : null;
+    if (!a) return;
+    /* 医院ページ等の専用計測が付いている要素はそちらに任せる（二重計上の防止） */
+    if (a.hasAttribute("data-odr-ev")) return;
+
+    var href = a.getAttribute("href") || "";
+    if (/^tel:/i.test(href)) {
+      track("tel_click", a.closest(".rr-sticky") ? "追従バー" : "本文");
+      return;
+    }
+    if (/^mailto:/i.test(href)) {
+      /* 個人情報を送らない：宛先が運営の窓口アドレス（info@等の役職アドレス）の時だけ
+         その名前を送り、それ以外は宛先を伏せる。件名・本文のクエリも送らない。 */
+      var to = href.replace(/^mailto:/i, "").split("?")[0];
+      var local = to.split("@")[0].toLowerCase();
+      var isRole = /^(info|contact|support|office|admin|inquiry)$/.test(local);
+      track("mail_click", isRole ? to : "その他の宛先");
+      return;
+    }
+    var label = contactPageLabel(href);
+    if (label) {
+      /* どのページから窓口へ入ったかが分かるとCVの入口が特定できる */
+      var from = (location.pathname.split("/").filter(Boolean).pop() || "トップ").replace(/\.html$/, "");
+      track("contact_nav", label + "←" + decodeURIComponent(from));
+    }
+  }, true);
+
+  /* フォーム到達（表示された時点で1回だけ）。送信率＝送信÷到達の分母になる */
+  function watchForms() {
+    if (typeof IntersectionObserver !== "function") return;
+    var forms = document.querySelectorAll("form[id]:not([data-odr-formobs])");
+    if (!forms.length) return;
+    var io = new IntersectionObserver(function (entries) {
+      for (var i = 0; i < entries.length; i++) {
+        if (!entries[i].isIntersecting) continue;
+        var f = entries[i].target;
+        io.unobserve(f);
+        if (f.getAttribute("data-odr-formseen") === "1") continue;
+        f.setAttribute("data-odr-formseen", "1");
+        track("contact_form_view", f.id);
+      }
+    }, { threshold: 0.3 });
+    for (var i = 0; i < forms.length; i++) {
+      forms[i].setAttribute("data-odr-formobs", "1");
+      io.observe(forms[i]);
+    }
+  }
+
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", watchForms);
+  } else {
+    watchForms();
+  }
+  /* 動的に描画されるフォームにも使えるよう外部へ公開 */
+  window.odrObserveForms = watchForms;
+})();
+
+/* =========================================================
    スマホ用ナビ（ハンバーガー）。全ページ共通の .odr-brandbar に
    トグルボタンを注入し、既存 <nav> をドロップダウン開閉する。
    markupは各ページ非改変。見た目は odr-ds.css（≤640px）が担当。

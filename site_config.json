@@ -25,17 +25,63 @@
     "西京区"
   ],
   "stats": {
-    "clinics_analyzed": 673,
-    "reviews_parsed": 14919,
-    "sites_crawled": 456,
-    "clinics_published": 673,
-    "reviews_published": 14919,
-    "ai_analyzed": 563
+    "clinics_analyzed": 798,
+    "reviews_parsed": 16033,
+    "sites_crawled": 528,
+    "clinics_published": 798,
+    "reviews_published": 16033,
+    "ai_analyzed": 688
   },
-  "_stats_note": "データ収集完了後に実数を入れる。トップページの手打ち数字と必ず一致させること",
+  "_stats_note": "データ収集完了後に実数を入れる。トップページの手打ち数字と必ず一致させること。2026-07-29更新：clinic_db.json実測（掲載798・解析口コミ16,033・公式サイト解析528・AI分析済み688）に同期。verify_stats.pyで検証可能。なお監査で見つかったDB全体の生値（DB総数1056／口コミ合計21244＝除外医院含む生値／last_analyzed設定931）は掲載医院限定の本stats値とは意味が異なるため反映していない。",
   "_official_stat_note": "京都市「医療統計の概況」（厚生労働省 令和6年医療施設（動態）調査に基づく、基準日2024-10-01）：京都市内の歯科診療所778施設（前年783施設から5施設減）。収集完了後、この数値との乖離を監査の目安にする。",
   "ga4_measurement_ids": [
     "G-TGQFEFCBJ4",
     ""
-  ]
+  ],
+  "ward_pages": {
+    "北区": [
+      "kita",
+      "北大路・北野"
+    ],
+    "上京区": [
+      "kamigyo",
+      "西陣・今出川"
+    ],
+    "左京区": [
+      "sakyo",
+      "出町柳・岡崎"
+    ],
+    "中京区": [
+      "nakagyo",
+      "四条烏丸・二条"
+    ],
+    "東山区": [
+      "higashiyama",
+      "祇園・清水"
+    ],
+    "下京区": [
+      "shimogyo",
+      "京都駅・四条"
+    ],
+    "南区": [
+      "minami",
+      "東寺・十条"
+    ],
+    "右京区": [
+      "ukyo",
+      "嵐山・太秦"
+    ],
+    "伏見区": [
+      "fushimi",
+      "伏見桃山・桃山"
+    ],
+    "山科区": [
+      "yamashina",
+      "山科"
+    ],
+    "西京区": [
+      "nishikyo",
+      "桂・洛西"
+    ]
+  }
 }

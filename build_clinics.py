@@ -38,6 +38,11 @@ SITE_CFG = json.load(open(os.path.join(ROOT, "site_config.json"), encoding="utf-
 # WARD_SLUGSのキー（＝京都11区）にフォールバックする。区の無い市（尼崎等）は住所から区名が
 # 取れず空文字になり、この集合に一致しない＝診断リンクは都市全体版になる（都市分岐ハードコードなし）。
 VALID_WARDS = set(SITE_CFG.get("wards") or WARD_SLUGS.keys())
+# 区別LPのURLスラッグ。都市固有なので site_config.json の "ward_pages" を優先する
+# （build_area_pages.py と同じ表を見る＝生成側とリンク側がズレない）。未設定なら既定の表。
+_ward_pages = SITE_CFG.get("ward_pages") or {}
+if _ward_pages:
+    WARD_SLUGS = {k: v[0] for k, v in _ward_pages.items()}
 CITY_SHORT = SITE_CFG.get("city_short", SITE_CFG.get("city", ""))
 N_PUBLISHED = SITE_CFG.get("stats", {}).get("clinics_published", 0)
 DOMAIN = SITE_CFG.get("domain", "shikasoken.com")

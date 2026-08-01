@@ -242,5 +242,35 @@
    "h2",
    "h2"
   ]
+ },
+ "articles/area/fushimi.html": {
+  "meta_names": [
+   "description",
+   "og:description",
+   "og:site_name",
+   "og:title",
+   "og:type",
+   "og:url",
+   "viewport"
+  ],
+  "has_canonical": true,
+  "jsonld": [
+   {
+    "@type": "CollectionPage",
+    "keys": [
+     "@context",
+     "@type",
+     "description",
+     "isPartOf",
+     "name",
+     "url"
+    ]
+   }
+  ],
+  "headings": [
+   "h1",
+   "h2",
+   "h2"
+  ]
  }
 }
