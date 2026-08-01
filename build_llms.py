@@ -31,6 +31,19 @@ COLUMN_HUB = {
 }
 
 
+
+def _canon(url: str) -> str:
+    """本番URL（Cloudflare Pages）の正規形に合わせる。
+    .html付きURLは拡張子なしへ308転送されるため、llms.txtは転送先（拡張子なし）を載せる。
+    規則は build_sitemap.py の _canon_path と同じ。#criteria 等のフラグメントは保持する。"""
+    body, sep, frag = url.partition("#")
+    if body.endswith("/index.html"):
+        body = body[: -len("index.html")]
+    elif body.endswith(".html"):
+        body = body[: -len(".html")]
+    return body + sep + frag
+
+
 def _approx(n):
     """院数を控えめに丸めた概数テキスト（過大表示しない）。"""
     if n >= 1000:
@@ -50,7 +63,7 @@ def _area_link(base):
                    if f.endswith(".html") and f != "index.html")
     if not pages:
         return None
-    return f"- [区別の分析ページ（{len(pages)}区）]({base}/articles/area/{pages[0]})"
+    return f"- [区別の分析ページ（{len(pages)}区）]({_canon(base + '/articles/area/' + pages[0])})"
 
 
 def build(cfg):
@@ -91,7 +104,7 @@ def build(cfg):
     page_lines = []
     for label, local, url in candidates:
         if local is None or os.path.exists(os.path.join(ROOT, local)):
-            page_lines.append(f"- [{label}]({url})")
+            page_lines.append(f"- [{label}]({_canon(url)})")
     # 区別ページが実在する都市は「特徴から探す」の直後に差し込む
     area = _area_link(base)
     if area:
@@ -103,8 +116,8 @@ def build(cfg):
         "## データについて",
         "- 評価配点：口コミ・評判25点／院長の経歴・専門性25点／設備・診療体制20点／"
         "情報公開・透明性15点／学会・症例・発信15点＋Google評価ボーナス最大8点（100点上限）",
-        f"- {facility}ごとの分析ページ例：{base}/articles/clinics/（{facility}名）.html",
-        f"- 掲載情報の訂正窓口：{base}/teisei.html",
+        f"- {facility}ごとの分析ページ例：{base}/articles/clinics/（{facility}名）",
+        f"- 掲載情報の訂正窓口：{base}/teisei",
         "",
     ]
     return "\n".join(lines)

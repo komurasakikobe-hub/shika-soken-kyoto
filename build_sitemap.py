@@ -28,6 +28,18 @@ except FileNotFoundError:
     ARTICLE_DATES = {}
 
 
+
+def _is_self_canonical(rel_path: str) -> bool:
+    """そのページのcanonicalが自サイトを指しているか。
+    cat-area.html のように canonical が別ドメイン（コラム集約先）を指す転送ページは、
+    Googleが「他へ正規化済み」と判断するためsitemapに載せる意味がない。載せない。"""
+    f = ROOT / rel_path
+    if not f.exists():
+        return True
+    m = re.search(r'<link rel="canonical" href="([^"]+)"', f.read_text(encoding="utf-8"))
+    return True if not m else m.group(1).startswith(BASE + "/")
+
+
 def _canon_path(path: str) -> str:
     """本番URL（Cloudflare Pages）の正規形に合わせる。
     .html付きURLは拡張子なしへ308転送されるため、sitemapは転送先（拡張子なし）を載せる。
@@ -84,6 +96,8 @@ def main():
         entries.append(url_entry(f"articles/area/{f.name}", today, "0.8"))
 
     for f in sorted((ROOT / "articles").glob("cat-*.html")):
+        if not _is_self_canonical(f"articles/{f.name}"):
+            continue
         entries.append(url_entry(f"articles/{f.name}", today, "0.5"))
 
     # ── 記事 ──
