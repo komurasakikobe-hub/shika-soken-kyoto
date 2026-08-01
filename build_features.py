@@ -205,6 +205,7 @@ def main():
                 .replace("{n_reviews}", f"{n_reviews:,}")
                 .replace("{updated}", updated)
                 .replace("{CANONICAL}", f"https://{SITE_CFG.get('domain','shikasoken.com')}/articles/features/")
+                .replace("{OGDOMAIN}", f"https://{SITE_CFG.get('domain','shikasoken.com')}")
                 .replace("{SITE_NAME}", SITE_NAME).replace("{EN_INSTITUTE}", EN_INSTITUTE).replace("{CITY}", CITY)
                 .replace("{CITY_SHORT}", CITY_SHORT).replace("{N_PUBLISHED:,}", f"{N_PUBLISHED:,}"))
     open(os.path.join(OUT, "index.html"), "w", encoding="utf-8").write(html_out)
@@ -219,6 +220,15 @@ TEMPLATE = '''<!DOCTYPE html>
 <title>特徴から探す｜{SITE_NAME}</title>
 <meta name="description" content="{CITY}内の歯科医院を、CT設備・対応治療・子ども連れへの配慮など、確認できた特徴ごとに一覧。公開情報およびAI分析にもとづく参考情報です。">
 <link rel="canonical" href="{CANONICAL}">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{SITE_NAME}">
+<meta property="og:title" content="特徴から探す｜{SITE_NAME}">
+<meta property="og:description" content="{CITY}内の歯科医院を、CT設備・対応治療・子ども連れへの配慮など、確認できた特徴ごとに一覧。公開情報およびAI分析にもとづく参考情報です。">
+<meta property="og:url" content="{CANONICAL}">
+<meta property="og:image" content="{OGDOMAIN}/assets/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Shippori+Mincho:wght@600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="../../assets/odr-ds.css">
