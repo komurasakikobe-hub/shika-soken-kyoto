@@ -952,16 +952,25 @@ def build_page(c, slug=""):
               + "".join(f'<span class="rr-hchip">{esc(t)}</span>' for t in chip_items[:3])
               + '</div>') if chip_items else ""
 
+    # ── ファーストビューの導線（2026-08-01 改修） ──────────────────────
+    # 検索語はほぼ「医院名＋口コミ／レビュー」。以前はここの一番目立つボタンが
+    # 公式サイトと地図（どちらも外部）だったため、当サイトの分析を見る前に
+    # Googleマップへ出て行けてしまっていた（西宮のエンゲージ率28.6%・滞在18秒の主因）。
+    # ここでは当サイトにしかない情報（口コミの傾向・近隣比較）を先に出し、
+    # 公式サイト・地図は下部の「次にすること」と画面下の追従バーに残す
+    # （追従バーは常時表示なので、外部リンクへの到達性は落ちない）。
     links = ""
-    if url:
-        links += (f'<a class="rr-btn primary" href="{esc(url)}" target="_blank" rel="noopener" '
-                  f'data-odr-ev="clinic_to_official" data-odr-v="公式サイト">公式サイトで確認</a>')
-    if maps:
-        links += (f'<a class="rr-btn" href="{esc(maps)}" target="_blank" rel="noopener" '
-                  f'data-odr-ev="clinic_to_map" data-odr-v="地図">地図・口コミを見る</a>')
+    if reviews:
+        links += (f'<a class="rr-btn primary" href="#reviews" '
+                  f'data-odr-ev="clinic_to_reviews" data-odr-v="口コミの傾向">'
+                  f'口コミ{reviews}件の傾向を読む</a>')
     if area_slug:
-        links += (f'<a class="rr-btn" href="../area/{area_slug}" '
+        cls = "rr-btn" if reviews else "rr-btn primary"
+        links += (f'<a class="{cls}" href="../area/{area_slug}" '
                   f'data-odr-ev="clinic_to_area" data-odr-v="{esc(ward_only)}">同じ{esc(ward_only)}の医院と比較</a>')
+    if not links:
+        links += ('<a class="rr-btn primary" href="../shindan/" '
+                  'data-odr-ev="clinic_to_shindan" data-odr-v="ヒーロー">条件で医院を探す</a>')
 
     # スマホ下部固定CTA（公式｜地図｜比較。データがあるものだけ）
     st = ""
@@ -1190,8 +1199,21 @@ def build_page(c, slug=""):
         if not inner:
             continue
         en_html = f'<span class="rr-sec-en">{esc(en)}</span>' if en else ""
-        body += (f'<section class="rr-sec"><div class="rr-sec-h">{en_html}'
+        # ファーストビューから飛べるようにアンカーを持たせる（2026-08-01）
+        anchor = SECTION_ANCHORS.get(ja, "")
+        aid = f' id="{anchor}"' if anchor else ""
+        body += (f'<section class="rr-sec"{aid}><div class="rr-sec-h">{en_html}'
                  f'<h2>{esc(ja)}</h2></div>{inner}</section>')
+
+    # 口コミの傾向セクションが作れない医院ではFVのアンカーが行き先を失うので、
+    # その場合はボタンを張らない（リンク切れを出さない・2026-08-01）
+    if 'id="reviews"' not in body:
+        links = re.sub(r'<a class="rr-btn primary" href="#reviews".*?</a>', "", links)
+        links = links.replace('<a class="rr-btn" href="../area/',
+                              '<a class="rr-btn primary" href="../area/', 1)
+        if not links:
+            links = ('<a class="rr-btn primary" href="../shindan/" '
+                     'data-odr-ev="clinic_to_shindan" data-odr-v="ヒーロー">条件で医院を探す</a>')
 
     area_link = (f'<a class="rr-cta-btn ghost" href="../area/{area_slug}.html">{ward_only}の医院一覧</a>'
                  if area_slug else "")
@@ -1232,6 +1254,13 @@ def build_page(c, slug=""):
                      if HAS_RESEARCH else "")
             .replace("{DOMAIN}", DOMAIN).replace("{SITE_NAME}", SITE_NAME).replace("{EN_INSTITUTE}", EN_INSTITUTE).replace("{EN_UPPER}", EN_UPPER)
             .replace("{CITY_SHORT}", CITY_SHORT).replace("{N_PUBLISHED:,}", f"{N_PUBLISHED:,}"))
+
+# ファーストビューの導線から飛ぶ先（2026-08-01）。
+# 「医院名＋口コミ」で来た人が、外部サイトへ出る前に当サイトの分析へ入れるようにする。
+SECTION_ANCHORS = {
+    "口コミから見える傾向": "reviews",
+    "地域の中で見る": "area-context",
+}
 
 TEMPLATE = '''<!DOCTYPE html>
 <html lang="ja">
