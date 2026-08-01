@@ -754,6 +754,8 @@ CAT_TEMPLATE = '''<!DOCTYPE html>
 <meta property="og:type" content="website">
 <meta property="og:url" content="https://{DOMAIN}/articles/{href}">
 <meta property="og:title" content="{title}">
+<meta property="og:site_name" content="{SITE_NAME}">
+<meta property="og:description" content="{title}に関する{CITY_SHORT}の歯科コラム記事一覧。">
 <meta property="og:image" content="https://{DOMAIN}/assets/ogp.png">
 <meta property="og:image:width" content="1200">
 <meta property="og:image:height" content="630">
