@@ -1230,7 +1230,7 @@ def build_page(c, slug=""):
             .replace("{research_foot}",
                      '・<a href="../research/index.html" style="color:inherit;text-decoration:underline;">データ研究ページ</a>'
                      if HAS_RESEARCH else "")
-            .replace("{SITE_NAME}", SITE_NAME).replace("{EN_INSTITUTE}", EN_INSTITUTE).replace("{EN_UPPER}", EN_UPPER)
+            .replace("{DOMAIN}", DOMAIN).replace("{SITE_NAME}", SITE_NAME).replace("{EN_INSTITUTE}", EN_INSTITUTE).replace("{EN_UPPER}", EN_UPPER)
             .replace("{CITY_SHORT}", CITY_SHORT).replace("{N_PUBLISHED:,}", f"{N_PUBLISHED:,}"))
 
 TEMPLATE = '''<!DOCTYPE html>
@@ -1246,7 +1246,10 @@ TEMPLATE = '''<!DOCTYPE html>
 <meta property="og:title" content="{seo_title}">
 <meta property="og:description" content="{desc}">
 <meta property="og:url" content="{ogurl}">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://{DOMAIN}/assets/ogp.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
 {jsonld}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;700&family=Zen+Kaku+Gothic+New:wght@400;500;700;900&family=Shippori+Mincho:wght@600;700&family=Roboto+Mono:wght@400;500;600&display=swap" rel="stylesheet">
