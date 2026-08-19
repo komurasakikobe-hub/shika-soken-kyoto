@@ -4,6 +4,9 @@
    "description",
    "google-site-verification",
    "og:description",
+   "og:image",
+   "og:image:height",
+   "og:image:width",
    "og:site_name",
    "og:title",
    "og:type",
@@ -46,6 +49,14 @@
  },
  "shikumi.html": {
   "meta_names": [
+   "og:image",
+   "og:image:height",
+   "og:image:width",
+   "og:site_name",
+   "og:title",
+   "og:type",
+   "og:url",
+   "twitter:card",
    "viewport"
   ],
   "has_canonical": true,
@@ -62,7 +73,16 @@
  "policy.html": {
   "meta_names": [
    "description",
+   "og:description",
+   "og:image",
+   "og:image:height",
+   "og:image:width",
+   "og:site_name",
+   "og:title",
+   "og:type",
+   "og:url",
    "robots",
+   "twitter:card",
    "viewport"
   ],
   "has_canonical": true,
@@ -87,6 +107,15 @@
  "articles/features/index.html": {
   "meta_names": [
    "description",
+   "og:description",
+   "og:image",
+   "og:image:height",
+   "og:image:width",
+   "og:site_name",
+   "og:title",
+   "og:type",
+   "og:url",
+   "twitter:card",
    "viewport"
   ],
   "has_canonical": true,
@@ -111,6 +140,9 @@
   "meta_names": [
    "description",
    "og:description",
+   "og:image",
+   "og:image:height",
+   "og:image:width",
    "og:site_name",
    "og:title",
    "og:type",
@@ -137,6 +169,9 @@
   "meta_names": [
    "description",
    "og:description",
+   "og:image",
+   "og:image:height",
+   "og:image:width",
    "og:site_name",
    "og:title",
    "og:type",
@@ -193,6 +228,9 @@
   "meta_names": [
    "description",
    "og:description",
+   "og:image",
+   "og:image:height",
+   "og:image:width",
    "og:site_name",
    "og:title",
    "og:type",
@@ -247,6 +285,9 @@
   "meta_names": [
    "description",
    "og:description",
+   "og:image",
+   "og:image:height",
+   "og:image:width",
    "og:site_name",
    "og:title",
    "og:type",
@@ -265,10 +306,20 @@
      "name",
      "url"
     ]
+   },
+   {
+    "@type": "FAQPage",
+    "keys": [
+     "@context",
+     "@type",
+     "mainEntity"
+    ]
    }
   ],
   "headings": [
    "h1",
+   "h2",
+   "h2",
    "h2",
    "h2"
   ]

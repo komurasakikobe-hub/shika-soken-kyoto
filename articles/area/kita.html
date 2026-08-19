@@ -19,6 +19,7 @@
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "北区（北大路・北野）の歯医者・歯科医院 データランキング｜口コミ1,049件をAI分析", "description": "京都市北区の歯科医院70院を、Google口コミ1,049件と公式サイト等の公開情報からAIが分析。公開情報の充実度と評判にもとづくデータランキングです（優劣の断定ではありません）。", "url": "https://kyoto.shikasoken.com/articles/area/kita", "isPartOf": {"@type": "WebSite", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "北区で夜おそくまで診てもらえる歯医者はありますか。", "acceptedAnswer": {"@type": "Answer", "text": "診療時間を確認できた51院のうち、19時30分以降も診療しているのは17院でした。"}}, {"@type": "Question", "name": "北区で土日に通える歯医者はありますか。", "acceptedAnswer": {"@type": "Answer", "text": "土曜日に診療しているのが47院、日曜日が5院です（診療時間を確認できた51院中）。"}}, {"@type": "Question", "name": "北区で歯科用CTのある歯医者を知りたいです。", "acceptedAnswer": {"@type": "Answer", "text": "設備の情報を解析できた36院のうち、歯科用CTの導入を確認できたのは6院です。確認できなかった医院に無いという意味ではないため、気になる場合は直接お問い合わせください。"}}, {"@type": "Question", "name": "この順番はどうやって決めているのですか。", "acceptedAnswer": {"@type": "Answer", "text": "口コミの内容、院長情報、設備、情報公開の度合い、活動状況を配点にして機械的に並べています。掲載順が金銭で変わることはありません。治療の優劣を示すものでもありません。"}}]}</script>
 <style>
 body{margin:0;background:var(--odr-paper);color:var(--odr-ink);font-family:var(--odr-sans);line-height:1.9;}
 .odr-brandbar{position:sticky;top:0;z-index:100;}
@@ -32,13 +33,32 @@ h1{font-size:clamp(1.25rem,3vw,1.8rem);font-weight:900;margin:0 0 12px;line-heig
 .stats span{font-size:.68rem;color:#9cbbae;letter-spacing:.1em;}
 main{max-width:860px;margin:0 auto;padding:36px clamp(16px,4vw,40px) 72px;}
 h2{font-size:1.1rem;color:var(--odr-pine);border-left:4px solid var(--odr-terra);padding-left:10px;margin:32px 0 16px;}
-.acard{display:block;background:#fff;border:1px solid var(--odr-line);border-radius:14px;padding:18px 22px;margin-bottom:12px;text-decoration:none;color:inherit;transition:box-shadow .2s;}
-.acard:hover{box-shadow:var(--shadow-lift);}
-.acard-name{font-weight:700;font-size:1rem;color:var(--odr-pine);margin:0 0 4px;}
+.acard{display:block;background:#fff;border:1px solid var(--odr-line);border-radius:14px;padding:18px 22px;margin-bottom:14px;color:inherit;}
+.acard-head{display:block;text-decoration:none;color:inherit;position:relative;}
+.acard-name{font-weight:700;font-size:1.02rem;color:var(--odr-pine);margin:0 0 4px;padding-right:34px;}
 .acard-meta{font-size:.78rem;color:var(--odr-ink2);margin:0 0 8px;}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.arank{position:absolute;right:0;top:0;font-family:var(--odr-mono);font-size:.78rem;color:var(--odr-terra);border:1px solid var(--odr-line);border-radius:8px;padding:1px 8px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
 .tag{background:#eaf2ee;color:var(--odr-pine);font-size:.7rem;font-weight:700;border-radius:999px;padding:3px 10px;}
-.acard-ai{font-size:.8rem;color:var(--odr-ink2);margin:0;}
+.afacts{margin:0 0 10px;padding:12px 14px;background:#fafbfa;border:1px solid var(--odr-line);border-radius:10px;}
+.afact{display:flex;gap:10px;font-size:.8rem;padding:3px 0;}
+.afact dt{flex:0 0 9.5em;color:var(--odr-ink2);}
+.afact dd{margin:0;flex:1;word-break:auto-phrase;}
+.acard-ai{font-size:.84rem;color:var(--odr-ink);margin:0 0 6px;word-break:auto-phrase;}
+.acard-phil{font-size:.8rem;color:var(--odr-ink2);margin:0 0 8px;}
+.acard-more{font-size:.8rem;color:var(--odr-pine);font-weight:700;text-decoration:none;}
+.acard-more:hover{text-decoration:underline;}
+.lead p{font-size:.92rem;margin:0 0 12px;word-break:auto-phrase;}
+.ctable{background:#fff;border:1px solid var(--odr-line);border-radius:12px;padding:6px 16px;margin-bottom:10px;}
+.crow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid var(--odr-line);font-size:.86rem;}
+.crow:last-child{border-bottom:none;}
+.cval{white-space:nowrap;font-family:var(--odr-mono);}
+.cval b{font-size:1.05rem;color:var(--odr-pine);}
+.cval small{color:var(--odr-ink2);font-size:.72rem;}
+.faq{background:#fff;border:1px solid var(--odr-line);border-radius:10px;padding:12px 16px;margin-bottom:8px;}
+.faq summary{cursor:pointer;font-weight:700;font-size:.9rem;color:var(--odr-pine);}
+.faq p{font-size:.86rem;color:var(--odr-ink2);margin:10px 0 0;word-break:auto-phrase;}
+@media(max-width:760px){.afact{flex-direction:column;gap:2px;}.afact dt{flex:none;font-size:.74rem;}.crow{flex-direction:column;gap:2px;}}
 .cta{display:block;background:var(--odr-pine);color:#fff;text-align:center;font-weight:700;border-radius:999px;padding:15px;margin:28px 0;text-decoration:none;}
 .cta:hover{background:var(--odr-pine-2);}
 .rlinks{margin:0 0 8px;padding-left:1.3em;}
@@ -75,60 +95,178 @@ h2{font-size:1.1rem;color:var(--odr-pine);border-left:4px solid var(--odr-terra)
   </div>
 </section>
 <main>
-  <h2>北区の分析スコア上位10院</h2>
-  <a class="acard" href="../clinics/%E3%81%93%E3%81%95%E3%81%95%E6%AD%AF%E7%A7%91%E3%81%93%E3%81%A9%E3%82%82%E7%9F%AF%E6%AD%A3%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
-  <p class="acard-name">こささ歯科こども矯正クリニック</p>
-  <p class="acard-meta">Google ★4.8（458件） ・ 京都市北区上賀茂桜井町１００ Brillia北山 1</p>
+  <div class="lead"><p>京都市北区で分析対象にしている歯科医院は70院です。このうち53院にGoogleの口コミがあり、合計1,049件を読み取りました。公式サイトまで解析できたのは46院です。最寄り駅で見ると北大路駅が31院、北野白梅町駅が16院、北山駅が12院です。</p><p>ここから先は、診療時間・最寄り駅・公開情報で確認できた設備といった「調べれば分かること」を医院ごとに並べています。通いやすさは人によって違うので、順番はあくまで参考にしてください。</p></div>
+  <h2>北区の分析スコア上位15院</h2>
+  <article class="acard">
+  <a class="acard-head" href="../clinics/%E3%81%93%E3%81%95%E3%81%95%E6%AD%AF%E7%A7%91%E3%81%93%E3%81%A9%E3%82%82%E7%9F%AF%E6%AD%A3%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">1</span>
+    <p class="acard-name">こささ歯科こども矯正クリニック</p>
+    <p class="acard-meta">Google ★4.8（口コミ458件） ・ 京都市北区上賀茂桜井町１００ Brillia北山 1階</p>
+  </a>
   <div class="tags"><span class="tag">小児歯科</span><span class="tag">矯正歯科</span><span class="tag">清潔感</span></div>
-  <p class="acard-ai">【AI総評】この医院は、小さなお子さんを持つ親に特におすすめです。丁寧な説明と安心感があります。一方、急な痛みの治療が必要な方には不向きかもしれません。…</p>
-</a><a class="acard" href="../clinics/%E9%9E%8D%E9%A6%AC%E5%8F%A3%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
-  <p class="acard-name">鞍馬口歯科医院</p>
-  <p class="acard-meta">Google ★3.6（12件） ・ 京都市北区小山町２２６ 鞍楽HOWDY3F</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北山駅から徒歩2〜4分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>個室・駐車場・バリアフリー</dd></div><div class="afact"><dt>電話</dt><dd>075-721-5511</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">【AI総評】この医院は、小さなお子さんを持つ親に特におすすめです。丁寧な説明と安心感があります。一方、急な痛みの治療が必要な方には不向きかもしれません。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%81%93%E3%81%95%E3%81%95%E6%AD%AF%E7%A7%91%E3%81%93%E3%81%A9%E3%82%82%E7%9F%AF%E6%AD%A3%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">こささ歯科こども矯正クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E9%9E%8D%E9%A6%AC%E5%8F%A3%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">2</span>
+    <p class="acard-name">鞍馬口歯科医院</p>
+    <p class="acard-meta">Google ★3.6（口コミ12件） ・ 京都市北区小山町２２６ 鞍楽HOWDY3F</p>
+  </a>
   <div class="tags"><span class="tag">アクセス良好</span><span class="tag">丁寧な対応</span><span class="tag">清潔感</span></div>
-  <p class="acard-ai">この医院は、子ども連れの家族やリラックスした環境での治療を希望する方に向いています。一方、急患や夜間の通院を希望する方には他院をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E3%81%8D%E3%81%97%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF_%E5%8C%97%E9%87%8E%E7%99%BD%E6%A2%85%E7%94%BA.html">
-  <p class="acard-name">きしデンタルクリニック 北野白梅町</p>
-  <p class="acard-meta">Google ★5（8件） ・ 京都市北区大将軍西町１９５</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>鞍馬口駅から徒歩1〜2分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は17時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜休み・日曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>個室・駐車場</dd></div><div class="afact"><dt>電話</dt><dd>075-432-3592</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、子ども連れの家族やリラックスした環境での治療を希望する方に向いています。一方、急患や夜間の通院を希望する方には他院をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E9%9E%8D%E9%A6%AC%E5%8F%A3%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">鞍馬口歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%81%8D%E3%81%97%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF_%E5%8C%97%E9%87%8E%E7%99%BD%E6%A2%85%E7%94%BA.html">
+    <span class="arank">3</span>
+    <p class="acard-name">きしデンタルクリニック 北野白梅町</p>
+    <p class="acard-meta">Google ★5（口コミ8件） ・ 京都市北区大将軍西町１９５</p>
+  </a>
   <div class="tags"><span class="tag">優れた説明</span><span class="tag">安心感</span><span class="tag">新しいクリニック</span></div>
-  <p class="acard-ai">この医院は優しく丁寧な説明を重視する方に向いています。一方、プレッシャーを感じる方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E6%9F%8F%E4%BA%95%E6%AD%AF%E7%A7%91%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">
-  <p class="acard-name">柏井歯科矯正歯科</p>
-  <p class="acard-meta">Google ★4.2（30件） ・ 京都市北区上賀茂今井河原町５５</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北野白梅町駅から徒歩2〜4分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT</dd></div><div class="afact"><dt>院長</dt><dd>岸 優志</dd></div><div class="afact"><dt>電話</dt><dd>075-384-0648</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は優しく丁寧な説明を重視する方に向いています。一方、プレッシャーを感じる方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%81%8D%E3%81%97%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF_%E5%8C%97%E9%87%8E%E7%99%BD%E6%A2%85%E7%94%BA.html">きしデンタルクリニック 北野白梅町の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E6%9F%8F%E4%BA%95%E6%AD%AF%E7%A7%91%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">
+    <span class="arank">4</span>
+    <p class="acard-name">柏井歯科矯正歯科</p>
+    <p class="acard-meta">Google ★4.2（口コミ30件） ・ 京都市北区上賀茂今井河原町５５</p>
+  </a>
   <div class="tags"><span class="tag">親切な対応</span><span class="tag">丁寧な治療</span><span class="tag">保険中心</span></div>
-  <p class="acard-ai">柏井歯科矯正歯科は、親切なスタッフによる丁寧な治療が好評で、ホワイトニングに力を入れています。診療は平日18時までで、夜間帯の診療は行っていないため、受診前に診…</p>
-</a><a class="acard" href="../clinics/%E5%90%89%E7%94%B0%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
-  <p class="acard-name">吉田歯科クリニック</p>
-  <p class="acard-meta">Google ★4.3（21件） ・ 京都市北区大宮東小野堀町１ エスカローナ玉田 1F</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北山駅から徒歩6〜9分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・マイクロスコープ・口腔内スキャナー・個室・駐車場</dd></div><div class="afact"><dt>電話</dt><dd>075-722-7339</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">柏井歯科矯正歯科は、親切なスタッフによる丁寧な治療が好評で、ホワイトニングに力を入れています。診療は平日18時までで、夜間帯の診療は行っていないため、受診前に診療時間や対応内容を公式サイトでご確認ください。</p>
+  
+  <a class="acard-more" href="../clinics/%E6%9F%8F%E4%BA%95%E6%AD%AF%E7%A7%91%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">柏井歯科矯正歯科の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%90%89%E7%94%B0%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">5</span>
+    <p class="acard-name">吉田歯科クリニック</p>
+    <p class="acard-meta">Google ★4.3（口コミ21件） ・ 京都市北区大宮東小野堀町１ エスカローナ玉田 1F</p>
+  </a>
   <div class="tags"><span class="tag">清潔感</span><span class="tag">予約管理</span><span class="tag">痛みへの配慮</span></div>
-  <p class="acard-ai">この医院は、清潔で予約がスムーズな環境が魅力です。特に子ども連れの患者や痛みを気にされる方に向いています。一方、夜間に通う必要がある方には不向きです。…</p>
-</a><a class="acard" href="../clinics/%E6%9F%B4%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8C%97%E5%8C%BA.html">
-  <p class="acard-name">柴田歯科医院</p>
-  <p class="acard-meta">Google ★3.8（4件） ・ 京都市北区大宮南田尻町５５−１</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北大路駅から徒歩19〜30分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・駐車場</dd></div><div class="afact"><dt>電話</dt><dd>075-494-0118</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、清潔で予約がスムーズな環境が魅力です。特に子ども連れの患者や痛みを気にされる方に向いています。一方、夜間に通う必要がある方には不向きです。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%90%89%E7%94%B0%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">吉田歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E6%9F%B4%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8C%97%E5%8C%BA.html">
+    <span class="arank">6</span>
+    <p class="acard-name">柴田歯科医院</p>
+    <p class="acard-meta">Google ★3.8（口コミ4件） ・ 京都市北区大宮南田尻町５５−１</p>
+  </a>
   <div class="tags"><span class="tag">長年の信頼</span><span class="tag">地域密着</span><span class="tag">安心の治療</span></div>
-  <p class="acard-ai">柴田歯科医院は、長年通っている患者からの信頼が厚い医院です。丁寧な治療と説明を求める方に向いています。一方、夜の診療を希望する方には他の医院も検討をお勧めします…</p>
-</a><a class="acard" href="../clinics/%E3%82%AB%E3%83%9F%E3%82%BF%E3%83%8B%E6%AD%AF%E7%A7%91.html">
-  <p class="acard-name">カミタニ歯科</p>
-  <p class="acard-meta">Google ★4.1（28件） ・ 京都市北区衣笠総門町３３−１３</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北山駅から徒歩16〜25分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT</dd></div><div class="afact"><dt>電話</dt><dd>075-491-0710</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">柴田歯科医院は、長年通っている患者からの信頼が厚い医院です。丁寧な治療と説明を求める方に向いています。一方、夜の診療を希望する方には他の医院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E6%9F%B4%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8C%97%E5%8C%BA.html">柴田歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%82%AB%E3%83%9F%E3%82%BF%E3%83%8B%E6%AD%AF%E7%A7%91.html">
+    <span class="arank">7</span>
+    <p class="acard-name">カミタニ歯科</p>
+    <p class="acard-meta">Google ★4.1（口コミ28件） ・ 京都市北区衣笠総門町３３−１３</p>
+  </a>
   <div class="tags"><span class="tag">丁寧な対応</span><span class="tag">地域密着</span><span class="tag">患者思い</span></div>
-  <p class="acard-ai">この医院は丁寧な治療を求める方に向いています。一方、急患希望の方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E5%A4%A7%E6%B2%B3%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
-  <p class="acard-name">大河歯科医院</p>
-  <p class="acard-meta">Google ★3.8（9件） ・ 京都市北区紫野十二坊町２７</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北野白梅町駅から徒歩11〜17分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり・日曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・マイクロスコープ・口腔内スキャナー・個室</dd></div><div class="afact"><dt>電話</dt><dd>075-461-8686</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は丁寧な治療を求める方に向いています。一方、急患希望の方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%82%AB%E3%83%9F%E3%82%BF%E3%83%8B%E6%AD%AF%E7%A7%91.html">カミタニ歯科の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%A4%A7%E6%B2%B3%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">8</span>
+    <p class="acard-name">大河歯科医院</p>
+    <p class="acard-meta">Google ★3.8（口コミ9件） ・ 京都市北区紫野十二坊町２７</p>
+  </a>
   <div class="tags"><span class="tag">優しさがある</span><span class="tag">急患対応可</span><span class="tag">子ども向け</span></div>
-  <p class="acard-ai">大河歯科医院は子どもや高齢者に優しい環境が整っており、患者に対する配慮が高いです。一方、十分なコミュニケーションを求める方には合わないかもしれません。…</p>
-</a><a class="acard" href="../clinics/%E3%81%94%E3%81%86%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
-  <p class="acard-name">ごう歯科クリニック</p>
-  <p class="acard-meta">Google ★4.4（64件） ・ 京都市北区平野宮北町１５</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北野白梅町駅から徒歩13〜21分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>駐車場・バリアフリー</dd></div><div class="afact"><dt>電話</dt><dd>075-465-2080</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">大河歯科医院は子どもや高齢者に優しい環境が整っており、患者に対する配慮が高いです。一方、十分なコミュニケーションを求める方には合わないかもしれません。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%A4%A7%E6%B2%B3%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">大河歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%81%94%E3%81%86%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">9</span>
+    <p class="acard-name">ごう歯科クリニック</p>
+    <p class="acard-meta">Google ★4.4（口コミ64件） ・ 京都市北区平野宮北町１５</p>
+  </a>
   <div class="tags"><span class="tag">信頼できる</span><span class="tag">スピーディー</span><span class="tag">再訪あり</span></div>
-  <p class="acard-ai">ごう歯科クリニックは、長年通う患者からも信頼されるスピーディーで丁寧な診療が評価されています。夜しか通えない方には向いていない可能性があります。…</p>
-</a><a class="acard" href="../clinics/%E7%99%BD%E6%A2%85%E7%94%BA%E3%82%A2%E3%83%AA%E3%82%B9%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
-  <p class="acard-name">白梅町アリス歯科医院</p>
-  <p class="acard-meta">Google ★3.6（14件） ・ 京都市北区北野上白梅町８ くすの木 1F</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北野白梅町駅から徒歩6〜11分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時30分まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>個室・駐車場</dd></div><div class="afact"><dt>院長</dt><dd>懸樋 剛</dd></div><div class="afact"><dt>電話</dt><dd>075-463-2055</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">ごう歯科クリニックは、長年通う患者からも信頼されるスピーディーで丁寧な診療が評価されています。夜しか通えない方には向いていない可能性があります。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%81%94%E3%81%86%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">ごう歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E7%99%BD%E6%A2%85%E7%94%BA%E3%82%A2%E3%83%AA%E3%82%B9%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">10</span>
+    <p class="acard-name">白梅町アリス歯科医院</p>
+    <p class="acard-meta">Google ★3.6（口コミ14件） ・ 京都市北区北野上白梅町８ くすの木 1F</p>
+  </a>
   <div class="tags"><span class="tag">予約が取りにくい</span><span class="tag">説明は丁寧</span><span class="tag">治療に不満</span></div>
-  <p class="acard-ai">白梅町アリス歯科医院は、優しい先生による丁寧な説明が特徴です。夜しか通えない方には向いていない可能性があります。…</p>
-</a>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北野白梅町駅から徒歩1〜2分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・マイクロスコープ</dd></div><div class="afact"><dt>院長</dt><dd>中村 岳司</dd></div><div class="afact"><dt>電話</dt><dd>075-462-8211</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">白梅町アリス歯科医院は、優しい先生による丁寧な説明が特徴です。夜しか通えない方には向いていない可能性があります。</p>
+  
+  <a class="acard-more" href="../clinics/%E7%99%BD%E6%A2%85%E7%94%BA%E3%82%A2%E3%83%AA%E3%82%B9%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">白梅町アリス歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%8C%97%E5%B1%B1%E5%86%85%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">11</span>
+    <p class="acard-name">北山内田歯科医院</p>
+    <p class="acard-meta">Google ★5（口コミ1件） ・ 京都市北区小山上板倉町５０−１</p>
+  </a>
+  <div class="tags"><span class="tag">夜診療</span><span class="tag">予防重視</span><span class="tag">バリアフリー</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北大路駅から徒歩5〜8分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は20時まで（夜の時間帯まで診療）</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>個室・駐車場・バリアフリー</dd></div><div class="afact"><dt>電話</dt><dd>075-493-8886</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、仕事や学校の後でも通いやすい夜診療を提供しています。忙しい方や予防を重視する方に向いています。一方、急な痛みなどの急患対応を求める方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%8C%97%E5%B1%B1%E5%86%85%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">北山内田歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/teethmine_%E3%81%8D%E3%81%97%E3%82%82%E3%81%A8%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">12</span>
+    <p class="acard-name">teethmine きしもと矯正歯科クリニック</p>
+    <p class="acard-meta">Google ★4.4（口コミ10件） ・ 京都市北区小山下初音町４５</p>
+  </a>
+  <div class="tags"><span class="tag">先生が良い</span><span class="tag">長期付き合い</span><span class="tag">質問対応</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北大路駅から徒歩3〜6分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時30分まで（夜の時間帯まで診療）</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>電話</dt><dd>075-491-9990</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、先生とのコミュニケーションを重視したい方に向いています。一方、スピーディな治療を希望する方には他の医院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/teethmine_%E3%81%8D%E3%81%97%E3%82%82%E3%81%A8%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">teethmine きしもと矯正歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%81%9F%E3%81%8B%E3%82%88%E3%82%8A%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">13</span>
+    <p class="acard-name">たかより歯科クリニック</p>
+    <p class="acard-meta">Google ★4.2（口コミ5件） ・ 京都市北区紫竹東桃ノ本町１−１ アクアリヴィエール</p>
+  </a>
+  <div class="tags"><span class="tag">親切なスタッフ</span><span class="tag">的確な治療</span><span class="tag">メンテナンス</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北大路駅から徒歩7〜12分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>駐車場</dd></div><div class="afact"><dt>電話</dt><dd>075-493-5080</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">たかより歯科クリニックは、親切な対応と的確な治療が魅力です。特にメンテナンスを大切にする方におすすめですが、急患に対応が難しいため、計画的に通える方が適しています。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%81%9F%E3%81%8B%E3%82%88%E3%82%8A%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">たかより歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%81%AF%E3%81%A3%E3%81%A8%E3%82%8A%E6%AD%AF%E7%A7%91.html">
+    <span class="arank">14</span>
+    <p class="acard-name">はっとり歯科</p>
+    <p class="acard-meta">Google ★5（口コミ4件） ・ 京都市北区大宮西小野堀町４</p>
+  </a>
+  <div class="tags"><span class="tag">優しい先生</span><span class="tag">地域密着</span><span class="tag">家族で通いやすい</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北大路駅から徒歩20〜30分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は17時30分まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>駐車場・バリアフリー</dd></div><div class="afact"><dt>電話</dt><dd>075-493-0005</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、優しい先生のもとで家族が安心して通える環境を求める方に向いています。一方で、急な治療を必要とする方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%81%AF%E3%81%A3%E3%81%A8%E3%82%8A%E6%AD%AF%E7%A7%91.html">はっとり歯科の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%8D%83%E9%87%8C%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">15</span>
+    <p class="acard-name">千里デンタルクリニック</p>
+    <p class="acard-meta">Google ★0（口コミ0件） ・ 京都市北区大将軍西町１７８ プレジール白梅町302 1階 加藤医院の</p>
+  </a>
+  <div class="tags"><span class="tag">ホワイトニング</span><span class="tag">美容歯科</span><span class="tag">京都</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北野白梅町駅から徒歩3〜5分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は17時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜休み</dd></div><div class="afact"><dt>院長</dt><dd>安達 千里</dd></div><div class="afact"><dt>電話</dt><dd>075-384-4524</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院はホワイトニングを気軽に体験したい方に特に向いています。一方、一般歯科治療を探している方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%8D%83%E9%87%8C%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">千里デンタルクリニックの分析を詳しく見る →</a>
+</article>
   <a class="cta" href="../shindan/index.html?ward=%E5%8C%97%E5%8C%BA">症状・希望条件も選んで、北区の医院を絞り込む →</a>
-  <h2>北区のデータを詳しく見る</h2><p>設備情報を解析できた36院のうち、歯科用CTの導入が公式サイト等で確認できたのは6院でした。</p><p>夜間診療の案内が確認できた医院は、北区の分析対象70院のうち0院です。</p><p>こうした設備や診療時間の傾向は、市全体のデータをまとめた研究記事で背景まで確認できます。</p><ul class="rlinks"><li><a href="../research/worktime-access.html">夜間・週末に通える歯科はどれだけあるか（診療時間データの研究）</a></li></ul><p class="rnote">件数・割合は当サイトが公開情報から機械的に解析できた範囲の値です。「確認できなかった」は「無い」という意味ではありません。</p>
+  <h2>北区で条件から絞る</h2><p>夜間や土日に通えるか、駐車場があるかは、医院選びで最初に効いてくる条件です。北区の分析対象70院について、公開情報から確認できた数を並べます。</p><div class="ctable"><div class="crow"><span class="clabel">19時30分以降も診療している</span><span class="cval"><b>17</b>院 <small>／確認できた51院中</small></span></div><div class="crow"><span class="clabel">土曜日に診療している</span><span class="cval"><b>47</b>院 <small>／確認できた51院中</small></span></div><div class="crow"><span class="clabel">日曜日に診療している</span><span class="cval"><b>5</b>院 <small>／確認できた51院中</small></span></div><div class="crow"><span class="clabel">歯科用CTの導入を確認できた</span><span class="cval"><b>6</b>院 <small>／確認できた36院中</small></span></div><div class="crow"><span class="clabel">個室の案内を確認できた</span><span class="cval"><b>6</b>院 <small>／確認できた36院中</small></span></div><div class="crow"><span class="clabel">駐車場の案内を確認できた</span><span class="cval"><b>13</b>院 <small>／確認できた36院中</small></span></div><div class="crow"><span class="clabel">バリアフリーの案内を確認できた</span><span class="cval"><b>7</b>院 <small>／確認できた36院中</small></span></div></div><p class="rnote">分母は、その項目を公開情報から判定できた医院数です。「確認できなかった」は「無い」という意味ではありません。最新の診療時間は必ず医院にご確認ください。</p>
+  <h2>よくある質問</h2><details class="faq"><summary>北区で夜おそくまで診てもらえる歯医者はありますか。</summary><p>診療時間を確認できた51院のうち、19時30分以降も診療しているのは17院でした。</p></details><details class="faq"><summary>北区で土日に通える歯医者はありますか。</summary><p>土曜日に診療しているのが47院、日曜日が5院です（診療時間を確認できた51院中）。</p></details><details class="faq"><summary>北区で歯科用CTのある歯医者を知りたいです。</summary><p>設備の情報を解析できた36院のうち、歯科用CTの導入を確認できたのは6院です。確認できなかった医院に無いという意味ではないため、気になる場合は直接お問い合わせください。</p></details><details class="faq"><summary>この順番はどうやって決めているのですか。</summary><p>口コミの内容、院長情報、設備、情報公開の度合い、活動状況を配点にして機械的に並べています。掲載順が金銭で変わることはありません。治療の優劣を示すものでもありません。</p></details>
+  <h2>北区のデータを詳しく見る</h2><p>設備や診療時間の傾向は、市全体のデータをまとめた研究記事で背景まで確認できます。</p><ul class="rlinks"><li><a href="../research/worktime-access.html">夜間・週末に通える歯科はどれだけあるか（診療時間データの研究）</a></li></ul>
   <p class="disc">スコア・順位は公開情報（口コミ・公式サイト等）の充実度と評判分析にもとづく参考表示であり、医院の技術や治療結果の優劣を示すものではありません。順位は条件の選択で変動します。掲載順が金銭で変わることはありません。受診の判断は必ず歯科医師にご相談ください。
   掲載情報の訂正は<a href="../../teisei.html">こちら</a>／詳細は<a href="../../policy.html">運営ポリシー・免責事項</a>。</p>
 </main>

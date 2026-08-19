@@ -19,6 +19,7 @@
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "左京区（出町柳・岡崎）の歯医者・歯科医院 データランキング｜口コミ2,042件をAI分析", "description": "京都市左京区の歯科医院90院を、Google口コミ2,042件と公式サイト等の公開情報からAIが分析。公開情報の充実度と評判にもとづくデータランキングです（優劣の断定ではありません）。", "url": "https://kyoto.shikasoken.com/articles/area/sakyo", "isPartOf": {"@type": "WebSite", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "左京区で夜おそくまで診てもらえる歯医者はありますか。", "acceptedAnswer": {"@type": "Answer", "text": "診療時間を確認できた79院のうち、19時30分以降も診療しているのは21院でした。"}}, {"@type": "Question", "name": "左京区で土日に通える歯医者はありますか。", "acceptedAnswer": {"@type": "Answer", "text": "土曜日に診療しているのが73院、日曜日が4院です（診療時間を確認できた79院中）。"}}, {"@type": "Question", "name": "左京区で歯科用CTのある歯医者を知りたいです。", "acceptedAnswer": {"@type": "Answer", "text": "設備の情報を解析できた67院のうち、歯科用CTの導入を確認できたのは13院です。確認できなかった医院に無いという意味ではないため、気になる場合は直接お問い合わせください。"}}, {"@type": "Question", "name": "この順番はどうやって決めているのですか。", "acceptedAnswer": {"@type": "Answer", "text": "口コミの内容、院長情報、設備、情報公開の度合い、活動状況を配点にして機械的に並べています。掲載順が金銭で変わることはありません。治療の優劣を示すものでもありません。"}}]}</script>
 <style>
 body{margin:0;background:var(--odr-paper);color:var(--odr-ink);font-family:var(--odr-sans);line-height:1.9;}
 .odr-brandbar{position:sticky;top:0;z-index:100;}
@@ -32,13 +33,32 @@ h1{font-size:clamp(1.25rem,3vw,1.8rem);font-weight:900;margin:0 0 12px;line-heig
 .stats span{font-size:.68rem;color:#9cbbae;letter-spacing:.1em;}
 main{max-width:860px;margin:0 auto;padding:36px clamp(16px,4vw,40px) 72px;}
 h2{font-size:1.1rem;color:var(--odr-pine);border-left:4px solid var(--odr-terra);padding-left:10px;margin:32px 0 16px;}
-.acard{display:block;background:#fff;border:1px solid var(--odr-line);border-radius:14px;padding:18px 22px;margin-bottom:12px;text-decoration:none;color:inherit;transition:box-shadow .2s;}
-.acard:hover{box-shadow:var(--shadow-lift);}
-.acard-name{font-weight:700;font-size:1rem;color:var(--odr-pine);margin:0 0 4px;}
+.acard{display:block;background:#fff;border:1px solid var(--odr-line);border-radius:14px;padding:18px 22px;margin-bottom:14px;color:inherit;}
+.acard-head{display:block;text-decoration:none;color:inherit;position:relative;}
+.acard-name{font-weight:700;font-size:1.02rem;color:var(--odr-pine);margin:0 0 4px;padding-right:34px;}
 .acard-meta{font-size:.78rem;color:var(--odr-ink2);margin:0 0 8px;}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.arank{position:absolute;right:0;top:0;font-family:var(--odr-mono);font-size:.78rem;color:var(--odr-terra);border:1px solid var(--odr-line);border-radius:8px;padding:1px 8px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
 .tag{background:#eaf2ee;color:var(--odr-pine);font-size:.7rem;font-weight:700;border-radius:999px;padding:3px 10px;}
-.acard-ai{font-size:.8rem;color:var(--odr-ink2);margin:0;}
+.afacts{margin:0 0 10px;padding:12px 14px;background:#fafbfa;border:1px solid var(--odr-line);border-radius:10px;}
+.afact{display:flex;gap:10px;font-size:.8rem;padding:3px 0;}
+.afact dt{flex:0 0 9.5em;color:var(--odr-ink2);}
+.afact dd{margin:0;flex:1;word-break:auto-phrase;}
+.acard-ai{font-size:.84rem;color:var(--odr-ink);margin:0 0 6px;word-break:auto-phrase;}
+.acard-phil{font-size:.8rem;color:var(--odr-ink2);margin:0 0 8px;}
+.acard-more{font-size:.8rem;color:var(--odr-pine);font-weight:700;text-decoration:none;}
+.acard-more:hover{text-decoration:underline;}
+.lead p{font-size:.92rem;margin:0 0 12px;word-break:auto-phrase;}
+.ctable{background:#fff;border:1px solid var(--odr-line);border-radius:12px;padding:6px 16px;margin-bottom:10px;}
+.crow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid var(--odr-line);font-size:.86rem;}
+.crow:last-child{border-bottom:none;}
+.cval{white-space:nowrap;font-family:var(--odr-mono);}
+.cval b{font-size:1.05rem;color:var(--odr-pine);}
+.cval small{color:var(--odr-ink2);font-size:.72rem;}
+.faq{background:#fff;border:1px solid var(--odr-line);border-radius:10px;padding:12px 16px;margin-bottom:8px;}
+.faq summary{cursor:pointer;font-weight:700;font-size:.9rem;color:var(--odr-pine);}
+.faq p{font-size:.86rem;color:var(--odr-ink2);margin:10px 0 0;word-break:auto-phrase;}
+@media(max-width:760px){.afact{flex-direction:column;gap:2px;}.afact dt{flex:none;font-size:.74rem;}.crow{flex-direction:column;gap:2px;}}
 .cta{display:block;background:var(--odr-pine);color:#fff;text-align:center;font-weight:700;border-radius:999px;padding:15px;margin:28px 0;text-decoration:none;}
 .cta:hover{background:var(--odr-pine-2);}
 .rlinks{margin:0 0 8px;padding-left:1.3em;}
@@ -75,60 +95,178 @@ h2{font-size:1.1rem;color:var(--odr-pine);border-left:4px solid var(--odr-terra)
   </div>
 </section>
 <main>
-  <h2>左京区の分析スコア上位10院</h2>
-  <a class="acard" href="../clinics/%E9%BB%92%E6%9C%AC%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
-  <p class="acard-name">黒本歯科クリニック</p>
-  <p class="acard-meta">Google ★4.3（36件） ・ 京都市左京区下鴨西本町２８</p>
+  <div class="lead"><p>京都市左京区で分析対象にしている歯科医院は90院です。このうち81院にGoogleの口コミがあり、合計2,042件を読み取りました。公式サイトまで解析できたのは61院です。最寄り駅で見ると元田中駅が15院、茶山・京都芸術大学駅が12院、松ヶ崎駅が11院です。</p><p>ここから先は、診療時間・最寄り駅・公開情報で確認できた設備といった「調べれば分かること」を医院ごとに並べています。通いやすさは人によって違うので、順番はあくまで参考にしてください。</p></div>
+  <h2>左京区の分析スコア上位15院</h2>
+  <article class="acard">
+  <a class="acard-head" href="../clinics/%E9%BB%92%E6%9C%AC%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">1</span>
+    <p class="acard-name">黒本歯科クリニック</p>
+    <p class="acard-meta">Google ★4.3（口コミ36件） ・ 京都市左京区下鴨西本町２８</p>
+  </a>
   <div class="tags"><span class="tag">子どもに優しい</span><span class="tag">アットホーム</span><span class="tag">信頼できる</span></div>
-  <p class="acard-ai">黒本歯科クリニックは、家族連れや子どもに安心して通える歯科医です。一方で、夜遅くの通院を希望する方には他院も検討することをお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E3%81%8A%E3%81%8A%E3%81%8F%E3%81%BC%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
-  <p class="acard-name">おおくぼ歯科クリニック</p>
-  <p class="acard-meta">Google ★4.4（91件） ・ 京都市左京区下鴨高木町３２−３</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北山駅から徒歩9〜14分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・駐車場</dd></div><div class="afact"><dt>電話</dt><dd>075-741-6489</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">黒本歯科クリニックは、家族連れや子どもに安心して通える歯科医です。一方で、夜遅くの通院を希望する方には他院も検討することをお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E9%BB%92%E6%9C%AC%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">黒本歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%81%8A%E3%81%8A%E3%81%8F%E3%81%BC%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">2</span>
+    <p class="acard-name">おおくぼ歯科クリニック</p>
+    <p class="acard-meta">Google ★4.4（口コミ91件） ・ 京都市左京区下鴨高木町３２−３</p>
+  </a>
   <div class="tags"><span class="tag">予防歯科</span><span class="tag">丁寧な対応</span><span class="tag">女性医師</span></div>
-  <p class="acard-ai">おおくぼ歯科クリニックは、予防歯科に力を入れ、丁寧な対応が特徴です。特に家族連れや女性に支持されています。逆に、急患対応ができないため、急ぎの治療を希望する方に…</p>
-</a><a class="acard" href="../clinics/%E7%BE%8E%E9%87%8C%E6%AD%AF%E7%A7%91.html">
-  <p class="acard-name">美里歯科</p>
-  <p class="acard-meta">Google ★4.3（28件） ・ 京都市左京区聖護院山王町43−２ パレステート日生熊</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>松ヶ崎駅から徒歩8〜13分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>個室・駐車場・バリアフリー</dd></div><div class="afact"><dt>電話</dt><dd>075-707-2055</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">おおくぼ歯科クリニックは、予防歯科に力を入れ、丁寧な対応が特徴です。特に家族連れや女性に支持されています。逆に、急患対応ができないため、急ぎの治療を希望する方には他院を検討することをお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%81%8A%E3%81%8A%E3%81%8F%E3%81%BC%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">おおくぼ歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E7%BE%8E%E9%87%8C%E6%AD%AF%E7%A7%91.html">
+    <span class="arank">3</span>
+    <p class="acard-name">美里歯科</p>
+    <p class="acard-meta">Google ★4.3（口コミ28件） ・ 京都市左京区聖護院山王町43−２ パレステート日生熊野</p>
+  </a>
   <div class="tags"><span class="tag">優しさ</span><span class="tag">丁寧な治療</span><span class="tag">アクセス良好</span></div>
-  <p class="acard-ai">この医院は、丁寧な治療を受けたい方や女性患者に特に向いています。一方、急患や夜のみ通える方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E8%81%96%E8%AD%B7%E9%99%A2%E3%82%84%E3%81%8E%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">
-  <p class="acard-name">聖護院やぎ歯科・矯正歯科</p>
-  <p class="acard-meta">Google ★4.9（310件） ・ 京都市左京区聖護院山王町２８−６２</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>神宮丸太町駅から徒歩5〜9分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・マイクロスコープ</dd></div><div class="afact"><dt>電話</dt><dd>075-754-0101</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、丁寧な治療を受けたい方や女性患者に特に向いています。一方、急患や夜のみ通える方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E7%BE%8E%E9%87%8C%E6%AD%AF%E7%A7%91.html">美里歯科の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E8%81%96%E8%AD%B7%E9%99%A2%E3%82%84%E3%81%8E%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">
+    <span class="arank">4</span>
+    <p class="acard-name">聖護院やぎ歯科・矯正歯科</p>
+    <p class="acard-meta">Google ★4.9（口コミ310件） ・ 京都市左京区聖護院山王町２８−６２</p>
+  </a>
   <div class="tags"><span class="tag">親しみやすい</span><span class="tag">丁寧な治療</span><span class="tag">実績あり</span></div>
-  <p class="acard-ai">この医院は丁寧な治療と説明を重視する方に向いています。一方、急患対応を希望する方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E5%B2%A1%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
-  <p class="acard-name">岡田歯科医院</p>
-  <p class="acard-meta">Google ★3.9（18件） ・ 京都市左京区高野竹屋町３２−１６</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>神宮丸太町駅から徒歩6〜10分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・口腔内スキャナー・個室・駐車場</dd></div><div class="afact"><dt>院長</dt><dd>不明</dd></div><div class="afact"><dt>電話</dt><dd>050-1722-2566</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は丁寧な治療と説明を重視する方に向いています。一方、急患対応を希望する方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E8%81%96%E8%AD%B7%E9%99%A2%E3%82%84%E3%81%8E%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">聖護院やぎ歯科・矯正歯科の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%B2%A1%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">5</span>
+    <p class="acard-name">岡田歯科医院</p>
+    <p class="acard-meta">Google ★3.9（口コミ18件） ・ 京都市左京区高野竹屋町３２−１６</p>
+  </a>
   <div class="tags"><span class="tag">優しい</span><span class="tag">丁寧</span><span class="tag">予約しやすい</span></div>
-  <p class="acard-ai">岡田歯科医院は優しく丁寧な治療を求める方に最適です。一方で、急な対応や夜間治療を希望される方には他の医院をおすすめします。…</p>
-</a><a class="acard" href="../clinics/%E4%BA%AC%E9%83%BD%E4%B8%8B%E9%B4%A8%E3%83%A9%E3%82%A4%E3%83%95%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91_%E5%B0%8F%E5%85%90%E6%AD%AF%E7%A7%91.html">
-  <p class="acard-name">京都下鴨ライフ歯科・矯正歯科・小児歯科</p>
-  <p class="acard-meta">Google ★4.8（326件） ・ 京都市左京区下鴨西本町３９</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>一乗寺駅から徒歩5〜9分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>電話</dt><dd>075-721-8219</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">岡田歯科医院は優しく丁寧な治療を求める方に最適です。一方で、急な対応や夜間治療を希望される方には他の医院をおすすめします。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%B2%A1%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">岡田歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E4%BA%AC%E9%83%BD%E4%B8%8B%E9%B4%A8%E3%83%A9%E3%82%A4%E3%83%95%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91_%E5%B0%8F%E5%85%90%E6%AD%AF%E7%A7%91.html">
+    <span class="arank">6</span>
+    <p class="acard-name">京都下鴨ライフ歯科・矯正歯科・小児歯科</p>
+    <p class="acard-meta">Google ★4.8（口コミ326件） ・ 京都市左京区下鴨西本町３９</p>
+  </a>
   <div class="tags"><span class="tag">信頼できる</span><span class="tag">丁寧な治療</span><span class="tag">安心感</span></div>
-  <p class="acard-ai">この医院は、信頼できる医師に丁寧な説明を受けたい方に向いています。一方、急な治療が必要な方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E3%83%9B%E3%83%AF%E3%82%A4%E3%83%88%E3%82%A8%E3%83%83%E3%82%BB%E3%83%B3%E3%82%B9%E5%8A%A0%E7%9B%9F%E9%99%A2%EF%BC%88%E4%BA%AC%E9%83%BD%E5%8C%97%E5%B1%B1%EF%BC%89.html">
-  <p class="acard-name">ホワイトエッセンス加盟院（京都北山）</p>
-  <p class="acard-meta">Google ★4.9（60件） ・ 京都市左京区松ケ崎今海道町２−４ 巴山矯正歯科 内</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>北山駅から徒歩9〜15分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>個室・駐車場</dd></div><div class="afact"><dt>電話</dt><dd>075-791-3681</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、信頼できる医師に丁寧な説明を受けたい方に向いています。一方、急な治療が必要な方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E4%BA%AC%E9%83%BD%E4%B8%8B%E9%B4%A8%E3%83%A9%E3%82%A4%E3%83%95%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91_%E5%B0%8F%E5%85%90%E6%AD%AF%E7%A7%91.html">京都下鴨ライフ歯科・矯正歯科・小児歯科の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%83%9B%E3%83%AF%E3%82%A4%E3%83%88%E3%82%A8%E3%83%83%E3%82%BB%E3%83%B3%E3%82%B9%E5%8A%A0%E7%9B%9F%E9%99%A2%EF%BC%88%E4%BA%AC%E9%83%BD%E5%8C%97%E5%B1%B1%EF%BC%89.html">
+    <span class="arank">7</span>
+    <p class="acard-name">ホワイトエッセンス加盟院（京都北山）</p>
+    <p class="acard-meta">Google ★4.9（口コミ60件） ・ 京都市左京区松ケ崎今海道町２−４ 巴山矯正歯科 内</p>
+  </a>
   <div class="tags"><span class="tag">ホワイトニング</span><span class="tag">丁寧な対応</span><span class="tag">痛みなし</span></div>
-  <p class="acard-ai">この医院は、痛みがなく効果的なホワイトニングを求める方に向いています。一方、急患や保険治療を希望する方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E7%A5%90%E6%A3%AE%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
-  <p class="acard-name">祐森歯科医院</p>
-  <p class="acard-meta">Google ★4.2（57件） ・ 京都市左京区上高野諸木町５０−１</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>松ヶ崎駅から徒歩1〜2分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>口腔内スキャナー</dd></div><div class="afact"><dt>電話</dt><dd>0120-708-846</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、痛みがなく効果的なホワイトニングを求める方に向いています。一方、急患や保険治療を希望する方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%83%9B%E3%83%AF%E3%82%A4%E3%83%88%E3%82%A8%E3%83%83%E3%82%BB%E3%83%B3%E3%82%B9%E5%8A%A0%E7%9B%9F%E9%99%A2%EF%BC%88%E4%BA%AC%E9%83%BD%E5%8C%97%E5%B1%B1%EF%BC%89.html">ホワイトエッセンス加盟院（京都北山）の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E7%A5%90%E6%A3%AE%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">8</span>
+    <p class="acard-name">祐森歯科医院</p>
+    <p class="acard-meta">Google ★4.2（口コミ57件） ・ 京都市左京区上高野諸木町５０−１</p>
+  </a>
   <div class="tags"><span class="tag">丁寧な治療</span><span class="tag">患者目線</span><span class="tag">予防重視</span></div>
-  <p class="acard-ai">この医院は丁寧な治療を求める方に向いています。一方で、即効性を望む方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E3%81%BE%E3%81%95%E3%81%8D%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
-  <p class="acard-name">まさき歯科医院</p>
-  <p class="acard-meta">Google ★4.1（14件） ・ 京都市左京区吉田中阿達町３８−７</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>八幡前駅から徒歩3〜6分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>駐車場</dd></div><div class="afact"><dt>電話</dt><dd>075-781-2205</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は丁寧な治療を求める方に向いています。一方で、即効性を望む方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E7%A5%90%E6%A3%AE%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">祐森歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%81%BE%E3%81%95%E3%81%8D%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">9</span>
+    <p class="acard-name">まさき歯科医院</p>
+    <p class="acard-meta">Google ★4.1（口コミ14件） ・ 京都市左京区吉田中阿達町３８−７</p>
+  </a>
   <div class="tags"><span class="tag">親切なスタッフ</span><span class="tag">わかりやすい説明</span><span class="tag">最新設備</span></div>
-  <p class="acard-ai">まさき歯科医院は、優しく丁寧な対応を望む患者に最適な医院です。一方、受付の対応を重視する方には他院の検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E4%B8%AD%E6%9D%91%E6%B8%85%E5%BF%97%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
-  <p class="acard-name">中村清志歯科医院</p>
-  <p class="acard-meta">Google ★4.9（10件） ・ 京都市左京区下鴨西高木町５ 中村歯科医院</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>出町柳駅から徒歩6〜10分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時30分まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>駐車場・バリアフリー</dd></div><div class="afact"><dt>院長</dt><dd>まさき</dd></div><div class="afact"><dt>電話</dt><dd>075-754-4618</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">まさき歯科医院は、優しく丁寧な対応を望む患者に最適な医院です。一方、受付の対応を重視する方には他院の検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%81%BE%E3%81%95%E3%81%8D%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">まさき歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E4%B8%AD%E6%9D%91%E6%B8%85%E5%BF%97%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">10</span>
+    <p class="acard-name">中村清志歯科医院</p>
+    <p class="acard-meta">Google ★4.9（口コミ10件） ・ 京都市左京区下鴨西高木町５ 中村歯科医院</p>
+  </a>
   <div class="tags"><span class="tag">信頼できる</span><span class="tag">丁寧な診察</span><span class="tag">安心感</span></div>
-  <p class="acard-ai">この医院は、丁寧な診療と地域密着型のサービスを求める方に向いています。一方、急患対応や夜間診療を希望する方には他院をお勧めします。…</p>
-</a>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>元田中駅から徒歩10〜16分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・駐車場</dd></div><div class="afact"><dt>電話</dt><dd>075-781-0814</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、丁寧な診療と地域密着型のサービスを求める方に向いています。一方、急患対応や夜間診療を希望する方には他院をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E4%B8%AD%E6%9D%91%E6%B8%85%E5%BF%97%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">中村清志歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%A0%A4%E6%AD%AF%E7%A7%91.html">
+    <span class="arank">11</span>
+    <p class="acard-name">堤歯科</p>
+    <p class="acard-meta">Google ★4.8（口コミ5件） ・ 京都市左京区田中南西浦町８９−１ 第二パラシオン堤</p>
+  </a>
+  <div class="tags"><span class="tag">かかりつけ</span><span class="tag">患者重視</span><span class="tag">技術力</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>元田中駅から徒歩3〜6分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時45分まで（夜の時間帯まで診療）</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>個室・駐車場</dd></div><div class="afact"><dt>電話</dt><dd>075-781-2244</dd></div></dl>
+  <p class="acard-ai">堤歯科は、患者重視の姿勢と高い技術力で信頼されるかかりつけの歯医者さんです。診療時間や対応内容については、受診前に公式サイトでご確認ください。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%A0%A4%E6%AD%AF%E7%A7%91.html">堤歯科の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%B9%B3%E4%BA%95%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">12</span>
+    <p class="acard-name">平井歯科医院</p>
+    <p class="acard-meta">Google ★2.6（口コミ5件） ・ 京都市左京区静市市原町４７０−８</p>
+  </a>
+  <div class="tags"><span class="tag">アットホーム</span><span class="tag">優しい</span><span class="tag">充実した診療</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>市原駅から徒歩6〜10分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>電話</dt><dd>075-741-1108</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、患者に寄り添う丁寧な治療が提供されます。一方、急いで治療を受けたい方には他院をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%B9%B3%E4%BA%95%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">平井歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%81%84%E3%81%AE%E3%81%86%E3%81%88%E3%81%BE%E3%81%95%E3%81%A8%E3%81%97%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">13</span>
+    <p class="acard-name">いのうえまさとし歯科医院</p>
+    <p class="acard-meta">Google ★3.8（口コミ24件） ・ 京都市左京区下鴨高木町1−２</p>
+  </a>
+  <div class="tags"><span class="tag">信頼性</span><span class="tag">インプラント</span><span class="tag">患者満足</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>松ヶ崎駅から徒歩9〜14分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・マイクロスコープ・個室</dd></div><div class="afact"><dt>電話</dt><dd>075-723-8241</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">【AI総評】この医院はインプラント治療を受けたい方に向いています。一方、短時間での治療を希望する方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%81%84%E3%81%AE%E3%81%86%E3%81%88%E3%81%BE%E3%81%95%E3%81%A8%E3%81%97%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">いのうえまさとし歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%82%8F%E3%81%8B%E3%81%8D%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">14</span>
+    <p class="acard-name">わかき歯科クリニック</p>
+    <p class="acard-meta">Google ★3.7（口コミ23件） ・ 京都市左京区中町４２４ 2階</p>
+  </a>
+  <div class="tags"><span class="tag">信頼できる</span><span class="tag">清潔感</span><span class="tag">技術力高い</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>岩倉駅から徒歩4〜8分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時30分まで（夜の時間帯まで診療）</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・駐車場</dd></div><div class="afact"><dt>電話</dt><dd>075-701-8241</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は信頼できる技術を求める方に向いています。一方、受付の対応にこだわりのある方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%82%8F%E3%81%8B%E3%81%8D%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">わかき歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%81%8D%E3%82%87%E3%81%86%E3%81%93%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">
+    <span class="arank">15</span>
+    <p class="acard-name">きょうこ歯科・矯正歯科</p>
+    <p class="acard-meta">Google ★3.6（口コミ25件） ・ 京都市左京区上高野仲町９</p>
+  </a>
+  <div class="tags"><span class="tag">技術力が高い</span><span class="tag">清潔感ある</span><span class="tag">丁寧な対応</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>八幡前駅から徒歩3〜6分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時30分まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・個室</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、高い技術力と清潔感を求める方に向いています。一方、接遇に不安のある方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%81%8D%E3%82%87%E3%81%86%E3%81%93%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">きょうこ歯科・矯正歯科の分析を詳しく見る →</a>
+</article>
   <a class="cta" href="../shindan/index.html?ward=%E5%B7%A6%E4%BA%AC%E5%8C%BA">症状・希望条件も選んで、左京区の医院を絞り込む →</a>
-  <h2>左京区のデータを詳しく見る</h2><p>設備情報を解析できた67院のうち、歯科用CTの導入が公式サイト等で確認できたのは13院でした。</p><p>夜間診療の案内が確認できた医院は、左京区の分析対象90院のうち0院です。</p><p>こうした設備や診療時間の傾向は、市全体のデータをまとめた研究記事で背景まで確認できます。</p><ul class="rlinks"><li><a href="../research/worktime-access.html">夜間・週末に通える歯科はどれだけあるか（診療時間データの研究）</a></li></ul><p class="rnote">件数・割合は当サイトが公開情報から機械的に解析できた範囲の値です。「確認できなかった」は「無い」という意味ではありません。</p>
+  <h2>左京区で条件から絞る</h2><p>夜間や土日に通えるか、駐車場があるかは、医院選びで最初に効いてくる条件です。左京区の分析対象90院について、公開情報から確認できた数を並べます。</p><div class="ctable"><div class="crow"><span class="clabel">19時30分以降も診療している</span><span class="cval"><b>21</b>院 <small>／確認できた79院中</small></span></div><div class="crow"><span class="clabel">土曜日に診療している</span><span class="cval"><b>73</b>院 <small>／確認できた79院中</small></span></div><div class="crow"><span class="clabel">日曜日に診療している</span><span class="cval"><b>4</b>院 <small>／確認できた79院中</small></span></div><div class="crow"><span class="clabel">歯科用CTの導入を確認できた</span><span class="cval"><b>13</b>院 <small>／確認できた67院中</small></span></div><div class="crow"><span class="clabel">個室の案内を確認できた</span><span class="cval"><b>11</b>院 <small>／確認できた67院中</small></span></div><div class="crow"><span class="clabel">駐車場の案内を確認できた</span><span class="cval"><b>21</b>院 <small>／確認できた67院中</small></span></div><div class="crow"><span class="clabel">バリアフリーの案内を確認できた</span><span class="cval"><b>5</b>院 <small>／確認できた67院中</small></span></div></div><p class="rnote">分母は、その項目を公開情報から判定できた医院数です。「確認できなかった」は「無い」という意味ではありません。最新の診療時間は必ず医院にご確認ください。</p>
+  <h2>よくある質問</h2><details class="faq"><summary>左京区で夜おそくまで診てもらえる歯医者はありますか。</summary><p>診療時間を確認できた79院のうち、19時30分以降も診療しているのは21院でした。</p></details><details class="faq"><summary>左京区で土日に通える歯医者はありますか。</summary><p>土曜日に診療しているのが73院、日曜日が4院です（診療時間を確認できた79院中）。</p></details><details class="faq"><summary>左京区で歯科用CTのある歯医者を知りたいです。</summary><p>設備の情報を解析できた67院のうち、歯科用CTの導入を確認できたのは13院です。確認できなかった医院に無いという意味ではないため、気になる場合は直接お問い合わせください。</p></details><details class="faq"><summary>この順番はどうやって決めているのですか。</summary><p>口コミの内容、院長情報、設備、情報公開の度合い、活動状況を配点にして機械的に並べています。掲載順が金銭で変わることはありません。治療の優劣を示すものでもありません。</p></details>
+  <h2>左京区のデータを詳しく見る</h2><p>設備や診療時間の傾向は、市全体のデータをまとめた研究記事で背景まで確認できます。</p><ul class="rlinks"><li><a href="../research/worktime-access.html">夜間・週末に通える歯科はどれだけあるか（診療時間データの研究）</a></li></ul>
   <p class="disc">スコア・順位は公開情報（口コミ・公式サイト等）の充実度と評判分析にもとづく参考表示であり、医院の技術や治療結果の優劣を示すものではありません。順位は条件の選択で変動します。掲載順が金銭で変わることはありません。受診の判断は必ず歯科医師にご相談ください。
   掲載情報の訂正は<a href="../../teisei.html">こちら</a>／詳細は<a href="../../policy.html">運営ポリシー・免責事項</a>。</p>
 </main>

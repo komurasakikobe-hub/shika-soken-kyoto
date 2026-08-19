@@ -19,6 +19,7 @@
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "右京区（嵐山・太秦）の歯医者・歯科医院 データランキング｜口コミ1,649件をAI分析", "description": "京都市右京区の歯科医院81院を、Google口コミ1,649件と公式サイト等の公開情報からAIが分析。公開情報の充実度と評判にもとづくデータランキングです（優劣の断定ではありません）。", "url": "https://kyoto.shikasoken.com/articles/area/ukyo", "isPartOf": {"@type": "WebSite", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "右京区で夜おそくまで診てもらえる歯医者はありますか。", "acceptedAnswer": {"@type": "Answer", "text": "診療時間を確認できた66院のうち、19時30分以降も診療しているのは24院でした。"}}, {"@type": "Question", "name": "右京区で土日に通える歯医者はありますか。", "acceptedAnswer": {"@type": "Answer", "text": "土曜日に診療しているのが62院、日曜日が7院です（診療時間を確認できた66院中）。"}}, {"@type": "Question", "name": "右京区で歯科用CTのある歯医者を知りたいです。", "acceptedAnswer": {"@type": "Answer", "text": "設備の情報を解析できた59院のうち、歯科用CTの導入を確認できたのは10院です。確認できなかった医院に無いという意味ではないため、気になる場合は直接お問い合わせください。"}}, {"@type": "Question", "name": "この順番はどうやって決めているのですか。", "acceptedAnswer": {"@type": "Answer", "text": "口コミの内容、院長情報、設備、情報公開の度合い、活動状況を配点にして機械的に並べています。掲載順が金銭で変わることはありません。治療の優劣を示すものでもありません。"}}]}</script>
 <style>
 body{margin:0;background:var(--odr-paper);color:var(--odr-ink);font-family:var(--odr-sans);line-height:1.9;}
 .odr-brandbar{position:sticky;top:0;z-index:100;}
@@ -32,13 +33,32 @@ h1{font-size:clamp(1.25rem,3vw,1.8rem);font-weight:900;margin:0 0 12px;line-heig
 .stats span{font-size:.68rem;color:#9cbbae;letter-spacing:.1em;}
 main{max-width:860px;margin:0 auto;padding:36px clamp(16px,4vw,40px) 72px;}
 h2{font-size:1.1rem;color:var(--odr-pine);border-left:4px solid var(--odr-terra);padding-left:10px;margin:32px 0 16px;}
-.acard{display:block;background:#fff;border:1px solid var(--odr-line);border-radius:14px;padding:18px 22px;margin-bottom:12px;text-decoration:none;color:inherit;transition:box-shadow .2s;}
-.acard:hover{box-shadow:var(--shadow-lift);}
-.acard-name{font-weight:700;font-size:1rem;color:var(--odr-pine);margin:0 0 4px;}
+.acard{display:block;background:#fff;border:1px solid var(--odr-line);border-radius:14px;padding:18px 22px;margin-bottom:14px;color:inherit;}
+.acard-head{display:block;text-decoration:none;color:inherit;position:relative;}
+.acard-name{font-weight:700;font-size:1.02rem;color:var(--odr-pine);margin:0 0 4px;padding-right:34px;}
 .acard-meta{font-size:.78rem;color:var(--odr-ink2);margin:0 0 8px;}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.arank{position:absolute;right:0;top:0;font-family:var(--odr-mono);font-size:.78rem;color:var(--odr-terra);border:1px solid var(--odr-line);border-radius:8px;padding:1px 8px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
 .tag{background:#eaf2ee;color:var(--odr-pine);font-size:.7rem;font-weight:700;border-radius:999px;padding:3px 10px;}
-.acard-ai{font-size:.8rem;color:var(--odr-ink2);margin:0;}
+.afacts{margin:0 0 10px;padding:12px 14px;background:#fafbfa;border:1px solid var(--odr-line);border-radius:10px;}
+.afact{display:flex;gap:10px;font-size:.8rem;padding:3px 0;}
+.afact dt{flex:0 0 9.5em;color:var(--odr-ink2);}
+.afact dd{margin:0;flex:1;word-break:auto-phrase;}
+.acard-ai{font-size:.84rem;color:var(--odr-ink);margin:0 0 6px;word-break:auto-phrase;}
+.acard-phil{font-size:.8rem;color:var(--odr-ink2);margin:0 0 8px;}
+.acard-more{font-size:.8rem;color:var(--odr-pine);font-weight:700;text-decoration:none;}
+.acard-more:hover{text-decoration:underline;}
+.lead p{font-size:.92rem;margin:0 0 12px;word-break:auto-phrase;}
+.ctable{background:#fff;border:1px solid var(--odr-line);border-radius:12px;padding:6px 16px;margin-bottom:10px;}
+.crow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid var(--odr-line);font-size:.86rem;}
+.crow:last-child{border-bottom:none;}
+.cval{white-space:nowrap;font-family:var(--odr-mono);}
+.cval b{font-size:1.05rem;color:var(--odr-pine);}
+.cval small{color:var(--odr-ink2);font-size:.72rem;}
+.faq{background:#fff;border:1px solid var(--odr-line);border-radius:10px;padding:12px 16px;margin-bottom:8px;}
+.faq summary{cursor:pointer;font-weight:700;font-size:.9rem;color:var(--odr-pine);}
+.faq p{font-size:.86rem;color:var(--odr-ink2);margin:10px 0 0;word-break:auto-phrase;}
+@media(max-width:760px){.afact{flex-direction:column;gap:2px;}.afact dt{flex:none;font-size:.74rem;}.crow{flex-direction:column;gap:2px;}}
 .cta{display:block;background:var(--odr-pine);color:#fff;text-align:center;font-weight:700;border-radius:999px;padding:15px;margin:28px 0;text-decoration:none;}
 .cta:hover{background:var(--odr-pine-2);}
 .rlinks{margin:0 0 8px;padding-left:1.3em;}
@@ -75,60 +95,178 @@ h2{font-size:1.1rem;color:var(--odr-pine);border-left:4px solid var(--odr-terra)
   </div>
 </section>
 <main>
-  <h2>右京区の分析スコア上位10院</h2>
-  <a class="acard" href="../clinics/%E5%AE%AE%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8F%B3%E4%BA%AC%E5%8C%BA.html">
-  <p class="acard-name">宮田歯科医院</p>
-  <p class="acard-meta">Google ★4.7（158件） ・ 京都市右京区西京極堤外町１−３０</p>
+  <div class="lead"><p>京都市右京区で分析対象にしている歯科医院は81院です。このうち72院にGoogleの口コミがあり、合計1,649件を読み取りました。公式サイトまで解析できたのは55院です。最寄り駅で見ると西京極駅が13院、西院駅が12院、山ノ内駅が10院です。</p><p>ここから先は、診療時間・最寄り駅・公開情報で確認できた設備といった「調べれば分かること」を医院ごとに並べています。通いやすさは人によって違うので、順番はあくまで参考にしてください。</p></div>
+  <h2>右京区の分析スコア上位15院</h2>
+  <article class="acard">
+  <a class="acard-head" href="../clinics/%E5%AE%AE%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8F%B3%E4%BA%AC%E5%8C%BA.html">
+    <span class="arank">1</span>
+    <p class="acard-name">宮田歯科医院</p>
+    <p class="acard-meta">Google ★4.7（口コミ158件） ・ 京都市右京区西京極堤外町１−３０</p>
+  </a>
   <div class="tags"><span class="tag">優しいスタッフ</span><span class="tag">丁寧な治療</span><span class="tag">幅広い診療</span></div>
-  <p class="acard-ai">宮田歯科医院は、優しいスタッフによる丁寧な治療と幅広い診療を提供しています。夜しか通えない方には向いていない可能性があります。…</p>
-</a><a class="acard" href="../clinics/%E3%82%BF%E3%82%AD%E3%83%8E%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8F%B3%E4%BA%AC%E5%8C%BA_%E3%82%A4%E3%83%B3%E3%83%97%E3%83%A9%E3%83%B3%E3%83%88_%E3%83%9B%E3%83%AF%E3%82%A4%E3%83%88%E3%83%8B%E3%83%B3%E3%82%B0_%E6%AD%AF%E5%8C%BB%E8%80%85.html">
-  <p class="acard-name">タキノ歯科医院 右京区 インプラント ホワイトニング|歯医者</p>
-  <p class="acard-meta">Google ★4.6（140件） ・ 京都市右京区西京極佃田町２０ 森川ビル 2階</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>西京極駅から徒歩3〜5分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・マイクロスコープ・口腔内スキャナー・個室・駐車場・バリアフリー</dd></div><div class="afact"><dt>院長</dt><dd>宮田 匡人</dd></div><div class="afact"><dt>電話</dt><dd>075-315-0102</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">宮田歯科医院は、優しいスタッフによる丁寧な治療と幅広い診療を提供しています。夜しか通えない方には向いていない可能性があります。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%AE%AE%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8F%B3%E4%BA%AC%E5%8C%BA.html">宮田歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%82%BF%E3%82%AD%E3%83%8E%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8F%B3%E4%BA%AC%E5%8C%BA_%E3%82%A4%E3%83%B3%E3%83%97%E3%83%A9%E3%83%B3%E3%83%88_%E3%83%9B%E3%83%AF%E3%82%A4%E3%83%88%E3%83%8B%E3%83%B3%E3%82%B0_%E6%AD%AF%E5%8C%BB%E8%80%85.html">
+    <span class="arank">2</span>
+    <p class="acard-name">タキノ歯科医院 右京区 インプラント ホワイトニング|歯医者</p>
+    <p class="acard-meta">Google ★4.6（口コミ140件） ・ 京都市右京区西京極佃田町２０ 森川ビル 2階</p>
+  </a>
   <div class="tags"><span class="tag">信頼性</span><span class="tag">親切</span><span class="tag">治療満足</span></div>
-  <p class="acard-ai">タキノ歯科医院は、インプラントやホワイトニングを希望する方に最適です。一方、夜に通う必要がある方には他院をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E3%81%97%E3%82%82%E3%82%80%E3%82%89%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8F%B3%E4%BA%AC%E5%8C%BA.html">
-  <p class="acard-name">しもむら歯科医院</p>
-  <p class="acard-meta">Google ★4.2（89件） ・ 京都市右京区西京極東池田町２５ 西京極セントラルハイ</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>西京極駅から徒歩8〜14分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・マイクロスコープ・口腔内スキャナー・個室</dd></div><div class="afact"><dt>院長</dt><dd>瀧野 裕行</dd></div><div class="afact"><dt>電話</dt><dd>075-322-6333</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">タキノ歯科医院は、インプラントやホワイトニングを希望する方に最適です。一方、夜に通う必要がある方には他院をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%82%BF%E3%82%AD%E3%83%8E%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8F%B3%E4%BA%AC%E5%8C%BA_%E3%82%A4%E3%83%B3%E3%83%97%E3%83%A9%E3%83%B3%E3%83%88_%E3%83%9B%E3%83%AF%E3%82%A4%E3%83%88%E3%83%8B%E3%83%B3%E3%82%B0_%E6%AD%AF%E5%8C%BB%E8%80%85.html">タキノ歯科医院 右京区 インプラント ホワイトニング|歯医者の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%81%97%E3%82%82%E3%82%80%E3%82%89%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8F%B3%E4%BA%AC%E5%8C%BA.html">
+    <span class="arank">3</span>
+    <p class="acard-name">しもむら歯科医院</p>
+    <p class="acard-meta">Google ★4.2（口コミ89件） ・ 京都市右京区西京極東池田町２５ 西京極セントラルハイツ 1F</p>
+  </a>
   <div class="tags"><span class="tag">丁寧な説明</span><span class="tag">患者思い</span><span class="tag">症例豊富</span></div>
-  <p class="acard-ai">この医院は丁寧な治療説明を重視する方に向いています。一方、即日治療を求める方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E3%83%88%E3%83%9F%E3%82%A4%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">
-  <p class="acard-name">トミイ歯科・矯正歯科</p>
-  <p class="acard-meta">Google ★4.6（76件） ・ 京都市右京区西院高山寺町１０</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>西京極駅から徒歩2〜4分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・マイクロスコープ</dd></div><div class="afact"><dt>電話</dt><dd>075-325-5514</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は丁寧な治療説明を重視する方に向いています。一方、即日治療を求める方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%81%97%E3%82%82%E3%82%80%E3%82%89%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8F%B3%E4%BA%AC%E5%8C%BA.html">しもむら歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%83%88%E3%83%9F%E3%82%A4%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">
+    <span class="arank">4</span>
+    <p class="acard-name">トミイ歯科・矯正歯科</p>
+    <p class="acard-meta">Google ★4.6（口コミ76件） ・ 京都市右京区西院高山寺町１０</p>
+  </a>
   <div class="tags"><span class="tag">丁寧な対応</span><span class="tag">専門性</span><span class="tag">子ども対応</span></div>
-  <p class="acard-ai">トミイ歯科・矯正歯科は、家族連れや子どもに優しい医院です。逆に、余裕のある時間がない方には向かないかもしれません。…</p>
-</a><a class="acard" href="../clinics/%E5%8C%BB%E7%99%82%E6%B3%95%E4%BA%BA%E7%9B%9B%E6%B4%9B%E4%BC%9A%E3%82%82%E3%82%8A%E3%81%86%E3%81%88%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
-  <p class="acard-name">医療法人盛洛会もりうえ歯科クリニック</p>
-  <p class="acard-meta">Google ★4.7（29件） ・ 京都市右京区山ノ内大町８−２</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>西院駅から徒歩1〜2分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>院長</dt><dd>冨井 真左信</dd></div><div class="afact"><dt>電話</dt><dd>075-311-3185</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">トミイ歯科・矯正歯科は、家族連れや子どもに優しい医院です。逆に、余裕のある時間がない方には向かないかもしれません。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%83%88%E3%83%9F%E3%82%A4%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">トミイ歯科・矯正歯科の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%8C%BB%E7%99%82%E6%B3%95%E4%BA%BA%E7%9B%9B%E6%B4%9B%E4%BC%9A%E3%82%82%E3%82%8A%E3%81%86%E3%81%88%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">5</span>
+    <p class="acard-name">医療法人盛洛会もりうえ歯科クリニック</p>
+    <p class="acard-meta">Google ★4.7（口コミ29件） ・ 京都市右京区山ノ内大町８−２</p>
+  </a>
   <div class="tags"><span class="tag">評判良好</span><span class="tag">ファミリー向け</span><span class="tag">技術力あり</span></div>
-  <p class="acard-ai">この医院は、家族連れや特に小さなお子様をお持ちの方に向いています。一方、夜のみの診療を希望される方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E5%B7%9D%E6%9D%91%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8F%B3%E4%BA%AC%E5%8C%BA.html">
-  <p class="acard-name">川村歯科医院</p>
-  <p class="acard-meta">Google ★4.6（115件） ・ 京都市右京区西京極大門町１９−３２ まるげんビル 1</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>山ノ内駅から徒歩3〜6分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>駐車場・バリアフリー</dd></div><div class="afact"><dt>院長</dt><dd>盛植 紘太朗</dd></div><div class="afact"><dt>電話</dt><dd>075-366-8222</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、家族連れや特に小さなお子様をお持ちの方に向いています。一方、夜のみの診療を希望される方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%8C%BB%E7%99%82%E6%B3%95%E4%BA%BA%E7%9B%9B%E6%B4%9B%E4%BC%9A%E3%82%82%E3%82%8A%E3%81%86%E3%81%88%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">医療法人盛洛会もりうえ歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%B7%9D%E6%9D%91%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8F%B3%E4%BA%AC%E5%8C%BA.html">
+    <span class="arank">6</span>
+    <p class="acard-name">川村歯科医院</p>
+    <p class="acard-meta">Google ★4.6（口コミ115件） ・ 京都市右京区西京極大門町１９−３２ まるげんビル 1F</p>
+  </a>
   <div class="tags"><span class="tag">信頼できる</span><span class="tag">丁寧な対応</span><span class="tag">急患対応</span></div>
-  <p class="acard-ai">この医院は、丁寧な診療と患者への配慮が行き届いています。一方で、急患に即応できない患者や夜しか通えない方には他院をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E5%A0%A4%E6%B4%8B%E4%B9%8B%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
-  <p class="acard-name">堤洋之歯科医院</p>
-  <p class="acard-meta">Google ★4.1（49件） ・ 京都市右京区鳴滝本町１１０−３</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>西京極駅から徒歩8〜12分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>駐車場</dd></div><div class="afact"><dt>院長</dt><dd>川村 友二</dd></div><div class="afact"><dt>電話</dt><dd>075-314-6615</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、丁寧な診療と患者への配慮が行き届いています。一方で、急患に即応できない患者や夜しか通えない方には他院をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%B7%9D%E6%9D%91%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2_%E5%8F%B3%E4%BA%AC%E5%8C%BA.html">川村歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%A0%A4%E6%B4%8B%E4%B9%8B%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">7</span>
+    <p class="acard-name">堤洋之歯科医院</p>
+    <p class="acard-meta">Google ★4.1（口コミ49件） ・ 京都市右京区鳴滝本町１１０−３</p>
+  </a>
   <div class="tags"><span class="tag">高評価</span><span class="tag">腕がいい</span><span class="tag">予約制</span></div>
-  <p class="acard-ai">堤洋之歯科医院は、診療の技術が高く、患者の信頼を得ている歯科医院です。待ち時間は長い時が多いですが、予約制での診療となっています。…</p>
-</a><a class="acard" href="../clinics/%E5%8C%BB%E7%99%82%E6%B3%95%E4%BA%BA%E5%81%A5%E7%9B%9B%E4%BC%9A_%E5%9B%9B%E6%9D%A1%E9%80%9A%E3%82%8A%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
-  <p class="acard-name">医療法人健盛会 四条通り歯科クリニック</p>
-  <p class="acard-meta">Google ★4.3（6件） ・ 京都市右京区西院四条畑町30−１５ パラドール西院四</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>宇多野駅から徒歩4〜7分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時30分まで（夜の時間帯まで診療）</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>院長</dt><dd>堤洋之</dd></div><div class="afact"><dt>電話</dt><dd>075-465-0505</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">堤洋之歯科医院は、診療の技術が高く、患者の信頼を得ている歯科医院です。待ち時間は長い時が多いですが、予約制での診療となっています。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%A0%A4%E6%B4%8B%E4%B9%8B%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">堤洋之歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%8C%BB%E7%99%82%E6%B3%95%E4%BA%BA%E5%81%A5%E7%9B%9B%E4%BC%9A_%E5%9B%9B%E6%9D%A1%E9%80%9A%E3%82%8A%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">8</span>
+    <p class="acard-name">医療法人健盛会 四条通り歯科クリニック</p>
+    <p class="acard-meta">Google ★4.3（口コミ6件） ・ 京都市右京区西院四条畑町30−１５ パラドール西院四条通マークス 1</p>
+  </a>
   <div class="tags"><span class="tag">ホワイトニング</span><span class="tag">丁寧な治療</span><span class="tag">アクセス良好</span></div>
-  <p class="acard-ai">医療法人健盛会 四条通り歯科クリニックは、ホワイトニングに定評があり、丁寧な治療が特徴のクリニックです。急患希望の方には向いていない可能性がありますので、受診前…</p>
-</a><a class="acard" href="../clinics/%E3%83%A2%E3%83%AA%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
-  <p class="acard-name">モリ歯科医院</p>
-  <p class="acard-meta">Google ★5（5件） ・ 京都市右京区嵯峨大覚寺門前井頭町１７−１４ Ｍｏｒｉ</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>山ノ内駅から徒歩5〜9分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時30分まで（夜の時間帯まで診療）</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり・日曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>口腔内スキャナー・個室・駐車場</dd></div><div class="afact"><dt>院長</dt><dd>小野 龍太郎</dd></div><div class="afact"><dt>電話</dt><dd>075-321-7707</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">医療法人健盛会 四条通り歯科クリニックは、ホワイトニングに定評があり、丁寧な治療が特徴のクリニックです。急患希望の方には向いていない可能性がありますので、受診前に診療時間や対応内容を公式サイトでご確認ください。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%8C%BB%E7%99%82%E6%B3%95%E4%BA%BA%E5%81%A5%E7%9B%9B%E4%BC%9A_%E5%9B%9B%E6%9D%A1%E9%80%9A%E3%82%8A%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">医療法人健盛会 四条通り歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%83%A2%E3%83%AA%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">9</span>
+    <p class="acard-name">モリ歯科医院</p>
+    <p class="acard-meta">Google ★5（口コミ5件） ・ 京都市右京区嵯峨大覚寺門前井頭町１７−１４ Ｍｏｒｉ ｄｅｎｔａｌ </p>
+  </a>
   <div class="tags"><span class="tag">優しい</span><span class="tag">丁寧</span><span class="tag">地元医療</span></div>
-  <p class="acard-ai">モリ歯科医院は、地域医療に貢献する優しく丁寧な歯科医院です。夜しか通えない方には向いていない可能性があります。…</p>
-</a><a class="acard" href="../clinics/%E8%A5%BF%E9%99%A2%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF_%E3%82%A2%E3%83%95%E3%83%AC.html">
-  <p class="acard-name">西院デンタルクリニック アフレ</p>
-  <p class="acard-meta">Google ★3.4（55件） ・ 京都市右京区西院東淳和院町１−１ 3F</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>トロッコ嵯峨駅から徒歩5〜9分</dd></div><div class="afact"><dt>院長</dt><dd>森 靖博</dd></div><div class="afact"><dt>電話</dt><dd>075-861-5444</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">モリ歯科医院は、地域医療に貢献する優しく丁寧な歯科医院です。夜しか通えない方には向いていない可能性があります。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%83%A2%E3%83%AA%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">モリ歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E8%A5%BF%E9%99%A2%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF_%E3%82%A2%E3%83%95%E3%83%AC.html">
+    <span class="arank">10</span>
+    <p class="acard-name">西院デンタルクリニック アフレ</p>
+    <p class="acard-meta">Google ★3.4（口コミ55件） ・ 京都市右京区西院東淳和院町１−１ 3F</p>
+  </a>
   <div class="tags"><span class="tag">丁寧な説明</span><span class="tag">優しい雰囲気</span><span class="tag">家族利用</span></div>
-  <p class="acard-ai">西院デンタルクリニック アフレは、丁寧な説明と優しい雰囲気が評価されており、家族連れにも適した医院です。急患希望の方には向いていない可能性があります。…</p>
-</a>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>西院駅から徒歩1〜2分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時30分まで（夜の時間帯まで診療）</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>院長</dt><dd>富永 康彦</dd></div><div class="afact"><dt>電話</dt><dd>075-322-3338</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">西院デンタルクリニック アフレは、丁寧な説明と優しい雰囲気が評価されており、家族連れにも適した医院です。急患希望の方には向いていない可能性があります。</p>
+  
+  <a class="acard-more" href="../clinics/%E8%A5%BF%E9%99%A2%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF_%E3%82%A2%E3%83%95%E3%83%AC.html">西院デンタルクリニック アフレの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%81%84%E3%82%8D%E3%81%AF%E6%AD%AF%E7%A7%91%E8%A5%BF%E9%99%A2.html">
+    <span class="arank">11</span>
+    <p class="acard-name">いろは歯科西院</p>
+    <p class="acard-meta">Google ★4.6（口コミ46件） ・ 京都市右京区西院高田町１２</p>
+  </a>
+  <div class="tags"><span class="tag">優しいスタッフ</span><span class="tag">丁寧な説明</span><span class="tag">若手医師</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>西院駅から徒歩6〜10分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・バリアフリー</dd></div><div class="afact"><dt>電話</dt><dd>075-754-7416</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">いろは歯科西院は、優しいスタッフと丁寧な説明で安心を提供しています。特に小さなお子さんがいる方に向いていますが、急患対応などは難しいかもしれません。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%81%84%E3%82%8D%E3%81%AF%E6%AD%AF%E7%A7%91%E8%A5%BF%E9%99%A2.html">いろは歯科西院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%B2%A9%E6%9C%AC%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">12</span>
+    <p class="acard-name">岩本デンタルクリニック</p>
+    <p class="acard-meta">Google ★3.5（口コミ15件） ・ 京都市右京区西院四条畑町５−１０</p>
+  </a>
+  <div class="tags"><span class="tag">説明が丁寧</span><span class="tag">良い先生</span><span class="tag">定期検診推奨</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>山ノ内駅から徒歩5〜9分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は20時まで（夜の時間帯まで診療）</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>マイクロスコープ</dd></div><div class="afact"><dt>院長</dt><dd>岩本 敏昌</dd></div><div class="afact"><dt>電話</dt><dd>075-325-0184</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">岩本デンタルクリニックは、丁寧な説明と信頼できる治療を提供する医院です。急患希望の方には向いていない可能性があります。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%B2%A9%E6%9C%AC%E3%83%87%E3%83%B3%E3%82%BF%E3%83%AB%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">岩本デンタルクリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E8%A5%BF%E4%BA%AC%E6%A5%B5%E3%82%86%E3%81%86%E3%81%9F%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">
+    <span class="arank">13</span>
+    <p class="acard-name">西京極ゆうた矯正歯科</p>
+    <p class="acard-meta">Google ★5（口コミ1件） ・ 京都市右京区西京極午塚町６０ ハイツDSK1F</p>
+  </a>
+  <div class="tags"><span class="tag">親切な対応</span><span class="tag">子供向け教育</span><span class="tag">安心の治療</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>西京極駅から徒歩9〜15分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり・日曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>個室</dd></div><div class="afact"><dt>院長</dt><dd>田岡 芽衣</dd></div><div class="afact"><dt>電話</dt><dd>075-874-3208</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は子供や矯正治療が不安な方に向いています。一方、急患や夜間診療を希望される方には他院をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E8%A5%BF%E4%BA%AC%E6%A5%B5%E3%82%86%E3%81%86%E3%81%9F%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91.html">西京極ゆうた矯正歯科の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%81%AE%E3%81%BE%E3%83%95%E3%82%A1%E3%83%9F%E3%83%AA%E3%83%BC%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">14</span>
+    <p class="acard-name">のまファミリー歯科クリニック</p>
+    <p class="acard-meta">Google ★4.2（口コミ5件） ・ 京都市右京区常盤北裏町２−１０</p>
+  </a>
+  <div class="tags"><span class="tag">親切</span><span class="tag">安心</span><span class="tag">丁寧</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>常盤駅から徒歩3〜5分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>バリアフリー</dd></div><div class="afact"><dt>院長</dt><dd>野間 有里</dd></div><div class="afact"><dt>電話</dt><dd>075-334-5397</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は親子で安心して通える方に向いています。一方、夜間の診療を希望する方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%81%AE%E3%81%BE%E3%83%95%E3%82%A1%E3%83%9F%E3%83%AA%E3%83%BC%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">のまファミリー歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E8%A5%BF%E9%99%A2%E3%82%84%E3%81%BE%E3%81%95%E3%81%8D%E6%AD%AF%E7%A7%91.html">
+    <span class="arank">15</span>
+    <p class="acard-name">西院やまさき歯科</p>
+    <p class="acard-meta">Google ★4.9（口コミ26件） ・ 京都市右京区西院東今田町３３−１ サンフットビル 2階</p>
+  </a>
+  <div class="tags"><span class="tag">優しい治療</span><span class="tag">子ども対応</span><span class="tag">予約が取りやすい</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>西大路三条駅から徒歩2〜4分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・バリアフリー</dd></div><div class="afact"><dt>院長</dt><dd>山崎 聖子</dd></div><div class="afact"><dt>電話</dt><dd>075-748-9939</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、子どもや歯医者が苦手な方に向いています。一方で急患や夜間に訪れる方には他院をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E8%A5%BF%E9%99%A2%E3%82%84%E3%81%BE%E3%81%95%E3%81%8D%E6%AD%AF%E7%A7%91.html">西院やまさき歯科の分析を詳しく見る →</a>
+</article>
   <a class="cta" href="../shindan/index.html?ward=%E5%8F%B3%E4%BA%AC%E5%8C%BA">症状・希望条件も選んで、右京区の医院を絞り込む →</a>
-  <h2>右京区のデータを詳しく見る</h2><p>設備情報を解析できた59院のうち、歯科用CTの導入が公式サイト等で確認できたのは10院でした。</p><p>夜間診療の案内が確認できた医院は、右京区の分析対象81院のうち0院です。</p><p>こうした設備や診療時間の傾向は、市全体のデータをまとめた研究記事で背景まで確認できます。</p><ul class="rlinks"><li><a href="../research/worktime-access.html">夜間・週末に通える歯科はどれだけあるか（診療時間データの研究）</a></li></ul><p class="rnote">件数・割合は当サイトが公開情報から機械的に解析できた範囲の値です。「確認できなかった」は「無い」という意味ではありません。</p>
+  <h2>右京区で条件から絞る</h2><p>夜間や土日に通えるか、駐車場があるかは、医院選びで最初に効いてくる条件です。右京区の分析対象81院について、公開情報から確認できた数を並べます。</p><div class="ctable"><div class="crow"><span class="clabel">19時30分以降も診療している</span><span class="cval"><b>24</b>院 <small>／確認できた66院中</small></span></div><div class="crow"><span class="clabel">土曜日に診療している</span><span class="cval"><b>62</b>院 <small>／確認できた66院中</small></span></div><div class="crow"><span class="clabel">日曜日に診療している</span><span class="cval"><b>7</b>院 <small>／確認できた66院中</small></span></div><div class="crow"><span class="clabel">歯科用CTの導入を確認できた</span><span class="cval"><b>10</b>院 <small>／確認できた59院中</small></span></div><div class="crow"><span class="clabel">個室の案内を確認できた</span><span class="cval"><b>10</b>院 <small>／確認できた59院中</small></span></div><div class="crow"><span class="clabel">駐車場の案内を確認できた</span><span class="cval"><b>15</b>院 <small>／確認できた59院中</small></span></div><div class="crow"><span class="clabel">バリアフリーの案内を確認できた</span><span class="cval"><b>10</b>院 <small>／確認できた59院中</small></span></div></div><p class="rnote">分母は、その項目を公開情報から判定できた医院数です。「確認できなかった」は「無い」という意味ではありません。最新の診療時間は必ず医院にご確認ください。</p>
+  <h2>よくある質問</h2><details class="faq"><summary>右京区で夜おそくまで診てもらえる歯医者はありますか。</summary><p>診療時間を確認できた66院のうち、19時30分以降も診療しているのは24院でした。</p></details><details class="faq"><summary>右京区で土日に通える歯医者はありますか。</summary><p>土曜日に診療しているのが62院、日曜日が7院です（診療時間を確認できた66院中）。</p></details><details class="faq"><summary>右京区で歯科用CTのある歯医者を知りたいです。</summary><p>設備の情報を解析できた59院のうち、歯科用CTの導入を確認できたのは10院です。確認できなかった医院に無いという意味ではないため、気になる場合は直接お問い合わせください。</p></details><details class="faq"><summary>この順番はどうやって決めているのですか。</summary><p>口コミの内容、院長情報、設備、情報公開の度合い、活動状況を配点にして機械的に並べています。掲載順が金銭で変わることはありません。治療の優劣を示すものでもありません。</p></details>
+  <h2>右京区のデータを詳しく見る</h2><p>設備や診療時間の傾向は、市全体のデータをまとめた研究記事で背景まで確認できます。</p><ul class="rlinks"><li><a href="../research/worktime-access.html">夜間・週末に通える歯科はどれだけあるか（診療時間データの研究）</a></li></ul>
   <p class="disc">スコア・順位は公開情報（口コミ・公式サイト等）の充実度と評判分析にもとづく参考表示であり、医院の技術や治療結果の優劣を示すものではありません。順位は条件の選択で変動します。掲載順が金銭で変わることはありません。受診の判断は必ず歯科医師にご相談ください。
   掲載情報の訂正は<a href="../../teisei.html">こちら</a>／詳細は<a href="../../policy.html">運営ポリシー・免責事項</a>。</p>
 </main>

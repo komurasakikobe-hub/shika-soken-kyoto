@@ -19,6 +19,7 @@
 <script src="../../assets/site-config.js"></script>
 <script src="../../assets/odr-track.js"></script>
 <script type="application/ld+json">{"@context": "https://schema.org", "@type": "CollectionPage", "name": "南区（東寺・十条）の歯医者・歯科医院 データランキング｜口コミ1,342件をAI分析", "description": "京都市南区の歯科医院49院を、Google口コミ1,342件と公式サイト等の公開情報からAIが分析。公開情報の充実度と評判にもとづくデータランキングです（優劣の断定ではありません）。", "url": "https://kyoto.shikasoken.com/articles/area/minami", "isPartOf": {"@type": "WebSite", "name": "京都歯科総研", "url": "https://kyoto.shikasoken.com/"}}</script>
+<script type="application/ld+json">{"@context": "https://schema.org", "@type": "FAQPage", "mainEntity": [{"@type": "Question", "name": "南区で夜おそくまで診てもらえる歯医者はありますか。", "acceptedAnswer": {"@type": "Answer", "text": "診療時間を確認できた33院のうち、19時30分以降も診療しているのは16院でした。"}}, {"@type": "Question", "name": "南区で土日に通える歯医者はありますか。", "acceptedAnswer": {"@type": "Answer", "text": "土曜日に診療しているのが31院、日曜日が6院です（診療時間を確認できた33院中）。"}}, {"@type": "Question", "name": "南区で歯科用CTのある歯医者を知りたいです。", "acceptedAnswer": {"@type": "Answer", "text": "設備の情報を解析できた40院のうち、歯科用CTの導入を確認できたのは8院です。確認できなかった医院に無いという意味ではないため、気になる場合は直接お問い合わせください。"}}, {"@type": "Question", "name": "この順番はどうやって決めているのですか。", "acceptedAnswer": {"@type": "Answer", "text": "口コミの内容、院長情報、設備、情報公開の度合い、活動状況を配点にして機械的に並べています。掲載順が金銭で変わることはありません。治療の優劣を示すものでもありません。"}}]}</script>
 <style>
 body{margin:0;background:var(--odr-paper);color:var(--odr-ink);font-family:var(--odr-sans);line-height:1.9;}
 .odr-brandbar{position:sticky;top:0;z-index:100;}
@@ -32,13 +33,32 @@ h1{font-size:clamp(1.25rem,3vw,1.8rem);font-weight:900;margin:0 0 12px;line-heig
 .stats span{font-size:.68rem;color:#9cbbae;letter-spacing:.1em;}
 main{max-width:860px;margin:0 auto;padding:36px clamp(16px,4vw,40px) 72px;}
 h2{font-size:1.1rem;color:var(--odr-pine);border-left:4px solid var(--odr-terra);padding-left:10px;margin:32px 0 16px;}
-.acard{display:block;background:#fff;border:1px solid var(--odr-line);border-radius:14px;padding:18px 22px;margin-bottom:12px;text-decoration:none;color:inherit;transition:box-shadow .2s;}
-.acard:hover{box-shadow:var(--shadow-lift);}
-.acard-name{font-weight:700;font-size:1rem;color:var(--odr-pine);margin:0 0 4px;}
+.acard{display:block;background:#fff;border:1px solid var(--odr-line);border-radius:14px;padding:18px 22px;margin-bottom:14px;color:inherit;}
+.acard-head{display:block;text-decoration:none;color:inherit;position:relative;}
+.acard-name{font-weight:700;font-size:1.02rem;color:var(--odr-pine);margin:0 0 4px;padding-right:34px;}
 .acard-meta{font-size:.78rem;color:var(--odr-ink2);margin:0 0 8px;}
-.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:8px;}
+.arank{position:absolute;right:0;top:0;font-family:var(--odr-mono);font-size:.78rem;color:var(--odr-terra);border:1px solid var(--odr-line);border-radius:8px;padding:1px 8px;}
+.tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:10px;}
 .tag{background:#eaf2ee;color:var(--odr-pine);font-size:.7rem;font-weight:700;border-radius:999px;padding:3px 10px;}
-.acard-ai{font-size:.8rem;color:var(--odr-ink2);margin:0;}
+.afacts{margin:0 0 10px;padding:12px 14px;background:#fafbfa;border:1px solid var(--odr-line);border-radius:10px;}
+.afact{display:flex;gap:10px;font-size:.8rem;padding:3px 0;}
+.afact dt{flex:0 0 9.5em;color:var(--odr-ink2);}
+.afact dd{margin:0;flex:1;word-break:auto-phrase;}
+.acard-ai{font-size:.84rem;color:var(--odr-ink);margin:0 0 6px;word-break:auto-phrase;}
+.acard-phil{font-size:.8rem;color:var(--odr-ink2);margin:0 0 8px;}
+.acard-more{font-size:.8rem;color:var(--odr-pine);font-weight:700;text-decoration:none;}
+.acard-more:hover{text-decoration:underline;}
+.lead p{font-size:.92rem;margin:0 0 12px;word-break:auto-phrase;}
+.ctable{background:#fff;border:1px solid var(--odr-line);border-radius:12px;padding:6px 16px;margin-bottom:10px;}
+.crow{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-bottom:1px solid var(--odr-line);font-size:.86rem;}
+.crow:last-child{border-bottom:none;}
+.cval{white-space:nowrap;font-family:var(--odr-mono);}
+.cval b{font-size:1.05rem;color:var(--odr-pine);}
+.cval small{color:var(--odr-ink2);font-size:.72rem;}
+.faq{background:#fff;border:1px solid var(--odr-line);border-radius:10px;padding:12px 16px;margin-bottom:8px;}
+.faq summary{cursor:pointer;font-weight:700;font-size:.9rem;color:var(--odr-pine);}
+.faq p{font-size:.86rem;color:var(--odr-ink2);margin:10px 0 0;word-break:auto-phrase;}
+@media(max-width:760px){.afact{flex-direction:column;gap:2px;}.afact dt{flex:none;font-size:.74rem;}.crow{flex-direction:column;gap:2px;}}
 .cta{display:block;background:var(--odr-pine);color:#fff;text-align:center;font-weight:700;border-radius:999px;padding:15px;margin:28px 0;text-decoration:none;}
 .cta:hover{background:var(--odr-pine-2);}
 .rlinks{margin:0 0 8px;padding-left:1.3em;}
@@ -75,60 +95,178 @@ h2{font-size:1.1rem;color:var(--odr-pine);border-left:4px solid var(--odr-terra)
   </div>
 </section>
 <main>
-  <h2>南区の分析スコア上位10院</h2>
-  <a class="acard" href="../clinics/%E4%BA%AC%E9%83%BD%E5%B8%82%E5%B0%8F%E5%B9%A1%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
-  <p class="acard-name">京都市小幡歯科クリニック</p>
-  <p class="acard-meta">Google ★4.1（112件） ・ 京都市南区吉祥院御池町１０−７ エル ア オバタ 2</p>
+  <div class="lead"><p>京都市南区で分析対象にしている歯科医院は49院です。このうち45院にGoogleの口コミがあり、合計1,342件を読み取りました。公式サイトまで解析できたのは31院です。最寄り駅で見ると西大路駅が14院、東寺駅が11院、十条駅が5院です。</p><p>ここから先は、診療時間・最寄り駅・公開情報で確認できた設備といった「調べれば分かること」を医院ごとに並べています。通いやすさは人によって違うので、順番はあくまで参考にしてください。</p></div>
+  <h2>南区の分析スコア上位15院</h2>
+  <article class="acard">
+  <a class="acard-head" href="../clinics/%E4%BA%AC%E9%83%BD%E5%B8%82%E5%B0%8F%E5%B9%A1%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">1</span>
+    <p class="acard-name">京都市小幡歯科クリニック</p>
+    <p class="acard-meta">Google ★4.1（口コミ112件） ・ 京都市南区吉祥院御池町１０−７ エル ア オバタ 2F</p>
+  </a>
   <div class="tags"><span class="tag">丁寧</span><span class="tag">経験豊富</span><span class="tag">プライバシー重視</span></div>
-  <p class="acard-ai">この医院はインプラント治療を真剣に考える方に向いています。一方、柔軟な診療時間を求める方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E8%82%A5%E5%BE%8C%E6%AD%AF%E7%A7%91%E5%8F%A3%E8%85%94%E5%A4%96%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
-  <p class="acard-name">肥後歯科口腔外科クリニック</p>
-  <p class="acard-meta">Google ★4.8（398件） ・ 京都市南区久世中久世町３丁目55</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>西大路駅から徒歩7〜11分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・口腔内スキャナー・個室</dd></div><div class="afact"><dt>院長</dt><dd>小幡</dd></div><div class="afact"><dt>電話</dt><dd>075-662-6464</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院はインプラント治療を真剣に考える方に向いています。一方、柔軟な診療時間を求める方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E4%BA%AC%E9%83%BD%E5%B8%82%E5%B0%8F%E5%B9%A1%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">京都市小幡歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E8%82%A5%E5%BE%8C%E6%AD%AF%E7%A7%91%E5%8F%A3%E8%85%94%E5%A4%96%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">2</span>
+    <p class="acard-name">肥後歯科口腔外科クリニック</p>
+    <p class="acard-meta">Google ★4.8（口コミ398件） ・ 京都市南区久世中久世町３丁目55</p>
+  </a>
   <div class="tags"><span class="tag">親知らず</span><span class="tag">土曜日診療</span><span class="tag">全身麻酔</span></div>
-  <p class="acard-ai">この医院は親知らずの抜歯を希望する方に特に向いています。一方、急患対応や夜間診療を必要とする方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E4%BA%AC%E9%83%BD%E3%83%9E%E3%82%B9%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91_%E5%8D%97%E5%8C%BA%E6%9C%AC%E9%99%A2.html">
-  <p class="acard-name">京都マス歯科・矯正歯科 南区本院</p>
-  <p class="acard-meta">Google ★4.5（142件） ・ 京都市南区東九条西河辺町５−１</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>桂川駅から徒歩7〜12分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・個室・駐車場・バリアフリー</dd></div><div class="afact"><dt>電話</dt><dd>075-963-5831</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は親知らずの抜歯を希望する方に特に向いています。一方、急患対応や夜間診療を必要とする方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E8%82%A5%E5%BE%8C%E6%AD%AF%E7%A7%91%E5%8F%A3%E8%85%94%E5%A4%96%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">肥後歯科口腔外科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E4%BA%AC%E9%83%BD%E3%83%9E%E3%82%B9%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91_%E5%8D%97%E5%8C%BA%E6%9C%AC%E9%99%A2.html">
+    <span class="arank">3</span>
+    <p class="acard-name">京都マス歯科・矯正歯科 南区本院</p>
+    <p class="acard-meta">Google ★4.5（口コミ142件） ・ 京都市南区東九条西河辺町５−１</p>
+  </a>
   <div class="tags"><span class="tag">丁寧な対応</span><span class="tag">安心感</span><span class="tag">技術力高い</span></div>
-  <p class="acard-ai">この医院は丁寧な施術を求める方に向いています。一方、早急な対応が必要な方には他院を検討すべきです。…</p>
-</a><a class="acard" href="../clinics/%E3%82%AF%E3%83%AA%E3%82%A2%E6%AD%AF%E7%A7%91_%E4%BA%AC%E9%83%BD%E9%99%A2.html">
-  <p class="acard-name">クリア歯科 京都院</p>
-  <p class="acard-meta">Google ★4（91件） ・ 京都市南区東九条西山王町１３−２ ファインエレガンス</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>十条駅から徒歩5〜8分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT</dd></div><div class="afact"><dt>院長</dt><dd>マス先生</dd></div><div class="afact"><dt>電話</dt><dd>075-662-1600</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は丁寧な施術を求める方に向いています。一方、早急な対応が必要な方には他院を検討すべきです。</p>
+  
+  <a class="acard-more" href="../clinics/%E4%BA%AC%E9%83%BD%E3%83%9E%E3%82%B9%E6%AD%AF%E7%A7%91_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91_%E5%8D%97%E5%8C%BA%E6%9C%AC%E9%99%A2.html">京都マス歯科・矯正歯科 南区本院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%82%AF%E3%83%AA%E3%82%A2%E6%AD%AF%E7%A7%91_%E4%BA%AC%E9%83%BD%E9%99%A2.html">
+    <span class="arank">4</span>
+    <p class="acard-name">クリア歯科 京都院</p>
+    <p class="acard-meta">Google ★4（口コミ91件） ・ 京都市南区東九条西山王町１３−２ ファインエレガンスビル 1F</p>
+  </a>
   <div class="tags"><span class="tag">リーズナブル</span><span class="tag">親切</span><span class="tag">通いやすい</span></div>
-  <p class="acard-ai">クリア歯科京都院は、リーズナブルな価格で質の高い治療を求める方に向いています。一方、料金の透明性を重視する方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E6%9D%B1%E5%AF%BA%E9%A7%85%E5%89%8D_%E5%AE%AE%E5%9C%B0%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF%EF%BD%9C%E4%BA%AC%E9%83%BD%E5%B8%82%E5%8D%97%E5%8C%BA_%E6%AD%AF%E5%8C%BB%E8%80%85_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91_%E3%82%A4%E3%83%B3%E3%83%97%E3%83%A9%E3%83%B3%E3%83%88.html">
-  <p class="acard-name">東寺駅前 宮地歯科クリニック｜京都市南区 歯医者 矯正歯科 インプラント</p>
-  <p class="acard-meta">Google ★4.3（4件） ・ 京都市南区西九条蔵王町13−５ TMSビル 3F</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>京都駅から徒歩3〜6分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT</dd></div><div class="afact"><dt>院長</dt><dd>堀澤 周平</dd></div><div class="afact"><dt>電話</dt><dd>075-694-1780</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">クリア歯科京都院は、リーズナブルな価格で質の高い治療を求める方に向いています。一方、料金の透明性を重視する方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%82%AF%E3%83%AA%E3%82%A2%E6%AD%AF%E7%A7%91_%E4%BA%AC%E9%83%BD%E9%99%A2.html">クリア歯科 京都院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E6%9D%B1%E5%AF%BA%E9%A7%85%E5%89%8D_%E5%AE%AE%E5%9C%B0%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF%EF%BD%9C%E4%BA%AC%E9%83%BD%E5%B8%82%E5%8D%97%E5%8C%BA_%E6%AD%AF%E5%8C%BB%E8%80%85_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91_%E3%82%A4%E3%83%B3%E3%83%97%E3%83%A9%E3%83%B3%E3%83%88.html">
+    <span class="arank">5</span>
+    <p class="acard-name">東寺駅前 宮地歯科クリニック｜京都市南区 歯医者 矯正歯科 インプラント</p>
+    <p class="acard-meta">Google ★4.3（口コミ4件） ・ 京都市南区西九条蔵王町13−５ TMSビル 3F</p>
+  </a>
   <div class="tags"><span class="tag">良いスタッフ</span><span class="tag">丁寧な治療</span><span class="tag">地域密着</span></div>
-  <p class="acard-ai">この医院は丁寧な対応と地域密着の治療を求めている方に向いています。一方、夜間に通院したい方には他院をおすすめします。…</p>
-</a><a class="acard" href="../clinics/%E6%A1%82%E5%B7%9D%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
-  <p class="acard-name">桂川歯科クリニック</p>
-  <p class="acard-meta">Google ★3.1（43件） ・ 京都市南区久世上久世町417番地1</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>東寺駅から徒歩1〜2分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時30分まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>駐車場</dd></div><div class="afact"><dt>院長</dt><dd>宮地浩徳</dd></div><div class="afact"><dt>電話</dt><dd>075-606-6500</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は丁寧な対応と地域密着の治療を求めている方に向いています。一方、夜間に通院したい方には他院をおすすめします。</p>
+  
+  <a class="acard-more" href="../clinics/%E6%9D%B1%E5%AF%BA%E9%A7%85%E5%89%8D_%E5%AE%AE%E5%9C%B0%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF%EF%BD%9C%E4%BA%AC%E9%83%BD%E5%B8%82%E5%8D%97%E5%8C%BA_%E6%AD%AF%E5%8C%BB%E8%80%85_%E7%9F%AF%E6%AD%A3%E6%AD%AF%E7%A7%91_%E3%82%A4%E3%83%B3%E3%83%97%E3%83%A9%E3%83%B3%E3%83%88.html">東寺駅前 宮地歯科クリニック｜京都市南区 歯医者 矯正歯科 インプラントの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E6%A1%82%E5%B7%9D%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">6</span>
+    <p class="acard-name">桂川歯科クリニック</p>
+    <p class="acard-meta">Google ★3.1（口コミ43件） ・ 京都市南区久世上久世町417番地1</p>
+  </a>
   <div class="tags"><span class="tag">清潔感</span><span class="tag">子ども対応</span><span class="tag">通いやすさ</span></div>
-  <p class="acard-ai">桂川歯科クリニックは、家族連れや子どもに優しい環境で、安心して治療が受けられます。一方で、時間に制約のある方には他の医院の検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E6%97%A5%E6%9C%AC%E3%82%A4%E3%83%B3%E3%83%97%E3%83%A9%E3%83%B3%E3%83%88%E4%BA%AC%E9%83%BD%E5%85%AB%E6%9D%A1%E5%8F%A3%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
-  <p class="acard-name">日本インプラント京都八条口クリニック</p>
-  <p class="acard-meta">Google ★4.2（6件） ・ 京都市南区東九条上殿田町５２ ＫＫＤビル 5階</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>桂川駅から徒歩3〜6分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時30分まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・バリアフリー</dd></div><div class="afact"><dt>院長</dt><dd>田中 佑来</dd></div><div class="afact"><dt>電話</dt><dd>075-874-4037</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">桂川歯科クリニックは、家族連れや子どもに優しい環境で、安心して治療が受けられます。一方で、時間に制約のある方には他の医院の検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E6%A1%82%E5%B7%9D%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">桂川歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E6%97%A5%E6%9C%AC%E3%82%A4%E3%83%B3%E3%83%97%E3%83%A9%E3%83%B3%E3%83%88%E4%BA%AC%E9%83%BD%E5%85%AB%E6%9D%A1%E5%8F%A3%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">7</span>
+    <p class="acard-name">日本インプラント京都八条口クリニック</p>
+    <p class="acard-meta">Google ★4.2（口コミ6件） ・ 京都市南区東九条上殿田町５２ ＫＫＤビル 5階</p>
+  </a>
   <div class="tags"><span class="tag">インプラント</span><span class="tag">信頼</span><span class="tag">治療計画</span></div>
-  <p class="acard-ai">この医院はインプラント治療を希望する方に向いています。一方、歯科治療に不安がある方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E6%B8%85%E6%B0%B4%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
-  <p class="acard-name">清水歯科医院</p>
-  <p class="acard-meta">Google ★4.5（11件） ・ 京都市南区東九条西山王町１−１５</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>京都駅から徒歩2〜4分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT</dd></div><div class="afact"><dt>院長</dt><dd>前田 潤一郎</dd></div><div class="afact"><dt>電話</dt><dd>075-644-6656</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院はインプラント治療を希望する方に向いています。一方、歯科治療に不安がある方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E6%97%A5%E6%9C%AC%E3%82%A4%E3%83%B3%E3%83%97%E3%83%A9%E3%83%B3%E3%83%88%E4%BA%AC%E9%83%BD%E5%85%AB%E6%9D%A1%E5%8F%A3%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">日本インプラント京都八条口クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E6%B8%85%E6%B0%B4%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">8</span>
+    <p class="acard-name">清水歯科医院</p>
+    <p class="acard-meta">Google ★4.5（口コミ11件） ・ 京都市南区東九条西山王町１−１５</p>
+  </a>
   <div class="tags"><span class="tag">優しい</span><span class="tag">雰囲気が良い</span><span class="tag">速い治療</span></div>
-  <p class="acard-ai">この医院は、特に小さなお子様や歯科治療に不安を感じる方に向いています。一方、麻酔に対する配慮に不安がある方には他院も検討をお勧めします。…</p>
-</a><a class="acard" href="../clinics/%E6%B5%85%E4%BA%95%E6%AD%AF%E7%A7%91_%E3%82%A4%E3%82%AA%E3%83%B3%E6%A1%82%E5%B7%9D%E9%99%A2.html">
-  <p class="acard-name">浅井歯科 イオン桂川院</p>
-  <p class="acard-meta">Google ★3.1（57件） ・ 京都市南区久世高田町３７６−１ イオンモール京都桂川</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>九条駅から徒歩4〜7分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時30分まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>院長</dt><dd>清水 正也</dd></div><div class="afact"><dt>電話</dt><dd>075-691-5656</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、特に小さなお子様や歯科治療に不安を感じる方に向いています。一方、麻酔に対する配慮に不安がある方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E6%B8%85%E6%B0%B4%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">清水歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E6%B5%85%E4%BA%95%E6%AD%AF%E7%A7%91_%E3%82%A4%E3%82%AA%E3%83%B3%E6%A1%82%E5%B7%9D%E9%99%A2.html">
+    <span class="arank">9</span>
+    <p class="acard-name">浅井歯科 イオン桂川院</p>
+    <p class="acard-meta">Google ★3.1（口コミ57件） ・ 京都市南区久世高田町３７６−１ イオンモール京都桂川 1階 メディモ</p>
+  </a>
   <div class="tags"><span class="tag">痛みへの配慮</span><span class="tag">日曜診療</span><span class="tag">地域密着</span></div>
-  <p class="acard-ai">浅井歯科 イオン桂川院は、痛みへの配慮が深く、日曜日も診療を行っている地域密着の歯科医院です。急患希望の方には向いていない可能性があります。…</p>
-</a><a class="acard" href="../clinics/%E7%9F%B3%E7%94%B0%E6%AD%AF%E7%A7%91.html">
-  <p class="acard-name">石田歯科</p>
-  <p class="acard-meta">Google ★4.1（15件） ・ 京都市南区久世殿城町５７−２</p>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>桂川駅から徒歩3〜5分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時30分まで（夜の時間帯まで診療）</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり・日曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>駐車場</dd></div><div class="afact"><dt>院長</dt><dd>浅井 勇吾</dd></div><div class="afact"><dt>電話</dt><dd>075-934-8866</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">浅井歯科 イオン桂川院は、痛みへの配慮が深く、日曜日も診療を行っている地域密着の歯科医院です。急患希望の方には向いていない可能性があります。</p>
+  
+  <a class="acard-more" href="../clinics/%E6%B5%85%E4%BA%95%E6%AD%AF%E7%A7%91_%E3%82%A4%E3%82%AA%E3%83%B3%E6%A1%82%E5%B7%9D%E9%99%A2.html">浅井歯科 イオン桂川院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E7%9F%B3%E7%94%B0%E6%AD%AF%E7%A7%91.html">
+    <span class="arank">10</span>
+    <p class="acard-name">石田歯科</p>
+    <p class="acard-meta">Google ★4.1（口コミ15件） ・ 京都市南区久世殿城町５７−２</p>
+  </a>
   <div class="tags"><span class="tag">地域密着</span><span class="tag">優しさ</span><span class="tag">技術力</span></div>
-  <p class="acard-ai">石田歯科は地域に親しまれ、丁寧な治療が評価されています。急患希望の方には向いていない可能性があります。…</p>
-</a>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>向日町駅から徒歩6〜10分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は20時まで（夜の時間帯まで診療）</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>駐車場・バリアフリー</dd></div><div class="afact"><dt>院長</dt><dd>石田 太郎</dd></div><div class="afact"><dt>電話</dt><dd>075-934-8341</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">石田歯科は地域に親しまれ、丁寧な治療が評価されています。急患希望の方には向いていない可能性があります。</p>
+  
+  <a class="acard-more" href="../clinics/%E7%9F%B3%E7%94%B0%E6%AD%AF%E7%A7%91.html">石田歯科の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E3%83%A4%E3%82%B9%E3%83%80%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">11</span>
+    <p class="acard-name">ヤスダ歯科クリニック</p>
+    <p class="acard-meta">Google ★3.6（口コミ52件） ・ 京都市南区唐橋羅城門町４７−１</p>
+  </a>
+  <div class="tags"><span class="tag">安心感</span><span class="tag">親切</span><span class="tag">痛みなし</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>西大路駅から徒歩9〜15分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時30分まで（夜の時間帯まで診療）</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>駐車場</dd></div><div class="afact"><dt>院長</dt><dd>安田 準一</dd></div><div class="afact"><dt>電話</dt><dd>075-662-0055</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">この医院は、丁寧な説明や痛みの少ない治療を重視する方に向いています。一方、急な治療が必要な方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E3%83%A4%E3%82%B9%E3%83%80%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">ヤスダ歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E5%BE%B3%E5%9C%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">12</span>
+    <p class="acard-name">徳地歯科医院</p>
+    <p class="acard-meta">Google ★3.6（口コミ20件） ・ 京都市南区上鳥羽北島田町１１３</p>
+  </a>
+  <div class="tags"><span class="tag">待ち時間が長い</span><span class="tag">受付対応が悪い</span><span class="tag">説明が丁寧</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>上鳥羽口駅から徒歩7〜11分</dd></div><div class="afact"><dt>院長</dt><dd>徳地 正純</dd></div><div class="afact"><dt>電話</dt><dd>075-661-8515</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">【AI総評】この医院は、丁寧な説明と医師の高い技術力を求める方に向いています。一方、受付や待ち時間を気にする方には他院も検討をお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E5%BE%B3%E5%9C%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">徳地歯科医院の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E7%94%B0%E4%B8%AD%E6%AD%AF%E7%A7%91%E8%A8%BA%E7%99%82%E6%89%80.html">
+    <span class="arank">13</span>
+    <p class="acard-name">田中歯科診療所</p>
+    <p class="acard-meta">Google ★2.4（口コミ14件） ・ 京都市南区西九条針小路町３</p>
+  </a>
+  <div class="tags"><span class="tag">丁寧な治療</span><span class="tag">受付対応</span><span class="tag">無痛治療</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>東寺駅から徒歩3〜5分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は18時30分まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>CT・マイクロスコープ</dd></div><div class="afact"><dt>院長</dt><dd>田中 豊彦</dd></div><div class="afact"><dt>電話</dt><dd>075-672-5600</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">田中歯科診療所は、子どもにも優しい無痛治療を提供しており、特に小さなお子様を持つ親御さんに適しています。ただし、受付時の対応に不安がある方は他院も検討することをお勧めします。</p>
+  
+  <a class="acard-more" href="../clinics/%E7%94%B0%E4%B8%AD%E6%AD%AF%E7%A7%91%E8%A8%BA%E7%99%82%E6%89%80.html">田中歯科診療所の分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E6%9D%B1%E5%AF%BA%E5%89%8D%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">
+    <span class="arank">14</span>
+    <p class="acard-name">東寺前歯科クリニック</p>
+    <p class="acard-meta">Google ★4.5（口コミ8件） ・ 京都市南区西九条比永城町１２０ カーサ奈波</p>
+  </a>
+  <div class="tags"><span class="tag">親切</span><span class="tag">土曜日診療</span><span class="tag">留学生歓迎</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>東寺駅から徒歩4〜6分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時まで</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>公開情報で確認できた設備</dt><dd>バリアフリー</dd></div><div class="afact"><dt>院長</dt><dd>日ノ下 絵美</dd></div><div class="afact"><dt>電話</dt><dd>075-691-3017</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">東寺前歯科クリニックは、親切なスタッフによる対応が評価されており、土曜日の診療も行っているため忙しい方におすすめです。急患希望の方には向いていない可能性があります。</p>
+  
+  <a class="acard-more" href="../clinics/%E6%9D%B1%E5%AF%BA%E5%89%8D%E6%AD%AF%E7%A7%91%E3%82%AF%E3%83%AA%E3%83%8B%E3%83%83%E3%82%AF.html">東寺前歯科クリニックの分析を詳しく見る →</a>
+</article><article class="acard">
+  <a class="acard-head" href="../clinics/%E6%A8%AA%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">
+    <span class="arank">15</span>
+    <p class="acard-name">横田歯科医院</p>
+    <p class="acard-meta">Google ★3.9（口コミ14件） ・ 京都市南区久世中久世町２丁目１０５−１</p>
+  </a>
+  <div class="tags"><span class="tag">地域密着</span><span class="tag">信頼の治療</span><span class="tag">明確な料金</span></div>
+  <dl class="afacts"><div class="afact"><dt>アクセス</dt><dd>向日町駅から徒歩6〜10分</dd></div><div class="afact"><dt>診療時間</dt><dd>平日は19時30分まで（夜の時間帯まで診療）</dd></div><div class="afact"><dt>土日</dt><dd>土曜あり</dd></div><div class="afact"><dt>院長</dt><dd>院長名（不明なら空文字）</dd></div><div class="afact"><dt>電話</dt><dd>075-934-9222</dd></div><div class="afact"><dt>公式サイト</dt><dd>あり</dd></div></dl>
+  <p class="acard-ai">横田歯科医院は地域密着で信頼の治療を提供し、明確な料金を掲示しています。急患希望の方には向いていない可能性があります。</p>
+  
+  <a class="acard-more" href="../clinics/%E6%A8%AA%E7%94%B0%E6%AD%AF%E7%A7%91%E5%8C%BB%E9%99%A2.html">横田歯科医院の分析を詳しく見る →</a>
+</article>
   <a class="cta" href="../shindan/index.html?ward=%E5%8D%97%E5%8C%BA">症状・希望条件も選んで、南区の医院を絞り込む →</a>
-  <h2>南区のデータを詳しく見る</h2><p>設備情報を解析できた40院のうち、歯科用CTの導入が公式サイト等で確認できたのは8院でした。</p><p>夜間診療の案内が確認できた医院は、南区の分析対象49院のうち1院です。</p><p>こうした設備や診療時間の傾向は、市全体のデータをまとめた研究記事で背景まで確認できます。</p><ul class="rlinks"><li><a href="../research/worktime-access.html">夜間・週末に通える歯科はどれだけあるか（診療時間データの研究）</a></li></ul><p class="rnote">件数・割合は当サイトが公開情報から機械的に解析できた範囲の値です。「確認できなかった」は「無い」という意味ではありません。</p>
+  <h2>南区で条件から絞る</h2><p>夜間や土日に通えるか、駐車場があるかは、医院選びで最初に効いてくる条件です。南区の分析対象49院について、公開情報から確認できた数を並べます。</p><div class="ctable"><div class="crow"><span class="clabel">19時30分以降も診療している</span><span class="cval"><b>16</b>院 <small>／確認できた33院中</small></span></div><div class="crow"><span class="clabel">土曜日に診療している</span><span class="cval"><b>31</b>院 <small>／確認できた33院中</small></span></div><div class="crow"><span class="clabel">日曜日に診療している</span><span class="cval"><b>6</b>院 <small>／確認できた33院中</small></span></div><div class="crow"><span class="clabel">歯科用CTの導入を確認できた</span><span class="cval"><b>8</b>院 <small>／確認できた40院中</small></span></div><div class="crow"><span class="clabel">個室の案内を確認できた</span><span class="cval"><b>3</b>院 <small>／確認できた40院中</small></span></div><div class="crow"><span class="clabel">駐車場の案内を確認できた</span><span class="cval"><b>6</b>院 <small>／確認できた40院中</small></span></div><div class="crow"><span class="clabel">バリアフリーの案内を確認できた</span><span class="cval"><b>5</b>院 <small>／確認できた40院中</small></span></div></div><p class="rnote">分母は、その項目を公開情報から判定できた医院数です。「確認できなかった」は「無い」という意味ではありません。最新の診療時間は必ず医院にご確認ください。</p>
+  <h2>よくある質問</h2><details class="faq"><summary>南区で夜おそくまで診てもらえる歯医者はありますか。</summary><p>診療時間を確認できた33院のうち、19時30分以降も診療しているのは16院でした。</p></details><details class="faq"><summary>南区で土日に通える歯医者はありますか。</summary><p>土曜日に診療しているのが31院、日曜日が6院です（診療時間を確認できた33院中）。</p></details><details class="faq"><summary>南区で歯科用CTのある歯医者を知りたいです。</summary><p>設備の情報を解析できた40院のうち、歯科用CTの導入を確認できたのは8院です。確認できなかった医院に無いという意味ではないため、気になる場合は直接お問い合わせください。</p></details><details class="faq"><summary>この順番はどうやって決めているのですか。</summary><p>口コミの内容、院長情報、設備、情報公開の度合い、活動状況を配点にして機械的に並べています。掲載順が金銭で変わることはありません。治療の優劣を示すものでもありません。</p></details>
+  <h2>南区のデータを詳しく見る</h2><p>設備や診療時間の傾向は、市全体のデータをまとめた研究記事で背景まで確認できます。</p><ul class="rlinks"><li><a href="../research/worktime-access.html">夜間・週末に通える歯科はどれだけあるか（診療時間データの研究）</a></li></ul>
   <p class="disc">スコア・順位は公開情報（口コミ・公式サイト等）の充実度と評判分析にもとづく参考表示であり、医院の技術や治療結果の優劣を示すものではありません。順位は条件の選択で変動します。掲載順が金銭で変わることはありません。受診の判断は必ず歯科医師にご相談ください。
   掲載情報の訂正は<a href="../../teisei.html">こちら</a>／詳細は<a href="../../policy.html">運営ポリシー・免責事項</a>。</p>
 </main>
